@@ -102,7 +102,10 @@
     .calculator-box { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); padding: 40px; border-radius: 20px; max-width: 800px; margin: 0 auto; }
     .input-label { display: block; font-weight: 600; margin-bottom: 8px; color: rgba(255,255,255,.75); font-size: 14px; text-transform: uppercase; letter-spacing: .5px; }
     .input-row { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
-    .input-field { width: 100px; padding: 12px 14px; font-size: 22px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); border-radius: 10px; font-weight: 700; color: #fff; text-align: center; font-family: 'DM Sans', sans-serif; }
+    .input-wrapper { display: flex; align-items: center; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); border-radius: 10px; overflow: hidden; width: 110px; flex-shrink: 0; }
+    .currency-prefix { padding: 0 0 0 12px; font-size: 18px; font-weight: 800; color: var(--yellow); line-height: 1; }
+    .input-field { width: 68px; padding: 12px 10px; font-size: 22px; background: transparent; border: none; font-weight: 700; color: #fff; text-align: center; font-family: 'DM Sans', sans-serif; outline: none; }
+    .input-field::-webkit-inner-spin-button, .input-field::-webkit-outer-spin-button { opacity: 0.4; }
     .slider { flex: 1; height: 5px; cursor: pointer; accent-color: var(--yellow); }
     .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 14px; margin-top: 32px; }
     .result-card { text-align: center; padding: 24px 16px; background: rgba(255,255,255,.06); border-radius: 12px; border: 1px solid rgba(255,255,255,.1); }
@@ -312,17 +315,21 @@
         <p class="section-sub" style="color:rgba(255,255,255,.6); margin:0 auto;">Ajusta los sliders y descubre tu rentabilidad real</p>
       </div>
       <div class="calculator-box">
+        <p style="font-size:13px; color:rgba(255,255,255,.45); margin-bottom:28px; text-align:right;">Q = Quetzal, moneda de Guatemala (≈ USD 0.13)</p>
         <div>
-          <label class="input-label">Precio de venta por porción (Q)</label>
+          <label class="input-label">Precio de venta por porción</label>
           <div class="input-row">
-            <input type="number" id="sellPrice" class="input-field" value="10" min="5" max="50">
+            <div class="input-wrapper">
+              <span class="currency-prefix">Q</span>
+              <input type="number" id="sellPrice" class="input-field" value="10" min="5" max="50">
+            </div>
             <input type="range" id="sellPriceSlider" class="slider" value="10" min="5" max="50">
           </div>
         </div>
         <div>
           <label class="input-label">Porciones vendidas por día</label>
           <div class="input-row">
-            <input type="number" id="portions" class="input-field" value="50" min="10" max="500" step="10">
+            <input type="number" id="portions" class="input-field" value="50" min="10" max="500" step="10" style="width:110px; padding:12px 14px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); border-radius:10px; font-size:22px; font-weight:700; color:#fff; text-align:center; font-family:'DM Sans',sans-serif; outline:none;">
             <input type="range" id="portionsSlider" class="slider" value="50" min="10" max="500" step="10">
           </div>
         </div>
