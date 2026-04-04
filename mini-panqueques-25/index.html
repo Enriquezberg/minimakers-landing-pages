@@ -540,37 +540,37 @@
     // Social proof bar
     gsap.from('.proof-item', {
       scrollTrigger: { trigger: '.proof-bar', start: 'top 90%' },
-      y: 18, opacity: 0, duration: 0.45, stagger: 0.1
+      y: 18, opacity: 0, duration: 0.45, stagger: 0.1, immediateRender: false
     });
 
     // Business cards
     gsap.from('.gsap-card', {
-      scrollTrigger: { trigger: '.business-grid', start: 'top 82%' },
-      x: -28, opacity: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out'
+      scrollTrigger: { trigger: '.business-grid', start: 'top 88%' },
+      x: -28, opacity: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out', immediateRender: false
     });
 
     // Spec cards
     gsap.from('.gsap-spec', {
-      scrollTrigger: { trigger: '.specs-grid', start: 'top 82%' },
-      y: 28, opacity: 0, duration: 0.4, stagger: 0.06, ease: 'power2.out'
+      scrollTrigger: { trigger: '.specs-grid', start: 'top 88%' },
+      y: 28, opacity: 0, duration: 0.4, stagger: 0.06, ease: 'power2.out', immediateRender: false
     });
 
     // Testimonials
     gsap.from('.testimonial', {
-      scrollTrigger: { trigger: '.testimonials-grid', start: 'top 82%' },
-      y: 36, opacity: 0, duration: 0.55, stagger: 0.14, ease: 'power2.out'
+      scrollTrigger: { trigger: '.testimonials-grid', start: 'top 88%' },
+      y: 36, opacity: 0, duration: 0.55, stagger: 0.14, ease: 'power2.out', immediateRender: false
     });
 
     // FAQ items
     gsap.from('.faq-item', {
-      scrollTrigger: { trigger: '.faq-list', start: 'top 85%' },
-      y: 16, opacity: 0, duration: 0.35, stagger: 0.07
+      scrollTrigger: { trigger: '.faq-list', start: 'top 90%' },
+      y: 16, opacity: 0, duration: 0.35, stagger: 0.07, immediateRender: false
     });
 
     // Price pop in CTA
     gsap.from('.price-current', {
-      scrollTrigger: { trigger: '.final-cta', start: 'top 75%' },
-      scale: 0.82, opacity: 0, duration: 0.65, ease: 'back.out(1.6)'
+      scrollTrigger: { trigger: '.final-cta', start: 'top 80%' },
+      scale: 0.82, opacity: 0, duration: 0.65, ease: 'back.out(1.6)', immediateRender: false
     });
 
     // Video
