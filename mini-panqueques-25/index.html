@@ -330,9 +330,9 @@
           <label class="input-label">Porciones vendidas por día</label>
           <div class="input-row">
             <div class="input-wrapper">
-              <input type="number" id="portions" class="input-field" value="30" min="5" max="60" step="5">
+              <input type="number" id="portions" class="input-field" value="15" min="5" max="30" step="5">
             </div>
-            <input type="range" id="portionsSlider" class="slider" value="30" min="5" max="60" step="5">
+            <input type="range" id="portionsSlider" class="slider" value="15" min="5" max="30" step="5">
           </div>
         </div>
         <div class="results-grid">
@@ -621,8 +621,8 @@
       const parts  = parseInt(po.value)   || 0;
       const profit = (price - 5) * parts;
       if (profit <= 0) return;
-      document.getElementById('dailyProfit').textContent   = profit.toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      document.getElementById('monthlyProfit').textContent = (profit * 30).toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('dailyProfit').textContent   = profit.toLocaleString('es-GT', { maximumFractionDigits: 0 });
+      document.getElementById('monthlyProfit').textContent = (profit * 30).toLocaleString('es-GT', { maximumFractionDigits: 0 });
       document.getElementById('daysBreakeven').textContent = Math.ceil(1200 / profit);
     }
     // Precio: slider → formatea con .00; texto → sync slider
