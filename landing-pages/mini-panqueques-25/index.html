@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Máquina Industrial 25 Mini Panqueques - Inversión que se paga sola. Envío gratis a toda Guatemala.">
+  <title>Máquina 25 Mini Panqueques | MiniMakers GT</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #667eea; --primary-dark: #5a67d8; --secondary: #764ba2;
+      --success: #48bb78; --warning: #f59e0b; --dark: #2d3748;
+      --gray-100: #f7fafc; --gray-200: #edf2f7; --gray-300: #e2e8f0; --gray-600: #718096;
+    }
+    body { font-family: 'Inter', -apple-system, sans-serif; line-height: 1.6; color: var(--dark); background: white; }
+    .header { background: #2d3748; padding: 20px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .logo { color: white; font-size: 24px; font-weight: 800; text-decoration: none; }
+    .cta-header { background: var(--warning); color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: 700; transition: transform 0.3s; }
+    .cta-header:hover { transform: scale(1.05); }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 80px 20px; text-align: center; color: white; }
+    .hero h1 { font-size: clamp(36px, 6vw, 56px); font-weight: 800; margin-bottom: 20px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); }
+    .hero p { font-size: clamp(18px, 3vw, 24px); margin-bottom: 40px; opacity: 0.95; max-width: 800px; margin-left: auto; margin-right: auto; }
+    .video-wrapper { max-width: 900px; margin: 40px auto; position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.4); cursor: pointer; }
+    .video-wrapper::before { content: ''; display: block; padding-top: 56.25%; }
+    .video-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+    .play-button { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90px; height: 90px; background: rgba(255,255,255,0.95); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; color: var(--primary); transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .video-wrapper:hover .play-button { transform: translate(-50%, -50%) scale(1.1); }
+    .benefits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-top: 60px; }
+    .benefit { text-align: center; }
+    .benefit-icon { font-size: 48px; margin-bottom: 15px; display: block; }
+    .benefit-text { font-size: 16px; font-weight: 600; }
+    .timer-section { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 40px 20px; text-align: center; color: white; margin: 60px 0; }
+    .timer-title { font-size: 28px; font-weight: 700; margin-bottom: 25px; }
+    .countdown { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .time-box { background: rgba(255,255,255,0.2); padding: 20px 25px; border-radius: 12px; min-width: 90px; }
+    .time-number { font-size: 40px; font-weight: 800; display: block; line-height: 1; }
+    .time-label { font-size: 14px; opacity: 0.9; margin-top: 8px; }
+    .section { padding: 80px 20px; }
+    .section-title { font-size: clamp(28px, 4vw, 40px); font-weight: 800; margin-bottom: 40px; text-align: center; }
+    .business-grid { display: grid; gap: 25px; max-width: 900px; margin: 0 auto; }
+    .business-card { display: flex; align-items: flex-start; gap: 20px; padding: 30px; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: all 0.3s; }
+    .business-card:hover { transform: translateY(-8px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
+    .business-number { background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; flex-shrink: 0; }
+    .business-info h3 { font-size: 20px; margin-bottom: 10px; }
+    .business-info p { color: var(--gray-600); font-size: 16px; }
+    .roi-section { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 80px 20px; color: white; }
+    .calculator-box { background: white; padding: 40px; border-radius: 20px; max-width: 800px; margin: 0 auto; color: var(--dark); }
+    .input-group { margin-bottom: 30px; }
+    .input-label { display: block; font-weight: 600; margin-bottom: 10px; color: var(--gray-600); }
+    .input-field { width: 100%; padding: 15px; font-size: 20px; border: 2px solid var(--gray-300); border-radius: 12px; font-weight: 600; }
+    .slider { width: 100%; height: 10px; margin-top: 10px; }
+    .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 40px; }
+    .result-card { text-align: center; padding: 25px; background: var(--gray-100); border-radius: 12px; }
+    .result-label { font-size: 14px; color: var(--gray-600); margin-bottom: 10px; }
+    .result-value { font-size: 42px; font-weight: 800; color: var(--success); line-height: 1; }
+    .swiper { border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
+    .swiper-slide img { width: 100%; height: auto; display: block; }
+    .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-top: 40px; }
+    .testimonial { background: white; padding: 35px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); position: relative; }
+    .quote-icon { position: absolute; top: 20px; right: 20px; font-size: 40px; color: var(--gray-200); opacity: 0.5; }
+    .stars { color: #fbbf24; font-size: 20px; margin-bottom: 15px; }
+    .testimonial-text { font-size: 16px; line-height: 1.7; color: var(--gray-600); margin-bottom: 25px; }
+    .author { display: flex; align-items: center; gap: 15px; }
+    .author-avatar { width: 55px; height: 55px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 22px; }
+    .author-name { font-weight: 600; margin-bottom: 5px; }
+    .author-location { font-size: 14px; color: var(--gray-600); }
+    .final-cta { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 100px 20px; text-align: center; color: white; }
+    .price-box { margin: 40px 0; }
+    .price-old { font-size: 24px; text-decoration: line-through; opacity: 0.8; }
+    .price-current { font-size: 72px; font-weight: 900; margin: 20px 0; }
+    .savings { font-size: 24px; }
+    .cta-button { display: inline-block; background: white; color: var(--primary); padding: 25px 60px; font-size: 24px; font-weight: 800; border-radius: 60px; text-decoration: none; margin-top: 40px; box-shadow: 0 15px 50px rgba(0,0,0,0.3); transition: all 0.3s; }
+    .cta-button:hover { transform: translateY(-5px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+    .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #25D366; color: white; width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4); z-index: 999; transition: all 0.3s; text-decoration: none; }
+    .whatsapp-float:hover { transform: scale(1.1); }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 36px; }
+      .section { padding: 50px 20px; }
+      .price-current { font-size: 56px; }
+      .cta-button { padding: 20px 40px; font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <a href="https://minimakersgt.com" class="logo">MINIMAKERSGT</a>
+      <a href="https://wa.me/50231695584?text=Hola,%20quiero%20info%20sobre%20la%20m%C3%A1quina%2025%20mini%20panqueques" class="cta-header">Contactar por WhatsApp</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1 data-aos="fade-up">🥞 Máquina Industrial 25 Mini Panqueques</h1>
+      <p data-aos="fade-up" data-aos-delay="100">La inversión que se paga sola: Empieza tu negocio de snacks rentable en Guatemala</p>
+      <div class="video-wrapper" data-aos="zoom-in" data-aos-delay="200">
+        <a href="https://vimeo.com/1024277401?autoplay=1" class="glightbox-video">
+          <img src="https://vumbnail.com/1024277401.jpg" alt="Máquina en acción">
+          <div class="play-button"><i class="fas fa-play"></i></div>
+        </a>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit" data-aos="fade-up" data-aos-delay="300">
+          <span class="benefit-icon">⚡</span>
+          <span class="benefit-text">Listo en 3 minutos</span>
+        </div>
+        <div class="benefit" data-aos="fade-up" data-aos-delay="350">
+          <span class="benefit-icon">🧼</span>
+          <span class="benefit-text">Fácil de limpiar</span>
+        </div>
+        <div class="benefit" data-aos="fade-up" data-aos-delay="400">
+          <span class="benefit-icon">💰</span>
+          <span class="benefit-text">ROI en 1-2 semanas</span>
+        </div>
+        <div class="benefit" data-aos="fade-up" data-aos-delay="450">
+          <span class="benefit-icon">🛡️</span>
+          <span class="benefit-text">Garantía 1 año</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="timer-section" data-aos="zoom-in">
+    <div class="timer-title">⚡ Oferta termina en:</div>
+    <div class="countdown" id="countdown">
+      <div class="time-box"><span class="time-number" id="days">00</span><div class="time-label">Días</div></div>
+      <div class="time-box"><span class="time-number" id="hours">00</span><div class="time-label">Horas</div></div>
+      <div class="time-box"><span class="time-number" id="minutes">00</span><div class="time-label">Min</div></div>
+      <div class="time-box"><span class="time-number" id="seconds">00</span><div class="time-label">Seg</div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-up">✅ Perfecto para estos negocios</h2>
+      <div class="business-grid">
+        <div class="business-card" data-aos="fade-right" data-aos-delay="100">
+          <div class="business-number">1</div>
+          <div class="business-info">
+            <h3>☕ Cafeterías y Coffee Shops</h3>
+            <p>Complementa tu menú con mini postres que se venden solos. Inversión baja, margen alto.</p>
+          </div>
+        </div>
+        <div class="business-card" data-aos="fade-right" data-aos-delay="200">
+          <div class="business-number">2</div>
+          <div class="business-info">
+            <h3>🎉 Eventos y Ferias</h3>
+            <p>Portátil, rápido y atractivo. Perfecto para eventos familiares y corporativos.</p>
+          </div>
+        </div>
+        <div class="business-card" data-aos="fade-right" data-aos-delay="300">
+          <div class="business-number">3</div>
+          <div class="business-info">
+            <h3>🚚 Food Trucks</h3>
+            <p>110V estándar, compacto, alta rotación. Ideal para negocios móviles.</p>
+          </div>
+        </div>
+        <div class="business-card" data-aos="fade-right" data-aos-delay="400">
+          <div class="business-number">4</div>
+          <div class="business-info">
+            <h3>🏠 Emprendedores desde casa</h3>
+            <p>Baja inversión inicial, fácil de operar, mercado probado en Guatemala.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="roi-section" data-aos="fade-up">
+    <div class="container">
+      <h2 class="section-title">💰 Calculadora de Rentabilidad</h2>
+      <p style="text-align:center; opacity:0.95; font-size:18px; margin-bottom:40px;">Descubre qué tan rápido recuperas tu inversión</p>
+      <div class="calculator-box">
+        <div class="input-group">
+          <label class="input-label">Precio de venta por porción:</label>
+          <input type="number" id="sellPrice" class="input-field" value="10" min="5" max="50">
+          <input type="range" id="sellPriceSlider" class="slider" value="10" min="5" max="50">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Porciones vendidas por día:</label>
+          <input type="number" id="portions" class="input-field" value="50" min="10" max="500" step="10">
+          <input type="range" id="portionsSlider" class="slider" value="50" min="10" max="500" step="10">
+        </div>
+        <div class="results-grid">
+          <div class="result-card">
+            <div class="result-label">Ganancia diaria</div>
+            <div class="result-value">Q<span id="dailyProfit">250</span></div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Ganancia mensual</div>
+            <div class="result-value">Q<span id="monthlyProfit">7,500</span></div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Recuperas inversión</div>
+            <div class="result-value" style="color: var(--primary);"><span id="daysBreakeven">5</span> días</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-up">📸 Galería de Producto</h2>
+      <div class="swiper mySwiper" data-aos="zoom-in">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide"><img src="https://d2j6dbq0eux0bg.cloudfront.net/images/42285054/4591850846.jpg" alt="Máquina mini panqueques 1"></div>
+          <div class="swiper-slide"><img src="https://d2j6dbq0eux0bg.cloudfront.net/images/42285054/4610858367.jpg" alt="Máquina mini panqueques 2"></div>
+          <div class="swiper-slide"><img src="https://d2j6dbq0eux0bg.cloudfront.net/images/42285054/4591850844.jpg" alt="Máquina mini panqueques 3"></div>
+        </div>
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background: var(--gray-100);">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-up">⭐ Lo que dicen nuestros clientes</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial" data-aos="flip-left" data-aos-delay="100">
+          <i class="fas fa-quote-right quote-icon"></i>
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"La máquina es súper fácil de usar, la persona que me atendió por WhatsApp súper amable y resolvió todas mis dudas. ¡Los recomiendo totalmente!"</p>
+          <div class="author">
+            <div class="author-avatar">JR</div>
+            <div>
+              <div class="author-name">Jennifer R.</div>
+              <div class="author-location">Villa Canales, Guatemala</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial" data-aos="flip-left" data-aos-delay="200">
+          <i class="fas fa-quote-right quote-icon"></i>
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"Compré la máquina hace 2 meses y ya recuperé la inversión. Los mini panqueques se venden como pan caliente en las ferias."</p>
+          <div class="author">
+            <div class="author-avatar">CM</div>
+            <div>
+              <div class="author-name">Carlos Méndez</div>
+              <div class="author-location">Emprendedor, Antigua</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial" data-aos="flip-left" data-aos-delay="300">
+          <i class="fas fa-quote-right quote-icon"></i>
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"La mejor compra para mi cafetería. Agregué mini panqueques al menú y mis ventas subieron 30%. La máquina es muy resistente."</p>
+          <div class="author">
+            <div class="author-avatar">AG</div>
+            <div>
+              <div class="author-name">Ana García</div>
+              <div class="author-location">Coffee & Co.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="final-cta" data-aos="zoom-in">
+    <div class="container">
+      <h2 style="font-size:clamp(32px, 5vw, 48px); font-weight:800; margin-bottom:20px;">🎁 Oferta especial por tiempo limitado</h2>
+      <div style="display:inline-block; background:rgba(255,255,255,0.2); padding:15px 35px; border-radius:50px; margin-bottom:30px; font-size:18px; font-weight:600;">
+        Quedan solo <strong style="font-size:24px;">4 unidades</strong> en stock
+      </div>
+      <div class="price-box">
+        <div class="price-old">Precio regular: Q1,575</div>
+        <div class="price-current">Q1,200</div>
+        <div class="savings"><strong>Ahorras Q375</strong> (24% de descuento)</div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:20px; max-width:800px; margin:40px auto; font-size:18px;">
+        <div><i class="fas fa-shipping-fast"></i> Envío gratis</div>
+        <div><i class="fas fa-money-bill-wave"></i> Pago contra entrega</div>
+        <div><i class="fas fa-shield-alt"></i> Garantía 1 año</div>
+      </div>
+      <a href="https://minimakersgt.com/products/maquina-industrial-25-mini-panqueques" class="cta-button">Comprar Ahora →</a>
+      <p style="margin-top:30px; font-size:16px; opacity:0.9;">✓ Procesamos tu pedido en 24 horas | ✓ Soporte por WhatsApp</p>
+    </div>
+  </section>
+
+  <a href="https://wa.me/50231695584?text=Hola,%20quiero%20info%20sobre%20la%20m%C3%A1quina%2025%20mini%20panqueques" class="whatsapp-float" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    AOS.init({ duration: 800, easing: 'ease-in-out', once: true, offset: 50 });
+    const lightbox = GLightbox({ touchNavigation: true, loop: true, autoplayVideos: true });
+    const swiper = new Swiper('.mySwiper', {
+      slidesPerView: 1, spaceBetween: 0, loop: true,
+      autoplay: { delay: 3000, disableOnInteraction: false },
+      pagination: { el: '.swiper-pagination', clickable: true },
+      navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
+    });
+    const countDownDate = new Date().getTime() + (3 * 24 * 60 * 60 * 1000);
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = countDownDate - now;
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      document.getElementById('days').textContent = days.toString().padStart(2, '0');
+      document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+      document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+      document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+      if (distance < 0) clearInterval(timer);
+    }, 1000);
+    const sellPriceInput = document.getElementById('sellPrice');
+    const sellPriceSlider = document.getElementById('sellPriceSlider');
+    const portionsInput = document.getElementById('portions');
+    const portionsSlider = document.getElementById('portionsSlider');
+    function calculate() {
+      const sellPrice = parseInt(sellPriceInput.value);
+      const portions = parseInt(portionsInput.value);
+      const costPerPortion = 5;
+      const machinePrice = 1200;
+      const profitPerPortion = sellPrice - costPerPortion;
+      const dailyProfit = profitPerPortion * portions;
+      const monthlyProfit = dailyProfit * 30;
+      const daysToBreakEven = Math.ceil(machinePrice / dailyProfit);
+      document.getElementById('dailyProfit').textContent = dailyProfit.toLocaleString();
+      document.getElementById('monthlyProfit').textContent = monthlyProfit.toLocaleString();
+      document.getElementById('daysBreakeven').textContent = daysToBreakEven;
+    }
+    sellPriceInput.addEventListener('input', (e) => { sellPriceSlider.value = e.target.value; calculate(); });
+    sellPriceSlider.addEventListener('input', (e) => { sellPriceInput.value = e.target.value; calculate(); });
+    portionsInput.addEventListener('input', (e) => { portionsSlider.value = e.target.value; calculate(); });
+    portionsSlider.addEventListener('input', (e) => { portionsInput.value = e.target.value; calculate(); });
+    calculate();
+  </script>
+</body>
+</html>
