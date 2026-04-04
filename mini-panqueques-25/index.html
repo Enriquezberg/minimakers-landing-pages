@@ -321,7 +321,7 @@
           <div class="input-row">
             <div class="input-wrapper">
               <span class="currency-prefix">Q</span>
-              <input type="number" id="sellPrice" class="input-field" value="10" min="5" max="50">
+              <input type="text" id="sellPrice" class="input-field" value="10.00" inputmode="decimal">
             </div>
             <input type="range" id="sellPriceSlider" class="slider" value="10" min="5" max="50">
           </div>
@@ -615,13 +615,19 @@
     const po = document.getElementById('portions');
     const poS = document.getElementById('portionsSlider');
     function calc() {
-      const profit = (parseInt(sp.value) - 5) * parseInt(po.value);
-      document.getElementById('dailyProfit').textContent   = profit.toLocaleString('es-GT');
-      document.getElementById('monthlyProfit').textContent = (profit * 30).toLocaleString('es-GT');
+      const price  = parseFloat(sp.value) || 0;
+      const parts  = parseInt(po.value)   || 0;
+      const profit = (price - 5) * parts;
+      if (profit <= 0) return;
+      document.getElementById('dailyProfit').textContent   = profit.toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('monthlyProfit').textContent = (profit * 30).toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       document.getElementById('daysBreakeven').textContent = Math.ceil(1200 / profit);
     }
-    sp.addEventListener('input',  e => { spS.value = e.target.value; calc(); });
-    spS.addEventListener('input', e => { sp.value  = e.target.value; calc(); });
+    // Precio: slider → formatea con .00; texto → sync slider
+    sp.addEventListener('blur',  () => { sp.value = (parseFloat(sp.value) || 10).toFixed(2); calc(); });
+    sp.addEventListener('input', () => { spS.value = parseFloat(sp.value) || 10; calc(); });
+    spS.addEventListener('input', e => { sp.value = parseFloat(e.target.value).toFixed(2); calc(); });
+    // Porciones
     po.addEventListener('input',  e => { poS.value = e.target.value; calc(); });
     poS.addEventListener('input', e => { po.value  = e.target.value; calc(); });
     calc();
