@@ -102,9 +102,9 @@
     .calculator-box { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); padding: 40px; border-radius: 20px; max-width: 800px; margin: 0 auto; }
     .input-label { display: block; font-weight: 600; margin-bottom: 8px; color: rgba(255,255,255,.75); font-size: 14px; text-transform: uppercase; letter-spacing: .5px; }
     .input-row { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
-    .input-wrapper { display: flex; align-items: center; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); border-radius: 10px; overflow: hidden; width: 160px; flex-shrink: 0; }
-    .currency-prefix { padding: 0 4px 0 16px; font-size: 20px; font-weight: 800; color: var(--yellow); line-height: 1; }
-    .input-field { width: 110px; padding: 14px 12px; font-size: 24px; background: transparent; border: none; font-weight: 700; color: #fff; text-align: left; font-family: 'DM Sans', sans-serif; outline: none; }
+    .input-wrapper { display: flex; align-items: center; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); border-radius: 10px; overflow: hidden; width: 160px; height: 58px; flex-shrink: 0; }
+    .currency-prefix { padding: 0 4px 0 16px; font-size: 20px; font-weight: 800; color: var(--yellow); line-height: 1; flex-shrink: 0; }
+    .input-field { flex: 1; width: 100%; height: 100%; padding: 0 12px; font-size: 24px; background: transparent; border: none; font-weight: 700; color: #fff; text-align: left; font-family: 'DM Sans', sans-serif; outline: none; line-height: 58px; }
     .input-field::-webkit-inner-spin-button, .input-field::-webkit-outer-spin-button { display: none; }
     .slider { flex: 1; height: 5px; cursor: pointer; accent-color: var(--yellow); }
     .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 14px; margin-top: 32px; }
@@ -323,14 +323,14 @@
               <span class="currency-prefix">Q</span>
               <input type="text" id="sellPrice" class="input-field" value="10.00" inputmode="decimal">
             </div>
-            <input type="range" id="sellPriceSlider" class="slider" value="10" min="5" max="50">
+            <input type="range" id="sellPriceSlider" class="slider" value="10" min="5" max="20">
           </div>
         </div>
         <div>
           <label class="input-label">Porciones vendidas por día</label>
           <div class="input-row">
-            <input type="number" id="portions" class="input-field" value="50" min="10" max="500" step="10" style="width:160px; padding:14px 16px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); border-radius:10px; font-size:24px; font-weight:700; color:#fff; text-align:left; font-family:'DM Sans',sans-serif; outline:none; -webkit-appearance:none; appearance:none;">
-            <input type="range" id="portionsSlider" class="slider" value="50" min="10" max="500" step="10">
+            <input type="number" id="portions" class="input-field" value="20" min="5" max="60" step="5" style="width:160px; height:58px; padding:0 16px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); border-radius:10px; font-size:24px; font-weight:700; color:#fff; text-align:left; font-family:'DM Sans',sans-serif; outline:none; -webkit-appearance:none; appearance:none; line-height:58px;">
+            <input type="range" id="portionsSlider" class="slider" value="20" min="5" max="60" step="5">
           </div>
         </div>
         <div class="results-grid">
@@ -624,7 +624,7 @@
       document.getElementById('daysBreakeven').textContent = Math.ceil(1200 / profit);
     }
     // Precio: slider → formatea con .00; texto → sync slider
-    sp.addEventListener('blur',  () => { sp.value = (parseFloat(sp.value) || 10).toFixed(2); calc(); });
+    sp.addEventListener('blur',  () => { const v = Math.min(20, Math.max(5, parseFloat(sp.value) || 10)); sp.value = v.toFixed(2); spS.value = v; calc(); });
     sp.addEventListener('input', () => { spS.value = parseFloat(sp.value) || 10; calc(); });
     spS.addEventListener('input', e => { sp.value = parseFloat(e.target.value).toFixed(2); calc(); });
     // Porciones
