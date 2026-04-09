@@ -1,148 +1,183 @@
 /**
- * Cloudflare Worker — QPay Pro Checkout Proxy
+ * Cloudflare Worker — MiniMakers Checkout + Webhook Handler
  *
- * This worker receives customer data from the landing page,
- * calls the QPay Pro API to generate a payment token,
- * and returns the redirect URL to the hosted payment page.
+ * ROUTES:
+ *   POST /              → Create Recurrente checkout (from landing page)
+ *   POST /webhook       → Receive Recurrente payment notifications
  *
  * SETUP:
- * 1. Go to https://dash.cloudflare.com → Workers & Pages → Create
- * 2. Name it: qpaypro-checkout
- * 3. Paste this code
- * 4. Go to Settings → Variables → Add:
- *    - QPAY_LOGIN    → your QPay Pro x_login (provided by QPay Pro)
- *    - QPAY_API_KEY  → your QPay Pro x_api_key (provided by QPay Pro)
- * 5. Update ALLOWED_ORIGIN below with your GitHub Pages URL
- * 6. Update WORKER_URL in your landing page index.html
- *
- * TEST (sandbox):
- *   Set QPAY_LOGIN = "visanetgt_qpay" and QPAY_API_KEY = "88888888888"
- *   Set USE_SANDBOX = true below
+ * 1. Variables (Settings → Variables → Add as Secret):
+ *    - REC_PUBLIC_KEY   → Recurrente public key (pk_live_...)
+ *    - REC_SECRET_KEY   → Recurrente secret key (sk_live_...)
+ *    - NOTIFY_EMAIL     → Your email for order notifications (optional)
+ *    - GOOGLE_SHEETS_URL → Google Apps Script URL for CRM (optional)
  */
 
-const USE_SANDBOX = false; // Set to true for testing
-
-const QPAY_API_URL = USE_SANDBOX
-  ? 'https://sandboxpayments.qpaypro.com/checkout/register_transaction_store'
-  : 'https://payments.qpaypro.com/checkout/register_transaction_store';
-
-const QPAY_CHECKOUT_URL = USE_SANDBOX
-  ? 'https://sandboxpayments.qpaypro.com/checkout/store'
-  : 'https://payments.qpaypro.com/checkout/store';
-
 const ALLOWED_ORIGIN = 'https://enriquezberg.github.io';
-
-// Landing page URL for cancel redirect
 const LANDING_URL = 'https://enriquezberg.github.io/minimakers-landing-pages/mini-panqueques-25/';
+const WHATSAPP_NUM = '50231695584';
 
-// Product details
 const PRODUCT = {
-  name: 'Máquina Industrial 25 Mini Panqueques',
-  sku: 'MM-25-PANQUEQUES',
-  price: '1200.00',
-  currency: 'GTQ',
-  taxes: '0.00',
-  freight: '0.00'
+  name: 'Maquina Industrial 25 Mini Panqueques',
+  price_cents: 120000,
+  price_display: 'Q1,200',
+  currency: 'GTQ'
 };
 
 export default {
   async fetch(request, env) {
+    const url = new URL(request.url);
+
     // CORS preflight
     if (request.method === 'OPTIONS') {
-      return new Response(null, {
-        headers: corsHeaders()
-      });
+      return new Response(null, { headers: corsHeaders() });
     }
 
-    if (request.method !== 'POST') {
-      return jsonResponse({ error: 'Method not allowed' }, 405);
+    // Route: Webhook from Recurrente
+    if (url.pathname === '/webhook' && request.method === 'POST') {
+      return handleWebhook(request, env);
     }
 
-    try {
-      const data = await request.json();
-
-      // Validate required fields
-      const required = ['first_name', 'last_name', 'email', 'phone', 'address', 'city', 'state'];
-      for (const field of required) {
-        if (!data[field] || !data[field].trim()) {
-          return jsonResponse({ error: `Campo requerido: ${field}` }, 400);
-        }
-      }
-
-      // Generate unique order number
-      const orderNum = 'MM-' + Date.now().toString(36).toUpperCase();
-
-      // Build QPay Pro payload
-      const qpayPayload = {
-        x_login: env.QPAY_LOGIN,
-        x_api_key: env.QPAY_API_KEY,
-        x_amount: PRODUCT.price,
-        x_currency_code: PRODUCT.currency,
-        x_first_name: data.first_name.trim(),
-        x_last_name: data.last_name.trim(),
-        x_phone: data.phone.trim(),
-        x_ship_to_address: data.address.trim(),
-        x_ship_to_city: data.city.trim(),
-        x_ship_to_country: 'Guatemala',
-        x_ship_to_state: data.state || '0',
-        x_ship_to_zip: data.zip || '01010',
-        x_ship_to_phone: data.phone.trim(),
-        x_description: `Pedido ${orderNum} - ${PRODUCT.name}`,
-        x_reference: orderNum,
-        x_url_cancel: LANDING_URL,
-        x_company: data.nit || 'C/F',
-        x_address: data.address.trim(),
-        x_city: data.city.trim(),
-        x_country: 'Guatemala',
-        x_state: data.state || '0',
-        x_zip: data.zip || '01010',
-        products: JSON.stringify([[PRODUCT.name, PRODUCT.sku, '', '1', PRODUCT.price, PRODUCT.price]]),
-        x_freight: PRODUCT.freight,
-        taxes: PRODUCT.taxes,
-        x_email: data.email.trim(),
-        x_type: 'AUTH_ONLY',
-        x_method: 'CC',
-        x_invoice_num: orderNum,
-        custom_fields: JSON.stringify({
-          source: 'landing-page',
-          order_id: orderNum
-        }),
-        x_visacuotas: 'si',
-        x_relay_url: LANDING_URL + '?payment=success',
-        http_origin: 'enriquezberg.github.io',
-        origen: 'PLUGIN',
-        store_type: 'hostedpage',
-        x_discount: '0'
-      };
-
-      // Call QPay Pro API
-      const qpayResponse = await fetch(QPAY_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(qpayPayload)
-      });
-
-      const qpayData = await qpayResponse.json();
-
-      if (qpayData.estado === 'success' && qpayData.data && qpayData.data.token) {
-        const redirectUrl = `${QPAY_CHECKOUT_URL}?token=${qpayData.data.token}`;
-        return jsonResponse({ redirect_url: redirectUrl, order_id: orderNum });
-      } else {
-        console.error('QPay Pro error:', JSON.stringify(qpayData));
-        return jsonResponse({
-          error: 'Error al generar el enlace de pago. Por favor intenta de nuevo o contáctanos por WhatsApp.'
-        }, 502);
-      }
-
-    } catch (err) {
-      console.error('Worker error:', err.message);
-      return jsonResponse({
-        error: 'Error interno. Por favor intenta de nuevo.'
-      }, 500);
+    // Route: Create checkout from landing page
+    if (request.method === 'POST') {
+      return handleCheckout(request, env);
     }
+
+    return jsonResponse({ error: 'Method not allowed' }, 405);
   }
 };
 
+// ── Create Recurrente Checkout ──────────────────
+async function handleCheckout(request, env) {
+  try {
+    const data = await request.json();
+
+    const required = ['first_name', 'last_name', 'email', 'phone', 'address', 'city', 'state'];
+    for (const field of required) {
+      if (!data[field] || !data[field].trim()) {
+        return jsonResponse({ error: 'Campo requerido: ' + field }, 400);
+      }
+    }
+
+    const orderNum = 'MM-' + Date.now().toString(36).toUpperCase();
+
+    const checkoutPayload = {
+      items: [{
+        name: PRODUCT.name,
+        amount_in_cents: PRODUCT.price_cents,
+        currency: PRODUCT.currency,
+        quantity: 1
+      }],
+      success_url: LANDING_URL + 'gracias.html?payment=success&order=' + orderNum,
+      cancel_url: LANDING_URL + '?payment=cancelled',
+      metadata: {
+        order_id: orderNum,
+        customer_name: data.first_name.trim() + ' ' + data.last_name.trim(),
+        email: data.email.trim(),
+        phone: data.phone.trim(),
+        address: data.address.trim() + ', ' + data.city.trim() + ', ' + data.state,
+        zip: data.zip || '01010',
+        nit: data.nit || 'C/F',
+        source: 'landing-page'
+      }
+    };
+
+    const recResponse = await fetch('https://app.recurrente.com/api/checkouts', {
+      method: 'POST',
+      headers: {
+        'X-PUBLIC-KEY': env.REC_PUBLIC_KEY,
+        'X-SECRET-KEY': env.REC_SECRET_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(checkoutPayload)
+    });
+
+    const recData = await recResponse.json();
+
+    if (recData.checkout_url) {
+      // Also save order data to Google Sheets if configured
+      if (env.GOOGLE_SHEETS_URL) {
+        saveToSheets(env.GOOGLE_SHEETS_URL, {
+          order_id: orderNum,
+          date: new Date().toISOString(),
+          name: data.first_name.trim() + ' ' + data.last_name.trim(),
+          email: data.email.trim(),
+          phone: data.phone.trim(),
+          address: data.address.trim() + ', ' + data.city.trim() + ', ' + data.state + ' ' + (data.zip || '01010'),
+          nit: data.nit || 'C/F',
+          method: 'card',
+          amount: PRODUCT.price_display,
+          status: 'pending'
+        }).catch(function() {});
+      }
+
+      return jsonResponse({ redirect_url: recData.checkout_url, order_id: orderNum });
+    } else {
+      return jsonResponse({
+        error: 'Error Recurrente: ' + JSON.stringify(recData),
+        debug: true
+      }, 502);
+    }
+
+  } catch (err) {
+    console.error('Worker error:', err.message);
+    return jsonResponse({ error: 'Error interno. Por favor intenta de nuevo.' }, 500);
+  }
+}
+
+// ── Handle Recurrente Webhook ───────────────────
+async function handleWebhook(request, env) {
+  try {
+    const payload = await request.json();
+    const eventType = payload.event_type || '';
+
+    // Only process successful payments
+    if (eventType === 'payment_intent.succeeded') {
+      const customer = payload.customer || {};
+      const checkout = payload.checkout || {};
+      const metadata = checkout.metadata || {};
+      const amount = (payload.amount_in_cents || 0) / 100;
+
+      // Update Google Sheets order status
+      if (env.GOOGLE_SHEETS_URL && metadata.order_id) {
+        saveToSheets(env.GOOGLE_SHEETS_URL, {
+          order_id: metadata.order_id,
+          date: payload.created_at || new Date().toISOString(),
+          name: metadata.customer_name || customer.full_name || '',
+          email: metadata.email || customer.email || '',
+          phone: metadata.phone || '',
+          address: metadata.address || '',
+          nit: metadata.nit || 'C/F',
+          method: 'card',
+          amount: 'Q' + amount.toFixed(2),
+          status: 'paid',
+          recurrente_id: payload.id || ''
+        }).catch(function() {});
+      }
+
+      // Send WhatsApp notification to owner
+      console.log('Payment succeeded:', metadata.order_id, customer.email, 'Q' + amount);
+    }
+
+    // Always return 200 to acknowledge receipt
+    return new Response('OK', { status: 200 });
+
+  } catch (err) {
+    console.error('Webhook error:', err.message);
+    return new Response('Error', { status: 500 });
+  }
+}
+
+// ── Save to Google Sheets via Apps Script ───────
+async function saveToSheets(url, data) {
+  return fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+}
+
+// ── CORS ────────────────────────────────────────
 function corsHeaders() {
   return {
     'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
@@ -155,9 +190,12 @@ function corsHeaders() {
 function jsonResponse(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: {
-      'Content-Type': 'application/json',
-      ...corsHeaders()
-    }
+    headers: { 'Content-Type': 'application/json', ...corsHeaders() }
   });
 }
+
+// Version 3.0 — 2026-04-09
+// - Recurrente checkout with redirect to gracias.html
+// - Webhook handler at /webhook for payment_intent.succeeded
+// - Google Sheets CRM integration (optional)
+// - Order tracking with status updates

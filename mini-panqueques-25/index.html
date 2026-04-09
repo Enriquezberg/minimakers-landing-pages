@@ -1344,17 +1344,20 @@
         };
 
         if (selectedMethod === 'cash') {
+          var orderNum = 'MM-' + Date.now().toString(36).toUpperCase();
           var msg = '¡Hola! Quiero comprar la Máquina Industrial 25 Mini Panqueques (Q1,200) con pago contra entrega.\n\n';
+          msg += 'Pedido: ' + orderNum + '\n';
           msg += 'Nombre: ' + payload.first_name + ' ' + payload.last_name + '\n';
           msg += 'Tel: ' + payload.phone + '\n';
           msg += 'Email: ' + payload.email + '\n';
           msg += 'Dirección: ' + payload.address + ', ' + payload.city + ', ' + payload.state + ' ' + payload.zip + '\n';
           msg += 'NIT: ' + payload.nit;
           window.open('https://wa.me/' + WHATSAPP_NUM + '?text=' + encodeURIComponent(msg), '_blank');
+          window.location.href = 'gracias.html?method=cash&order=' + orderNum;
           return;
         }
 
-        // Card payment → QPay Pro
+        // Card payment → Recurrente
         submitBtn.disabled = true;
         submitBtn.classList.add('loading');
         errorMsg.classList.remove('visible');
