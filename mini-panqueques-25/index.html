@@ -316,23 +316,51 @@
     /* ── PAYMENT METHOD STEP ──────────────────── */
     .checkout-step { display: none; }
     .checkout-step.active { display: block; }
-    .payment-methods { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
-    .payment-method-card { border: 2px solid #e5e7eb; border-radius: 14px; padding: 20px; cursor: pointer; transition: all .2s; display: flex; align-items: flex-start; gap: 16px; position: relative; }
-    .payment-method-card:hover { border-color: var(--yellow); background: #fffbeb; }
-    .payment-method-card.selected { border-color: var(--yellow); background: #fffbeb; box-shadow: 0 0 0 2px var(--yellow); }
-    .payment-method-radio { width: 22px; height: 22px; border: 2px solid #d1d5db; border-radius: 50%; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+    .step-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .step-header h3 { font-size: 18px; font-weight: 800; color: var(--navy); margin: 0; }
+    .step-indicator { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gray-6); font-weight: 600; }
+    .step-dot { width: 8px; height: 8px; border-radius: 50%; background: #d1d5db; }
+    .step-dot.active { background: var(--yellow); }
+    .step-dot.done { background: var(--success); }
+    .payment-methods { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .payment-method-card { border: 2px solid #e5e7eb; border-radius: 16px; padding: 0; cursor: pointer; transition: all .25s; position: relative; overflow: hidden; }
+    .payment-method-card:hover { border-color: #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,.06); }
+    .payment-method-card.selected { border-color: var(--yellow); box-shadow: 0 0 0 2px var(--yellow), 0 4px 16px rgba(234,179,8,.15); }
+    .pm-top { display: flex; align-items: center; gap: 14px; padding: 18px 20px; }
+    .payment-method-radio { width: 22px; height: 22px; border: 2px solid #d1d5db; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .2s; }
     .payment-method-card.selected .payment-method-radio { border-color: var(--yellow-dark); background: var(--yellow); }
     .payment-method-card.selected .payment-method-radio::after { content: ''; width: 8px; height: 8px; background: var(--navy); border-radius: 50%; }
     .payment-method-info { flex: 1; }
-    .payment-method-title { font-weight: 800; font-size: 16px; color: var(--navy); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-    .payment-method-title i { font-size: 18px; color: var(--yellow-dark); }
-    .payment-method-desc { font-size: 13px; color: var(--gray-6); line-height: 1.5; }
-    .payment-method-badge { display: inline-block; background: var(--success); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-top: 8px; }
-    .payment-method-badge.popular { background: var(--yellow-dark); color: var(--navy); }
-    .checkout-back { background: none; border: none; color: var(--gray-6); font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-bottom: 18px; padding: 0; font-family: 'DM Sans', sans-serif; }
+    .payment-method-title { font-weight: 800; font-size: 15px; color: var(--navy); margin-bottom: 2px; display: flex; align-items: center; gap: 8px; }
+    .payment-method-desc { font-size: 13px; color: var(--gray-6); line-height: 1.4; }
+    .pm-icons { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .pm-icons i { font-size: 28px; }
+    .pm-icons .fa-cc-visa { color: #1a1f71; }
+    .pm-icons .fa-cc-mastercard { color: #eb001b; }
+    .pm-badge-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+    .payment-method-badge { display: inline-flex; align-items: center; gap: 4px; background: #ecfdf5; color: #059669; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+    .payment-method-badge i { font-size: 10px; }
+    .payment-method-badge.popular { background: #fef3c7; color: #b45309; }
+    .pm-detail { background: #f8fafc; border-top: 1px solid #e5e7eb; padding: 14px 20px; }
+    .payment-method-card.selected .pm-detail { background: #fffbeb; border-top-color: #fde68a; }
+    .cuotas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .cuota-option { background: #fff; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 10px 14px; text-align: center; transition: all .2s; }
+    .payment-method-card.selected .cuota-option { border-color: #fde68a; }
+    .cuota-option .cuota-label { font-size: 11px; color: var(--gray-6); font-weight: 600; text-transform: uppercase; letter-spacing: .3px; }
+    .cuota-option .cuota-value { font-size: 18px; font-weight: 900; color: var(--navy); margin-top: 2px; }
+    .cuota-option .cuota-sub { font-size: 11px; color: var(--gray-6); }
+    .cuota-option.featured { background: var(--navy); border-color: var(--navy); }
+    .cuota-option.featured .cuota-label { color: rgba(255,255,255,.6); }
+    .cuota-option.featured .cuota-value { color: var(--yellow); }
+    .cuota-option.featured .cuota-sub { color: rgba(255,255,255,.5); }
+    .pm-powered { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 10px; font-size: 11px; color: #94a3b8; }
+    .pm-powered-logo { font-weight: 800; color: #6366f1; }
+    .pm-cash-perks { display: flex; flex-direction: column; gap: 8px; }
+    .pm-perk { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--navy); }
+    .pm-perk i { width: 28px; height: 28px; background: #ecfdf5; color: #059669; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+    .checkout-back { background: none; border: none; color: var(--gray-6); font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; padding: 0; font-family: 'DM Sans', sans-serif; }
     .checkout-back:hover { color: var(--navy); }
-    .cuotas-highlight { background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 2px solid var(--yellow); border-radius: 12px; padding: 14px 18px; margin-top: 10px; font-size: 13px; color: var(--navy); line-height: 1.5; }
-    .cuotas-highlight strong { color: var(--yellow-dark); }
+    .checkout-divider { height: 1px; background: #e5e7eb; margin: 16px 0; }
 
     @media (max-width: 520px) {
       .checkout-modal { border-radius: 16px 16px 0 0; max-height: 95vh; margin-top: auto; }
@@ -910,24 +938,71 @@
 
          <div class="checkout-step" id="stepPayment">
           <button type="button" class="checkout-back" id="backToForm"><i class="fas fa-arrow-left"></i> Volver a datos de envío</button>
-          <h3 style="font-size:18px; font-weight:800; color:var(--navy); margin-bottom:16px;">Elige tu método de pago</h3>
+          <div class="step-header">
+            <h3>Método de pago</h3>
+            <div class="step-indicator">
+              <span class="step-dot done"></span>
+              <span class="step-dot active"></span>
+              Paso 2 de 2
+            </div>
+          </div>
           <div class="payment-methods">
             <div class="payment-method-card" data-method="cash">
-              <div class="payment-method-radio"></div>
-              <div class="payment-method-info">
-                <div class="payment-method-title"><i class="fas fa-hand-holding-usd"></i> Pago contra entrega</div>
-                <div class="payment-method-desc">Pagas en efectivo cuando recibas tu máquina en la puerta de tu casa. Sin cargos adicionales.</div>
-                <span class="payment-method-badge">Envío gratis</span>
+              <div class="pm-top">
+                <div class="payment-method-radio"></div>
+                <div class="payment-method-info">
+                  <div class="payment-method-title">Pago contra entrega</div>
+                  <div class="payment-method-desc">Pagas al recibir tu pedido</div>
+                  <div class="pm-badge-row">
+                    <span class="payment-method-badge"><i class="fas fa-check"></i> Envío gratis</span>
+                    <span class="payment-method-badge popular"><i class="fas fa-star"></i> Más popular</span>
+                  </div>
+                </div>
+              </div>
+              <div class="pm-detail">
+                <div class="pm-cash-perks">
+                  <div class="pm-perk"><i class="fas fa-truck"></i> <span>Entrega en <strong>24–48 horas</strong> a toda Guatemala</span></div>
+                  <div class="pm-perk"><i class="fas fa-money-bill-wave"></i> <span>Pagas en <strong>efectivo</strong> al recibir en tu puerta</span></div>
+                  <div class="pm-perk"><i class="fas fa-shield-alt"></i> <span>Sin cargos adicionales — el precio final es <strong>Q1,200</strong></span></div>
+                </div>
               </div>
             </div>
             <div class="payment-method-card" data-method="card">
-              <div class="payment-method-radio"></div>
-              <div class="payment-method-info">
-                <div class="payment-method-title"><i class="fas fa-credit-card"></i> Tarjeta de crédito o débito</div>
-                <div class="payment-method-desc">Visa o Mastercard. Paga de contado o en cuotas.</div>
-                <div class="cuotas-highlight">
-                  <strong>Hasta 12 cuotas sin recargo</strong> — desde Q100/mes
+              <div class="pm-top">
+                <div class="payment-method-radio"></div>
+                <div class="payment-method-info">
+                  <div class="payment-method-title">Tarjeta de crédito o débito</div>
+                  <div class="payment-method-desc">De contado o hasta 12 cuotas sin recargo</div>
                 </div>
+                <div class="pm-icons">
+                  <i class="fab fa-cc-visa"></i>
+                  <i class="fab fa-cc-mastercard"></i>
+                </div>
+              </div>
+              <div class="pm-detail">
+                <div class="cuotas-grid">
+                  <div class="cuota-option">
+                    <div class="cuota-label">De contado</div>
+                    <div class="cuota-value">Q1,200</div>
+                    <div class="cuota-sub">Pago único</div>
+                  </div>
+                  <div class="cuota-option">
+                    <div class="cuota-label">3 cuotas</div>
+                    <div class="cuota-value">Q400</div>
+                    <div class="cuota-sub">/mes sin recargo</div>
+                  </div>
+                  <div class="cuota-option">
+                    <div class="cuota-label">6 cuotas</div>
+                    <div class="cuota-value">Q200</div>
+                    <div class="cuota-sub">/mes sin recargo</div>
+                  </div>
+                  <div class="cuota-option featured">
+                    <div class="cuota-label">12 cuotas</div>
+                    <div class="cuota-value">Q100</div>
+                    <div class="cuota-sub">/mes sin recargo</div>
+                  </div>
+                </div>
+                <div class="pm-powered"><i class="fas fa-lock" style="font-size:10px;"></i> Pago seguro con <span class="pm-powered-logo">Recurrente</span></div>
               </div>
             </div>
           </div>
