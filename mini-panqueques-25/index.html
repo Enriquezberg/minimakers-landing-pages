@@ -1344,14 +1344,16 @@
         };
 
         if (selectedMethod === 'cash') {
-          var orderNum = 'MM-' + Date.now().toString(36).toUpperCase();
+          var refNum = 'MM-' + Date.now().toString(36).toUpperCase();
+          submitBtn.disabled = true;
+          submitBtn.classList.add('loading');
 
-          // Save cash order to CRM via Worker
+          // Save cash order to CRM via Worker — wait for AB order number
           fetch(WORKER_URL + '/cash', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              order_id: orderNum,
+              order_id: refNum,
               first_name: payload.first_name,
               last_name: payload.last_name,
               email: payload.email,
@@ -1362,17 +1364,24 @@
               zip: payload.zip,
               nit: payload.nit
             })
-          }).catch(function() {});
-
-          var msg = '¡Hola! Quiero comprar la Máquina Industrial 25 Mini Panqueques (Q1,200) con pago contra entrega.\n\n';
-          msg += 'Pedido: ' + orderNum + '\n';
-          msg += 'Nombre: ' + payload.first_name + ' ' + payload.last_name + '\n';
-          msg += 'Tel: ' + payload.phone + '\n';
-          msg += 'Email: ' + payload.email + '\n';
-          msg += 'Dirección: ' + payload.address + ', ' + payload.city + ', ' + payload.state + ' ' + payload.zip + '\n';
-          msg += 'NIT: ' + payload.nit;
-          window.open('https://wa.me/' + WHATSAPP_NUM + '?text=' + encodeURIComponent(msg), '_blank');
-          window.location.href = 'gracias.html?method=cash&order=' + orderNum;
+          })
+          .then(function(res) { return res.json(); })
+          .then(function(data) {
+            var displayOrder = data.order_id || refNum;
+            var msg = '¡Hola! Quiero comprar la Máquina Industrial 25 Mini Panqueques (Q1,200) con pago contra entrega.\n\n';
+            msg += 'Pedido: ' + displayOrder + '\n';
+            msg += 'Nombre: ' + payload.first_name + ' ' + payload.last_name + '\n';
+            msg += 'Tel: ' + payload.phone + '\n';
+            msg += 'Email: ' + payload.email + '\n';
+            msg += 'Dirección: ' + payload.address + ', ' + payload.city + ', ' + payload.state + ' ' + payload.zip + '\n';
+            msg += 'NIT: ' + payload.nit;
+            window.open('https://wa.me/' + WHATSAPP_NUM + '?text=' + encodeURIComponent(msg), '_blank');
+            window.location.href = 'gracias.html?method=cash&order=' + displayOrder;
+          })
+          .catch(function() {
+            // Fallback: redirect even if CRM fails
+            window.location.href = 'gracias.html?method=cash&order=' + refNum;
+          });
           return;
         }
 

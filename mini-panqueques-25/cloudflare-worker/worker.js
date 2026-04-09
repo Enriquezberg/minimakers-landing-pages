@@ -119,9 +119,9 @@ async function handleCheckout(request, env) {
 
       return jsonResponse({ redirect_url: recData.checkout_url, order_id: orderNum });
     } else {
+      console.error('Recurrente error:', JSON.stringify(recData));
       return jsonResponse({
-        error: 'Error Recurrente: ' + JSON.stringify(recData),
-        debug: true
+        error: 'Error al procesar el pago. Por favor intenta de nuevo o elige pago contra entrega.'
       }, 502);
     }
 
@@ -135,25 +135,30 @@ async function handleCheckout(request, env) {
 async function handleCashOrder(request, env) {
   try {
     const data = await request.json();
-    const orderNum = data.order_id || 'MM-' + Date.now().toString(36).toUpperCase();
+    const refNum = data.order_id || 'MM-' + Date.now().toString(36).toUpperCase();
+    var displayOrder = refNum;
 
     if (env.CRM_URL && env.CRM_SECRET) {
-      await saveToCRM(env.CRM_URL, env.CRM_SECRET, {
-        order_id: orderNum,
-        action: 'create',
-        date: new Date().toISOString(),
-        name: (data.first_name || '').trim() + ' ' + (data.last_name || '').trim(),
-        email: (data.email || '').trim(),
-        phone: (data.phone || '').trim(),
-        address: (data.address || '').trim() + ', ' + (data.city || '').trim() + ', ' + (data.state || '') + ' ' + (data.zip || '01010'),
-        department: data.state || '',
-        nit: data.nit || 'C/F',
-        method: 'cash',
-        product_name: PRODUCT.name
-      });
+      try {
+        var crmResp = await saveToCRM(env.CRM_URL, env.CRM_SECRET, {
+          order_id: refNum,
+          action: 'create',
+          date: new Date().toISOString(),
+          name: (data.first_name || '').trim() + ' ' + (data.last_name || '').trim(),
+          email: (data.email || '').trim(),
+          phone: (data.phone || '').trim(),
+          address: (data.address || '').trim() + ', ' + (data.city || '').trim() + ', ' + (data.state || '') + ' ' + (data.zip || '01010'),
+          department: data.state || '',
+          nit: data.nit || 'C/F',
+          method: 'cash',
+          product_name: PRODUCT.name
+        });
+        var crmData = await crmResp.json();
+        if (crmData.order_id) displayOrder = crmData.order_id;
+      } catch(e) { console.error('CRM save error:', e.message); }
     }
 
-    return jsonResponse({ result: 'ok', order_id: orderNum });
+    return jsonResponse({ result: 'ok', order_id: displayOrder });
   } catch (err) {
     console.error('Cash order error:', err.message);
     return jsonResponse({ error: 'Error interno' }, 500);
@@ -226,9 +231,10 @@ function jsonResponse(data, status = 200) {
   });
 }
 
-// Version 4.0 — 2026-04-09
+// Version 5.0 — 2026-04-09
 // - Recurrente checkout with redirect to gracias.html
 // - Webhook handler at /webhook for payment_intent.succeeded
 // - MiniMakers Ops CRM integration (Railway)
-// - Cash order handler at /cash
+// - Cash order handler at /cash — now returns AB#### order number from CRM
 // - Order tracking with status updates
+// - Fixed: Recurrente errors no longer exposed to user
