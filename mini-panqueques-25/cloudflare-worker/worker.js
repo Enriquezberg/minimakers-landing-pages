@@ -9,8 +9,8 @@
  * 1. Variables (Settings → Variables → Add as Secret):
  *    - REC_PUBLIC_KEY   → Recurrente public key (pk_live_...)
  *    - REC_SECRET_KEY   → Recurrente secret key (sk_live_...)
- *    - NOTIFY_EMAIL     → Your email for order notifications (optional)
- *    - GOOGLE_SHEETS_URL → Google Apps Script URL for CRM (optional)
+ *    - CRM_URL          → MiniMakers Ops CRM URL (https://web-production-a642.up.railway.app)
+ *    - CRM_SECRET       → Shared WEBHOOK_SECRET for authentication
  */
 
 const ALLOWED_ORIGIN = 'https://enriquezberg.github.io';
@@ -36,6 +36,11 @@ export default {
     // Route: Webhook from Recurrente
     if (url.pathname === '/webhook' && request.method === 'POST') {
       return handleWebhook(request, env);
+    }
+
+    // Route: Cash order from landing page
+    if (url.pathname === '/cash' && request.method === 'POST') {
+      return handleCashOrder(request, env);
     }
 
     // Route: Create checkout from landing page
@@ -95,19 +100,20 @@ async function handleCheckout(request, env) {
     const recData = await recResponse.json();
 
     if (recData.checkout_url) {
-      // Also save order data to Google Sheets if configured
-      if (env.GOOGLE_SHEETS_URL) {
-        saveToSheets(env.GOOGLE_SHEETS_URL, {
+      // Save order to MiniMakers CRM
+      if (env.CRM_URL && env.CRM_SECRET) {
+        saveToCRM(env.CRM_URL, env.CRM_SECRET, {
           order_id: orderNum,
+          action: 'create',
           date: new Date().toISOString(),
           name: data.first_name.trim() + ' ' + data.last_name.trim(),
           email: data.email.trim(),
           phone: data.phone.trim(),
           address: data.address.trim() + ', ' + data.city.trim() + ', ' + data.state + ' ' + (data.zip || '01010'),
+          department: data.state || '',
           nit: data.nit || 'C/F',
           method: 'card',
-          amount: PRODUCT.price_display,
-          status: 'pending'
+          product_name: PRODUCT.name
         }).catch(function() {});
       }
 
@@ -125,6 +131,35 @@ async function handleCheckout(request, env) {
   }
 }
 
+// ── Handle Cash Order ─────────────────────────────
+async function handleCashOrder(request, env) {
+  try {
+    const data = await request.json();
+    const orderNum = data.order_id || 'MM-' + Date.now().toString(36).toUpperCase();
+
+    if (env.CRM_URL && env.CRM_SECRET) {
+      await saveToCRM(env.CRM_URL, env.CRM_SECRET, {
+        order_id: orderNum,
+        action: 'create',
+        date: new Date().toISOString(),
+        name: (data.first_name || '').trim() + ' ' + (data.last_name || '').trim(),
+        email: (data.email || '').trim(),
+        phone: (data.phone || '').trim(),
+        address: (data.address || '').trim() + ', ' + (data.city || '').trim() + ', ' + (data.state || '') + ' ' + (data.zip || '01010'),
+        department: data.state || '',
+        nit: data.nit || 'C/F',
+        method: 'cash',
+        product_name: PRODUCT.name
+      });
+    }
+
+    return jsonResponse({ result: 'ok', order_id: orderNum });
+  } catch (err) {
+    console.error('Cash order error:', err.message);
+    return jsonResponse({ error: 'Error interno' }, 500);
+  }
+}
+
 // ── Handle Recurrente Webhook ───────────────────
 async function handleWebhook(request, env) {
   try {
@@ -138,19 +173,13 @@ async function handleWebhook(request, env) {
       const metadata = checkout.metadata || {};
       const amount = (payload.amount_in_cents || 0) / 100;
 
-      // Update Google Sheets order status
-      if (env.GOOGLE_SHEETS_URL && metadata.order_id) {
-        saveToSheets(env.GOOGLE_SHEETS_URL, {
+      // Update order status in MiniMakers CRM
+      if (env.CRM_URL && env.CRM_SECRET && metadata.order_id) {
+        saveToCRM(env.CRM_URL, env.CRM_SECRET, {
           order_id: metadata.order_id,
-          date: payload.created_at || new Date().toISOString(),
-          name: metadata.customer_name || customer.full_name || '',
-          email: metadata.email || customer.email || '',
-          phone: metadata.phone || '',
-          address: metadata.address || '',
-          nit: metadata.nit || 'C/F',
-          method: 'card',
-          amount: 'Q' + amount.toFixed(2),
-          status: 'paid',
+          action: 'update',
+          status: 'Pagado Pendiente Envio',
+          payment_status: 'pagado',
           recurrente_id: payload.id || ''
         }).catch(function() {});
       }
@@ -168,11 +197,14 @@ async function handleWebhook(request, env) {
   }
 }
 
-// ── Save to Google Sheets via Apps Script ───────
-async function saveToSheets(url, data) {
-  return fetch(url, {
+// ── Save to MiniMakers CRM ────────────────────────
+async function saveToCRM(crmUrl, secret, data) {
+  return fetch(crmUrl + '/webhooks/landing', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + secret
+    },
     body: JSON.stringify(data)
   });
 }
@@ -194,8 +226,9 @@ function jsonResponse(data, status = 200) {
   });
 }
 
-// Version 3.0 — 2026-04-09
+// Version 4.0 — 2026-04-09
 // - Recurrente checkout with redirect to gracias.html
 // - Webhook handler at /webhook for payment_intent.succeeded
-// - Google Sheets CRM integration (optional)
+// - MiniMakers Ops CRM integration (Railway)
+// - Cash order handler at /cash
 // - Order tracking with status updates

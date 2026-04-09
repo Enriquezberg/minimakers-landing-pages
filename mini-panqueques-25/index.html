@@ -1345,6 +1345,25 @@
 
         if (selectedMethod === 'cash') {
           var orderNum = 'MM-' + Date.now().toString(36).toUpperCase();
+
+          // Save cash order to CRM via Worker
+          fetch(WORKER_URL + '/cash', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              order_id: orderNum,
+              first_name: payload.first_name,
+              last_name: payload.last_name,
+              email: payload.email,
+              phone: payload.phone,
+              address: payload.address,
+              city: payload.city,
+              state: payload.state,
+              zip: payload.zip,
+              nit: payload.nit
+            })
+          }).catch(function() {});
+
           var msg = '¡Hola! Quiero comprar la Máquina Industrial 25 Mini Panqueques (Q1,200) con pago contra entrega.\n\n';
           msg += 'Pedido: ' + orderNum + '\n';
           msg += 'Nombre: ' + payload.first_name + ' ' + payload.last_name + '\n';
