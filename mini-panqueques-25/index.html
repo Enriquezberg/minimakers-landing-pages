@@ -277,7 +277,7 @@
     .volume-price { font-size: 12px; opacity: .7; margin-top: 4px; }
 
     /* ── CHECKOUT MODAL ────────────────────────── */
-    .checkout-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 2000; align-items: flex-start; justify-content: center; padding: 40px 20px; backdrop-filter: blur(4px); overflow-y: auto; }
+    .checkout-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 2000; align-items: flex-start; justify-content: center; padding: 20px 20px 120px; backdrop-filter: blur(4px); overflow-y: auto; }
     .checkout-overlay.open { display: flex; }
     .checkout-modal { background: #fff; border-radius: 20px; max-width: 520px; width: 100%; box-shadow: 0 32px 80px rgba(0,0,0,.35); position: relative; flex-shrink: 0; }
     .checkout-header { background: var(--navy); padding: 28px 32px; border-radius: 20px 20px 0 0; color: #fff; }
@@ -312,6 +312,27 @@
     .checkout-trust i { color: var(--success); }
     .checkout-error-msg { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 12px 16px; border-radius: 10px; font-size: 14px; margin-bottom: 16px; display: none; }
     .checkout-error-msg.visible { display: block; }
+
+    /* ── PAYMENT METHOD STEP ──────────────────── */
+    .checkout-step { display: none; }
+    .checkout-step.active { display: block; }
+    .payment-methods { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+    .payment-method-card { border: 2px solid #e5e7eb; border-radius: 14px; padding: 20px; cursor: pointer; transition: all .2s; display: flex; align-items: flex-start; gap: 16px; position: relative; }
+    .payment-method-card:hover { border-color: var(--yellow); background: #fffbeb; }
+    .payment-method-card.selected { border-color: var(--yellow); background: #fffbeb; box-shadow: 0 0 0 2px var(--yellow); }
+    .payment-method-radio { width: 22px; height: 22px; border: 2px solid #d1d5db; border-radius: 50%; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+    .payment-method-card.selected .payment-method-radio { border-color: var(--yellow-dark); background: var(--yellow); }
+    .payment-method-card.selected .payment-method-radio::after { content: ''; width: 8px; height: 8px; background: var(--navy); border-radius: 50%; }
+    .payment-method-info { flex: 1; }
+    .payment-method-title { font-weight: 800; font-size: 16px; color: var(--navy); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+    .payment-method-title i { font-size: 18px; color: var(--yellow-dark); }
+    .payment-method-desc { font-size: 13px; color: var(--gray-6); line-height: 1.5; }
+    .payment-method-badge { display: inline-block; background: var(--success); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-top: 8px; }
+    .payment-method-badge.popular { background: var(--yellow-dark); color: var(--navy); }
+    .checkout-back { background: none; border: none; color: var(--gray-6); font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-bottom: 18px; padding: 0; font-family: 'DM Sans', sans-serif; }
+    .checkout-back:hover { color: var(--navy); }
+    .cuotas-highlight { background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 2px solid var(--yellow); border-radius: 12px; padding: 14px 18px; margin-top: 10px; font-size: 13px; color: var(--navy); line-height: 1.5; }
+    .cuotas-highlight strong { color: var(--yellow-dark); }
 
     @media (max-width: 520px) {
       .checkout-modal { border-radius: 16px 16px 0 0; max-height: 95vh; margin-top: auto; }
@@ -673,6 +694,10 @@
       </div>
       <div class="faq-list">
         <div class="faq-item">
+          <div class="faq-question">¿Qué métodos de pago aceptan?<div class="faq-chevron"><i class="fas fa-chevron-down"></i></div></div>
+          <div class="faq-answer"><strong>Pago contra entrega:</strong> pagas en efectivo cuando recibas tu máquina en la puerta de tu casa. El envío es gratis.<br><br><strong>Tarjeta de crédito o débito:</strong> Visa o Mastercard, de contado o <strong>hasta 10 cuotas sin recargo</strong> con Visa Cuotas (desde Q120/mes). El pago con tarjeta se procesa de forma segura a través de QPay Pro.</div>
+        </div>
+        <div class="faq-item">
           <div class="faq-question">¿Cuántos watts consume? ¿Me va a subir mucho la factura?<div class="faq-chevron"><i class="fas fa-chevron-down"></i></div></div>
           <div class="faq-answer"><strong>950W</strong> — igual que una plancha de ropa doméstica. En uso normal (4 h/día), el costo adicional en tu factura es de aproximadamente <strong>Q 50–80 mensuales</strong>. Mínimo comparado con las ganancias que genera.</div>
         </div>
@@ -774,7 +799,7 @@
       <button class="checkout-close" id="checkoutClose" aria-label="Cerrar"><i class="fas fa-times"></i></button>
       <div class="checkout-header">
         <h2><i class="fas fa-lock" style="margin-right:8px;font-size:18px;"></i>Checkout Seguro</h2>
-        <p>Completa tus datos para procesar el pago</p>
+        <p>Completa tus datos y elige cómo pagar</p>
       </div>
       <div class="checkout-summary">
         <img src="https://d2j6dbq0eux0bg.cloudfront.net/images/42285054/4591850846.jpg" alt="Máquina 25 Mini Panqueques" class="checkout-thumb">
@@ -786,6 +811,7 @@
       <div class="checkout-body">
         <div class="checkout-error-msg" id="checkoutError"></div>
         <form id="checkoutForm" novalidate>
+         <div class="checkout-step active" id="stepForm">
           <div class="checkout-row">
             <div class="checkout-field">
               <label for="cko_fname">Nombre *</label>
@@ -860,15 +886,44 @@
               <input type="text" id="cko_nit" name="nit" placeholder="C/F" value="C/F">
             </div>
           </div>
-          <button type="submit" class="checkout-submit" id="checkoutSubmit">
-            <span class="btn-text"><i class="fas fa-credit-card"></i> Pagar Q1,200</span>
-            <span class="spinner"></span>
+          <button type="button" class="checkout-submit" id="goToPaymentStep">
+            <span class="btn-text">Continuar con método de pago <i class="fas fa-arrow-right"></i></span>
           </button>
           <div class="checkout-trust">
             <span><i class="fas fa-shield-alt"></i> Pago seguro</span>
             <span><i class="fas fa-lock"></i> Datos encriptados</span>
             <span><i class="fas fa-shipping-fast"></i> Envío gratis</span>
           </div>
+         </div>
+
+         <div class="checkout-step" id="stepPayment">
+          <button type="button" class="checkout-back" id="backToForm"><i class="fas fa-arrow-left"></i> Volver a datos de envío</button>
+          <h3 style="font-size:18px; font-weight:800; color:var(--navy); margin-bottom:16px;">Elige tu método de pago</h3>
+          <div class="payment-methods">
+            <div class="payment-method-card" data-method="cash">
+              <div class="payment-method-radio"></div>
+              <div class="payment-method-info">
+                <div class="payment-method-title"><i class="fas fa-hand-holding-usd"></i> Pago contra entrega</div>
+                <div class="payment-method-desc">Pagas en efectivo cuando recibas tu máquina en la puerta de tu casa. Sin cargos adicionales.</div>
+                <span class="payment-method-badge">Envío gratis</span>
+              </div>
+            </div>
+            <div class="payment-method-card" data-method="card">
+              <div class="payment-method-radio"></div>
+              <div class="payment-method-info">
+                <div class="payment-method-title"><i class="fas fa-credit-card"></i> Tarjeta de crédito o débito</div>
+                <div class="payment-method-desc">Visa o Mastercard. Paga de contado o en cuotas.</div>
+                <div class="cuotas-highlight">
+                  <strong>Hasta 10 cuotas sin recargo</strong> — desde Q120/mes con Visa Cuotas
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="checkout-submit" id="checkoutSubmit" disabled>
+            <span class="btn-text" id="submitBtnText">Selecciona un método de pago</span>
+            <span class="spinner"></span>
+          </button>
+         </div>
         </form>
       </div>
     </div>
@@ -1094,23 +1149,47 @@
     // ── Checkout Modal ──────────────────────────
     (function() {
       var WORKER_URL = 'https://qpaypro-checkout.luisenriquez0714.workers.dev';
+      var WHATSAPP_NUM = '50231695584';
 
       var overlay = document.getElementById('checkoutOverlay');
       var closeBtn = document.getElementById('checkoutClose');
       var form = document.getElementById('checkoutForm');
       var submitBtn = document.getElementById('checkoutSubmit');
       var errorMsg = document.getElementById('checkoutError');
+      var stepForm = document.getElementById('stepForm');
+      var stepPayment = document.getElementById('stepPayment');
+      var goToPaymentBtn = document.getElementById('goToPaymentStep');
+      var backBtn = document.getElementById('backToForm');
+      var submitBtnText = document.getElementById('submitBtnText');
+      var selectedMethod = null;
 
       function openCheckout() {
         overlay.classList.add('open');
         document.body.style.overflow = 'hidden';
         errorMsg.classList.remove('visible');
         errorMsg.textContent = '';
+        stepForm.classList.add('active');
+        stepPayment.classList.remove('active');
+        selectedMethod = null;
+        updateSubmitBtn();
       }
 
       function closeCheckout() {
         overlay.classList.remove('open');
         document.body.style.overflow = '';
+      }
+
+      function updateSubmitBtn() {
+        if (!selectedMethod) {
+          submitBtn.disabled = true;
+          submitBtnText.innerHTML = 'Selecciona un método de pago';
+        } else if (selectedMethod === 'cash') {
+          submitBtn.disabled = false;
+          submitBtnText.innerHTML = '<i class="fas fa-check-circle"></i> Confirmar pedido — Pago contra entrega';
+        } else {
+          submitBtn.disabled = false;
+          submitBtnText.innerHTML = '<i class="fas fa-credit-card"></i> Pagar Q1,200 con tarjeta';
+        }
       }
 
       document.querySelectorAll('.open-checkout').forEach(function(btn) {
@@ -1125,26 +1204,45 @@
         if (e.key === 'Escape' && overlay.classList.contains('open')) closeCheckout();
       });
 
-      form.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        var fields = form.querySelectorAll('[required]');
+      // Step 1 → Step 2
+      goToPaymentBtn.addEventListener('click', function() {
+        var fields = form.querySelectorAll('#stepForm [required]');
         var valid = true;
         fields.forEach(function(f) {
           f.classList.remove('error');
           if (!f.value.trim()) { f.classList.add('error'); valid = false; }
         });
-
         var emailField = document.getElementById('cko_email');
         if (emailField.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
           emailField.classList.add('error'); valid = false;
         }
-
         if (!valid) return;
 
-        submitBtn.disabled = true;
-        submitBtn.classList.add('loading');
-        errorMsg.classList.remove('visible');
+        stepForm.classList.remove('active');
+        stepPayment.classList.add('active');
+        overlay.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // Back to Step 1
+      backBtn.addEventListener('click', function() {
+        stepPayment.classList.remove('active');
+        stepForm.classList.add('active');
+      });
+
+      // Payment method selection
+      document.querySelectorAll('.payment-method-card').forEach(function(card) {
+        card.addEventListener('click', function() {
+          document.querySelectorAll('.payment-method-card').forEach(function(c) { c.classList.remove('selected'); });
+          card.classList.add('selected');
+          selectedMethod = card.getAttribute('data-method');
+          updateSubmitBtn();
+        });
+      });
+
+      // Submit
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (!selectedMethod) return;
 
         var payload = {
           first_name: document.getElementById('cko_fname').value.trim(),
@@ -1157,6 +1255,22 @@
           zip: document.getElementById('cko_zip').value.trim() || '01010',
           nit: document.getElementById('cko_nit').value.trim() || 'C/F'
         };
+
+        if (selectedMethod === 'cash') {
+          var msg = '¡Hola! Quiero comprar la Máquina Industrial 25 Mini Panqueques (Q1,200) con pago contra entrega.\n\n';
+          msg += 'Nombre: ' + payload.first_name + ' ' + payload.last_name + '\n';
+          msg += 'Tel: ' + payload.phone + '\n';
+          msg += 'Email: ' + payload.email + '\n';
+          msg += 'Dirección: ' + payload.address + ', ' + payload.city + ', ' + payload.state + ' ' + payload.zip + '\n';
+          msg += 'NIT: ' + payload.nit;
+          window.open('https://wa.me/' + WHATSAPP_NUM + '?text=' + encodeURIComponent(msg), '_blank');
+          return;
+        }
+
+        // Card payment → QPay Pro
+        submitBtn.disabled = true;
+        submitBtn.classList.add('loading');
+        errorMsg.classList.remove('visible');
 
         fetch(WORKER_URL, {
           method: 'POST',
@@ -1179,8 +1293,7 @@
         });
       });
 
-      fields = form.querySelectorAll('input[required]');
-      fields.forEach(function(f) {
+      form.querySelectorAll('input[required]').forEach(function(f) {
         f.addEventListener('input', function() { f.classList.remove('error'); });
       });
     })();
