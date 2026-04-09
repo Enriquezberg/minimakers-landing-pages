@@ -19,6 +19,7 @@ const WHATSAPP_NUM = '50231695584';
 
 const PRODUCT = {
   name: 'Maquina Industrial 25 Mini Panqueques',
+  sku: 'MI25MP',
   price_cents: 120000,
   price_display: 'Q1,200',
   currency: 'GTQ'
@@ -113,7 +114,8 @@ async function handleCheckout(request, env) {
           department: data.state || '',
           nit: data.nit || 'C/F',
           method: 'card',
-          product_name: PRODUCT.name
+          product_name: PRODUCT.name,
+          product_sku: PRODUCT.sku
         }).catch(function() {});
       }
 
@@ -151,7 +153,8 @@ async function handleCashOrder(request, env) {
           department: data.state || '',
           nit: data.nit || 'C/F',
           method: 'cash',
-          product_name: PRODUCT.name
+          product_name: PRODUCT.name,
+          product_sku: PRODUCT.sku
         });
         var crmData = await crmResp.json();
         if (crmData.order_id) displayOrder = crmData.order_id;
