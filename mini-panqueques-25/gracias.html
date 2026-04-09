@@ -44,14 +44,14 @@
     .header-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,.12); color: var(--success); border: 1px solid rgba(34,197,94,.3); padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 600; }
 
     /* ── MAIN CONTENT ──────────────────────────── */
-    .main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
+    .main { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 24px 24px; }
     .content-wrapper { max-width: 640px; width: 100%; }
 
     /* ── CHECKMARK ANIMATION ───────────────────── */
-    .success-icon { width: 100px; height: 100px; margin: 0 auto 32px; position: relative; }
-    .success-circle { width: 100px; height: 100px; border-radius: 50%; background: rgba(34,197,94,.12); border: 3px solid var(--success); display: flex; align-items: center; justify-content: center; animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-    .success-circle i { font-size: 44px; color: var(--success); opacity: 0; animation: fadeCheck 0.4s 0.4s ease forwards; }
-    .success-pulse { position: absolute; inset: -8px; border-radius: 50%; border: 2px solid var(--success); opacity: 0; animation: pulse 1.5s 0.6s ease-out infinite; }
+    .success-icon { width: 72px; height: 72px; margin: 0 auto 20px; position: relative; }
+    .success-circle { width: 72px; height: 72px; border-radius: 50%; background: rgba(34,197,94,.12); border: 3px solid var(--success); display: flex; align-items: center; justify-content: center; animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    .success-circle i { font-size: 32px; color: var(--success); opacity: 0; animation: fadeCheck 0.4s 0.4s ease forwards; }
+    .success-pulse { position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--success); opacity: 0; animation: pulse 1.5s 0.6s ease-out infinite; }
 
     @keyframes scaleIn {
       0% { transform: scale(0); opacity: 0; }
@@ -67,18 +67,18 @@
     }
 
     /* ── CARD ───────────────────────────────────── */
-    .confirmation-card { background: var(--navy-2); border: 1px solid rgba(255,255,255,.1); border-radius: 20px; padding: 48px 40px; text-align: center; }
-    .card-heading { font-size: clamp(28px, 4vw, 38px); font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
+    .confirmation-card { background: var(--navy-2); border: 1px solid rgba(255,255,255,.1); border-radius: 20px; padding: 32px 32px; text-align: center; }
+    .card-heading { font-size: clamp(24px, 3.5vw, 32px); font-weight: 800; margin-bottom: 6px; letter-spacing: -0.5px; }
     .card-heading em { color: var(--yellow); font-style: normal; }
-    .order-number { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,195,75,.1); color: var(--yellow); border: 1px solid rgba(255,195,75,.25); padding: 8px 20px; border-radius: 50px; font-size: 15px; font-weight: 700; margin: 16px 0 24px; letter-spacing: .5px; }
-    .status-message { font-size: 17px; color: rgba(255,255,255,.72); max-width: 440px; margin: 0 auto 32px; line-height: 1.7; }
+    .order-number { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,195,75,.1); color: var(--yellow); border: 1px solid rgba(255,195,75,.25); padding: 6px 16px; border-radius: 50px; font-size: 14px; font-weight: 700; margin: 10px 0 16px; letter-spacing: .5px; }
+    .status-message { font-size: 15px; color: rgba(255,255,255,.72); max-width: 440px; margin: 0 auto 20px; line-height: 1.6; }
 
     /* ── DIVIDER ────────────────────────────────── */
     .divider { height: 1px; background: rgba(255,255,255,.1); margin: 0 -40px; }
 
     /* ── PRODUCT SUMMARY ───────────────────────── */
-    .product-summary { display: flex; align-items: center; gap: 20px; padding: 28px 0; text-align: left; }
-    .product-img { width: 80px; height: 80px; border-radius: 12px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+    .product-summary { display: flex; align-items: center; gap: 16px; padding: 20px 0; text-align: left; }
+    .product-img { width: 64px; height: 64px; border-radius: 10px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
     .product-img img { width: 100%; height: 100%; object-fit: cover; }
     .product-details { flex: 1; }
     .product-name { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
@@ -86,16 +86,16 @@
     .product-price { font-size: 22px; font-weight: 800; color: var(--yellow); white-space: nowrap; }
 
     /* ── NEXT STEPS ─────────────────────────────── */
-    .next-steps { padding-top: 28px; text-align: left; }
-    .next-steps-title { font-size: 16px; font-weight: 700; margin-bottom: 18px; color: rgba(255,255,255,.9); text-transform: uppercase; letter-spacing: 1px; font-size: 12px; }
-    .step { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+    .next-steps { padding-top: 20px; text-align: left; }
+    .next-steps-title { font-weight: 700; margin-bottom: 14px; color: rgba(255,255,255,.9); text-transform: uppercase; letter-spacing: 1px; font-size: 12px; }
+    .step { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
     .step:last-child { margin-bottom: 0; }
-    .step-number { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,195,75,.12); border: 1px solid rgba(255,195,75,.25); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: var(--yellow); flex-shrink: 0; }
-    .step-text { font-size: 15px; color: rgba(255,255,255,.7); padding-top: 4px; }
+    .step-number { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,195,75,.12); border: 1px solid rgba(255,195,75,.25); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: var(--yellow); flex-shrink: 0; }
+    .step-text { font-size: 14px; color: rgba(255,255,255,.7); padding-top: 3px; }
     .step-text strong { color: #fff; }
 
     /* ── BUTTONS ────────────────────────────────── */
-    .actions { margin-top: 36px; display: flex; flex-direction: column; gap: 12px; }
+    .actions { margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
     .btn-whatsapp { background: #25D366; color: #fff; padding: 16px 32px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 16px; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; cursor: pointer; }
     .btn-whatsapp:hover { background: #1fb855; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,211,102,.35); }
     .btn-back { background: transparent; border: 2px solid rgba(255,255,255,.2); color: rgba(255,255,255,.7); padding: 14px 28px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 15px; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; }
@@ -116,8 +116,8 @@
 
     /* ── RESPONSIVE ─────────────────────────────── */
     @media (max-width: 640px) {
-      .confirmation-card { padding: 36px 24px; }
-      .divider { margin: 0 -24px; }
+      .confirmation-card { padding: 24px 20px; }
+      .divider { margin: 0 -20px; }
       .product-summary { flex-wrap: wrap; }
       .product-price { width: 100%; margin-top: 4px; }
       .actions { gap: 10px; }
