@@ -13,8 +13,11 @@
  *    - CRM_SECRET       → Shared WEBHOOK_SECRET for authentication
  */
 
-const ALLOWED_ORIGIN = 'https://enriquezberg.github.io';
-const LANDING_URL = 'https://enriquezberg.github.io/minimakers-landing-pages/mini-panqueques-25/';
+const ALLOWED_ORIGINS = [
+  'https://mini-panqueques-25.minimakersgt.com',
+  'https://enriquezberg.github.io'
+];
+const LANDING_URL = 'https://mini-panqueques-25.minimakersgt.com/';
 const WHATSAPP_NUM = '50231695584';
 
 const PRODUCT = {
@@ -31,7 +34,7 @@ export default {
 
     // CORS preflight
     if (request.method === 'OPTIONS') {
-      return new Response(null, { headers: corsHeaders() });
+      return new Response(null, { headers: corsHeaders(request) });
     }
 
     // Route: Webhook from Recurrente
@@ -49,7 +52,7 @@ export default {
       return handleCheckout(request, env);
     }
 
-    return jsonResponse({ error: 'Method not allowed' }, 405);
+    return jsonResponse({ error: 'Method not allowed' }, 405, request);
   }
 };
 
@@ -61,7 +64,7 @@ async function handleCheckout(request, env) {
     const required = ['first_name', 'last_name', 'email', 'phone', 'address', 'city', 'state'];
     for (const field of required) {
       if (!data[field] || !data[field].trim()) {
-        return jsonResponse({ error: 'Campo requerido: ' + field }, 400);
+        return jsonResponse({ error: 'Campo requerido: ' + field }, 400, request);
       }
     }
 
@@ -119,17 +122,17 @@ async function handleCheckout(request, env) {
         }).catch(function() {});
       }
 
-      return jsonResponse({ redirect_url: recData.checkout_url, order_id: orderNum });
+      return jsonResponse({ redirect_url: recData.checkout_url, order_id: orderNum }, 200, request);
     } else {
       console.error('Recurrente error:', JSON.stringify(recData));
       return jsonResponse({
         error: 'Error al procesar el pago. Por favor intenta de nuevo o elige pago contra entrega.'
-      }, 502);
+      }, 502, request);
     }
 
   } catch (err) {
     console.error('Worker error:', err.message);
-    return jsonResponse({ error: 'Error interno. Por favor intenta de nuevo.' }, 500);
+    return jsonResponse({ error: 'Error interno. Por favor intenta de nuevo.' }, 500, request);
   }
 }
 
@@ -161,10 +164,10 @@ async function handleCashOrder(request, env) {
       } catch(e) { console.error('CRM save error:', e.message); }
     }
 
-    return jsonResponse({ result: 'ok', order_id: displayOrder });
+    return jsonResponse({ result: 'ok', order_id: displayOrder }, 200, request);
   } catch (err) {
     console.error('Cash order error:', err.message);
-    return jsonResponse({ error: 'Error interno' }, 500);
+    return jsonResponse({ error: 'Error interno' }, 500, request);
   }
 }
 
@@ -218,19 +221,24 @@ async function saveToCRM(crmUrl, secret, data) {
 }
 
 // ── CORS ────────────────────────────────────────
-function corsHeaders() {
+function corsHeaders(request) {
+  var origin = '';
+  if (request) {
+    var reqOrigin = request.headers.get('Origin') || '';
+    if (ALLOWED_ORIGINS.includes(reqOrigin)) origin = reqOrigin;
+  }
   return {
-    'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+    'Access-Control-Allow-Origin': origin || ALLOWED_ORIGINS[0],
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Max-Age': '86400'
   };
 }
 
-function jsonResponse(data, status = 200) {
+function jsonResponse(data, status = 200, request) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json', ...corsHeaders() }
+    headers: { 'Content-Type': 'application/json', ...corsHeaders(request) }
   });
 }
 
