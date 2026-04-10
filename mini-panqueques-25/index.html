@@ -1263,6 +1263,15 @@
       var WORKER_URL = 'https://qpaypro-checkout.luisenriquez0714.workers.dev';
       var WHATSAPP_NUM = '50231695584';
 
+      // Pass UTM params to gracias.html
+      function graciasURL(base) {
+        var u = new URLSearchParams(window.location.search);
+        ['utm_source','utm_medium','utm_campaign'].forEach(function(k) {
+          if (u.get(k)) base += '&' + k + '=' + encodeURIComponent(u.get(k));
+        });
+        return base;
+      }
+
       var overlay = document.getElementById('checkoutOverlay');
       var closeBtn = document.getElementById('checkoutClose');
       var form = document.getElementById('checkoutForm');
@@ -1414,6 +1423,10 @@
           .then(function(res) { return res.json(); })
           .then(function(data) {
             var displayOrder = data.order_id || refNum;
+            var utmParams = new URLSearchParams(window.location.search);
+            var utmSource = utmParams.get('utm_source') || 'landing-page';
+            var utmMedium = utmParams.get('utm_medium') || 'directo';
+            var utmCampaign = utmParams.get('utm_campaign') || '';
             var msg = '¡Hola! Quiero comprar la Máquina Industrial 25 Mini Panqueques (Q1,200) con pago contra entrega.\n\n';
             msg += 'Pedido: ' + displayOrder + '\n';
             msg += 'Nombre: ' + payload.first_name + ' ' + payload.last_name + '\n';
@@ -1421,12 +1434,13 @@
             msg += 'Email: ' + payload.email + '\n';
             msg += 'Dirección: ' + payload.address + ', ' + payload.city + ', ' + payload.state + ' ' + payload.zip + '\n';
             msg += 'NIT: ' + payload.nit;
+            msg += '\n\n📍 Origen: ' + utmSource + ' / ' + utmMedium + (utmCampaign ? ' / ' + utmCampaign : '');
             window.open('https://wa.me/' + WHATSAPP_NUM + '?text=' + encodeURIComponent(msg), '_blank');
-            window.location.href = 'gracias.html?method=cash&order=' + displayOrder;
+            window.location.href = graciasURL('gracias.html?method=cash&order=' + displayOrder);
           })
           .catch(function() {
             // Fallback: redirect even if CRM fails
-            window.location.href = 'gracias.html?method=cash&order=' + refNum;
+            window.location.href = graciasURL('gracias.html?method=cash&order=' + refNum);
           });
           return;
         }
@@ -1459,6 +1473,22 @@
 
       form.querySelectorAll('input[required]').forEach(function(f) {
         f.addEventListener('input', function() { f.classList.remove('error'); });
+      });
+    })();
+
+    // ── WhatsApp UTM Tracking ──────────────────
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var source = params.get('utm_source') || 'landing-page';
+      var medium = params.get('utm_medium') || 'directo';
+      var campaign = params.get('utm_campaign') || '';
+      var tag = '\n\n📍 Origen: ' + source + ' / ' + medium + (campaign ? ' / ' + campaign : '');
+
+      document.querySelectorAll('a[href*="wa.me/50231695584"]').forEach(function(link) {
+        var url = new URL(link.href);
+        var originalText = url.searchParams.get('text') || '';
+        url.searchParams.set('text', originalText + tag);
+        link.href = url.toString();
       });
     })();
   </script>

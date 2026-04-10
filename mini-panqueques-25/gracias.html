@@ -219,7 +219,7 @@
 
         <!-- Action Buttons -->
         <div class="actions">
-          <a href="https://wa.me/50231695584?text=Hola,%20acabo%20de%20realizar%20mi%20pedido%20y%20tengo%20una%20consulta" target="_blank" rel="noopener" class="btn-whatsapp">
+          <a href="https://wa.me/50231695584?text=Hola,%20acabo%20de%20realizar%20mi%20pedido%20y%20tengo%20una%20consulta" target="_blank" rel="noopener" class="btn-whatsapp" id="waBtn">
             <i class="fab fa-whatsapp" style="font-size:20px;"></i>
             Contactar por WhatsApp
           </a>
@@ -321,6 +321,19 @@
           + '  <div class="step-number">3</div>'
           + '  <div class="step-text"><strong>Env\u00edo r\u00e1pido</strong> \u2014 Entrega en 24-48 horas a toda Guatemala.</div>'
           + '</div>';
+      }
+
+      // ── WhatsApp UTM tracking ──
+      var utmSource = params.get('utm_source') || 'landing-page';
+      var utmMedium = params.get('utm_medium') || 'directo';
+      var utmCampaign = params.get('utm_campaign') || '';
+      var waBtn = document.getElementById('waBtn');
+      if (waBtn) {
+        var waUrl = new URL(waBtn.href);
+        var waText = waUrl.searchParams.get('text') || '';
+        var orderTag = order ? ' (Pedido: ' + order + ')' : '';
+        waUrl.searchParams.set('text', waText + orderTag + '\n\n📍 Origen: ' + utmSource + ' / ' + utmMedium + (utmCampaign ? ' / ' + utmCampaign : ''));
+        waBtn.href = waUrl.toString();
       }
 
       // ── Confetti animation (card payment only) ──
