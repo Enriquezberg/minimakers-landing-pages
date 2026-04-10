@@ -11,7 +11,11 @@
  *    - REC_SECRET_KEY   → Recurrente secret key (sk_live_...)
  *    - CRM_URL          → MiniMakers Ops CRM URL (https://web-production-a642.up.railway.app)
  *    - CRM_SECRET       → Shared WEBHOOK_SECRET for authentication
+ *    - META_ACCESS_TOKEN → Meta Conversions API token (from Events Manager)
  */
+
+const META_PIXEL_ID = '424336247007631';
+const META_API_VERSION = 'v21.0';
 
 const ALLOWED_ORIGINS = [
   'https://mini-panqueques-25.minimakersgt.com',
@@ -122,6 +126,24 @@ async function handleCheckout(request, env) {
         }).catch(function() {});
       }
 
+      // Meta Conversions API: InitiateCheckout (card)
+      sendMetaEvent(env, 'InitiateCheckout', {
+        email: data.email.trim(),
+        phone: data.phone.trim(),
+        firstName: data.first_name.trim(),
+        lastName: data.last_name.trim(),
+        city: data.city.trim(),
+        state: data.state,
+        zip: data.zip || '01010'
+      }, {
+        content_name: PRODUCT.name,
+        content_ids: [PRODUCT.sku],
+        content_type: 'product',
+        value: PRODUCT.price_cents / 100,
+        currency: PRODUCT.currency,
+        order_id: orderNum
+      }).catch(function() {});
+
       return jsonResponse({ redirect_url: recData.checkout_url, order_id: orderNum }, 200, request);
     } else {
       console.error('Recurrente error:', JSON.stringify(recData));
@@ -164,6 +186,24 @@ async function handleCashOrder(request, env) {
       } catch(e) { console.error('CRM save error:', e.message); }
     }
 
+    // Meta Conversions API: Purchase (cash)
+    sendMetaEvent(env, 'Purchase', {
+      email: (data.email || '').trim(),
+      phone: (data.phone || '').trim(),
+      firstName: (data.first_name || '').trim(),
+      lastName: (data.last_name || '').trim(),
+      city: (data.city || '').trim(),
+      state: data.state || '',
+      zip: data.zip || '01010'
+    }, {
+      content_name: PRODUCT.name,
+      content_ids: [PRODUCT.sku],
+      content_type: 'product',
+      value: PRODUCT.price_cents / 100,
+      currency: PRODUCT.currency,
+      order_id: displayOrder
+    }, LANDING_URL + 'gracias.html?method=cash&order=' + displayOrder).catch(function() {});
+
     return jsonResponse({ result: 'ok', order_id: displayOrder }, 200, request);
   } catch (err) {
     console.error('Cash order error:', err.message);
@@ -195,7 +235,21 @@ async function handleWebhook(request, env) {
         }).catch(function() {});
       }
 
-      // Send WhatsApp notification to owner
+      // Meta Conversions API: Purchase (card — confirmed by Recurrente)
+      sendMetaEvent(env, 'Purchase', {
+        email: metadata.email || customer.email || '',
+        phone: metadata.phone || '',
+        firstName: (metadata.customer_name || '').split(' ')[0] || '',
+        lastName: (metadata.customer_name || '').split(' ').slice(1).join(' ') || ''
+      }, {
+        content_name: PRODUCT.name,
+        content_ids: [PRODUCT.sku],
+        content_type: 'product',
+        value: amount,
+        currency: PRODUCT.currency,
+        order_id: metadata.order_id
+      }, LANDING_URL + 'gracias.html?payment=success&order=' + metadata.order_id).catch(function() {});
+
       console.log('Payment succeeded:', metadata.order_id, customer.email, 'Q' + amount);
     }
 
@@ -218,6 +272,53 @@ async function saveToCRM(crmUrl, secret, data) {
     },
     body: JSON.stringify(data)
   });
+}
+
+// ── Meta Conversions API ─────────────────────────
+async function sha256(str) {
+  var data = new TextEncoder().encode(str.trim().toLowerCase());
+  var hash = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hash)).map(function(b) {
+    return b.toString(16).padStart(2, '0');
+  }).join('');
+}
+
+async function sendMetaEvent(env, eventName, userData, customData, eventSourceUrl) {
+  if (!env.META_ACCESS_TOKEN) return;
+
+  var hashedUserData = {};
+  if (userData.email) hashedUserData.em = [await sha256(userData.email)];
+  if (userData.phone) hashedUserData.ph = [await sha256(userData.phone)];
+  if (userData.firstName) hashedUserData.fn = [await sha256(userData.firstName)];
+  if (userData.lastName) hashedUserData.ln = [await sha256(userData.lastName)];
+  if (userData.city) hashedUserData.ct = [await sha256(userData.city)];
+  if (userData.state) hashedUserData.st = [await sha256(userData.state)];
+  if (userData.zip) hashedUserData.zp = [await sha256(userData.zip)];
+  hashedUserData.country = [await sha256('gt')];
+
+  var payload = {
+    data: [{
+      event_name: eventName,
+      event_time: Math.floor(Date.now() / 1000),
+      action_source: 'website',
+      event_source_url: eventSourceUrl || LANDING_URL,
+      user_data: hashedUserData,
+      custom_data: customData
+    }]
+  };
+
+  try {
+    await fetch(
+      'https://graph.facebook.com/' + META_API_VERSION + '/' + META_PIXEL_ID + '/events?access_token=' + env.META_ACCESS_TOKEN,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }
+    );
+  } catch (e) {
+    console.error('Meta CAPI error:', e.message);
+  }
 }
 
 // ── CORS ────────────────────────────────────────
