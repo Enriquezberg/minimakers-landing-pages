@@ -184,6 +184,98 @@
 
     /* ── PERFECTOS PARA ────────────────────────── */
     .business-section { background: var(--cream); }
+
+    /* ── BRIDGE (identification copy between negocios → calculadora) ─ */
+    .bridge-section {
+      background: linear-gradient(180deg, var(--cream) 0%, #fff3d9 100%);
+      padding: 96px 24px 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .bridge-section::before,
+    .bridge-section::after {
+      content: '';
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,195,75,.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .bridge-section::before { top: -120px; left: -120px; }
+    .bridge-section::after  { bottom: -160px; right: -120px; width: 400px; height: 400px; }
+    .bridge-inner { max-width: 780px; margin: 0 auto; position: relative; z-index: 1; }
+    .bridge-label {
+      display: inline-block;
+      background: rgba(33,36,39,.92);
+      color: var(--yellow);
+      padding: 7px 18px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+      box-shadow: 0 8px 24px rgba(33,36,39,.18);
+    }
+    .bridge-label i { color: var(--yellow); margin-right: 6px; font-size: 10px; }
+    .bridge-headline {
+      font-size: clamp(30px, 4.8vw, 48px);
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.12;
+      margin-bottom: 14px;
+      letter-spacing: -1px;
+    }
+    .bridge-tagline {
+      font-size: clamp(17px, 2.2vw, 22px);
+      color: var(--yellow-dark);
+      font-weight: 800;
+      font-style: italic;
+      margin-bottom: 40px;
+    }
+    .bridge-body { max-width: 660px; margin: 0 auto; }
+    .bridge-body p {
+      font-size: clamp(15px, 1.7vw, 17.5px);
+      line-height: 1.75;
+      color: #4a4e57;
+      margin-bottom: 20px;
+    }
+    .bridge-body p:last-child { margin-bottom: 0; }
+    .bridge-body strong { color: var(--navy); font-weight: 800; }
+    .bridge-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 44px;
+      background: var(--navy);
+      color: var(--yellow);
+      padding: 16px 30px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 15px;
+      transition: all .25s ease;
+      box-shadow: 0 10px 28px rgba(33,36,39,.2);
+    }
+    .bridge-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 36px rgba(33,36,39,.3);
+      background: #101216;
+    }
+    .bridge-cta i { animation: bridge-bounce 1.8s ease-in-out infinite; }
+    @keyframes bridge-bounce {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(5px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .bridge-cta i { animation: none; }
+    }
+    @media (max-width: 640px) {
+      .bridge-section { padding: 72px 20px 80px; }
+      .bridge-body p { font-size: 15px; }
+    }
     .business-grid { display: grid; gap: 18px; max-width: 860px; margin: 0 auto; }
     .business-card { display: flex; align-items: flex-start; gap: 20px; padding: 26px 28px; background: #fff; border-radius: var(--r); border-left: 4px solid var(--yellow); box-shadow: 0 2px 14px rgba(0,0,0,.06); transition: all .3s; cursor: pointer; }
     .business-card:hover { transform: translateX(6px); box-shadow: 0 6px 28px rgba(0,0,0,.1); }
@@ -892,6 +984,24 @@
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- BRIDGE: identification copy between business cards and calculator -->
+  <section class="bridge-section">
+    <div class="bridge-inner">
+      <div class="bridge-label"><i class="fas fa-fire"></i> El snack del momento</div>
+      <h2 class="bridge-headline">¿Estás buscando una nueva forma de generar ingresos?</h2>
+      <p class="bridge-tagline">Llegaste al lugar correcto.</p>
+      <div class="bridge-body">
+        <p>Los mini panqueques no son solo un snack — son <strong>el negocio del momento en Guatemala</strong>. Un producto que cabe en cualquier puesto, se cocina en 3 minutos y que cientos de emprendedores ya están vendiendo en ferias, cafeterías, food trucks y desde su propia casa.</p>
+        <p>La mayoría de nuestros clientes <strong>recupera la inversión en menos de 3 semanas</strong>. Muchos vuelven a comprar una segunda máquina poco tiempo después — no por decoración, sino porque ya estaban vendiendo tanto que necesitaban más equipo para seguir creciendo.</p>
+        <p>Si venís pensando en abrir un nuevo negocio o diversificar el que ya tenés, <strong>dejá de buscar</strong>. Este es de los productos más simples, rentables y fáciles de operar del mercado guatemalteco.</p>
+      </div>
+      <a href="#calculadora" class="bridge-cta">
+        <span>Mirá cuánto podrías ganar</span>
+        <i class="fas fa-arrow-down"></i>
+      </a>
     </div>
   </section>
 
