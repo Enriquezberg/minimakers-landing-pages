@@ -188,8 +188,7 @@
     /* ── BRIDGE (identification copy between negocios → calculadora) ─ */
     .bridge-section {
       background: linear-gradient(180deg, var(--cream) 0%, #fff3d9 100%);
-      padding: 96px 24px 100px;
-      text-align: center;
+      padding: 100px 24px;
       position: relative;
       overflow: hidden;
     }
@@ -197,50 +196,163 @@
     .bridge-section::after {
       content: '';
       position: absolute;
-      width: 320px;
-      height: 320px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,195,75,.18) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255,195,75,.2) 0%, transparent 70%);
       pointer-events: none;
     }
-    .bridge-section::before { top: -120px; left: -120px; }
-    .bridge-section::after  { bottom: -160px; right: -120px; width: 400px; height: 400px; }
-    .bridge-inner { max-width: 780px; margin: 0 auto; position: relative; z-index: 1; }
-    .bridge-label {
-      display: inline-block;
-      background: rgba(33,36,39,.92);
+    .bridge-section::before { top: -140px; left: -140px; width: 360px; height: 360px; }
+    .bridge-section::after  { bottom: -180px; right: -140px; width: 440px; height: 440px; }
+
+    .bridge-grid {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: 64px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Visual column */
+    .bridge-visual {
+      position: relative;
+      border-radius: 24px;
+      overflow: visible;
+      max-width: 480px;
+      width: 100%;
+      justify-self: center;
+    }
+    .bridge-visual-frame {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      aspect-ratio: 4 / 5;
+      box-shadow: 0 30px 80px rgba(33,36,39,.3), 0 0 0 1px rgba(33,36,39,.04);
+      background: #0f1115;
+    }
+    .bridge-visual-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .bridge-visual-frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 55%, rgba(15,17,21,.65) 100%);
+      pointer-events: none;
+    }
+
+    /* Floating stat card — bottom left of image */
+    .bridge-stat-card {
+      position: absolute;
+      bottom: -24px;
+      left: -24px;
+      background: #fff;
+      padding: 14px 18px 16px;
+      border-radius: 16px;
+      box-shadow: 0 18px 44px rgba(33,36,39,.2), 0 0 0 1px rgba(33,36,39,.05);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 3;
+    }
+    .bridge-stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--yellow) 0%, var(--yellow-dark) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--navy);
+      flex-shrink: 0;
+    }
+    .bridge-stat-text { line-height: 1.2; }
+    .bridge-stat-value { font-size: 18px; font-weight: 900; color: var(--navy); }
+    .bridge-stat-label { font-size: 11px; color: var(--gray-6); font-weight: 600; text-transform: uppercase; letter-spacing: .4px; margin-top: 2px; }
+
+    /* Floating best-seller badge — top right of image */
+    .bridge-badge-top {
+      position: absolute;
+      top: -14px;
+      right: -14px;
+      background: #212427;
       color: var(--yellow);
-      padding: 7px 18px;
+      padding: 8px 14px;
       border-radius: 50px;
       font-size: 11px;
       font-weight: 800;
-      letter-spacing: 1.4px;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      box-shadow: 0 10px 26px rgba(33,36,39,.3);
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bridge-badge-top i { color: var(--yellow); font-size: 11px; }
+
+    /* Content column */
+    .bridge-content { text-align: left; }
+    .bridge-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(33,36,39,.92);
+      color: var(--yellow);
+      padding: 7px 16px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.3px;
       text-transform: uppercase;
       margin-bottom: 22px;
       box-shadow: 0 8px 24px rgba(33,36,39,.18);
     }
-    .bridge-label i { color: var(--yellow); margin-right: 6px; font-size: 10px; }
+    .bridge-label i { color: var(--yellow); font-size: 10px; }
     .bridge-headline {
-      font-size: clamp(30px, 4.8vw, 48px);
+      font-size: clamp(30px, 4.5vw, 46px);
       font-weight: 800;
       color: var(--navy);
-      line-height: 1.12;
+      line-height: 1.1;
       margin-bottom: 14px;
       letter-spacing: -1px;
     }
+    .bridge-headline .headline-highlight {
+      position: relative;
+      display: inline-block;
+      z-index: 1;
+      white-space: nowrap;
+      padding: 0 4px;
+    }
+    .bridge-headline .headline-highlight::before {
+      content: '';
+      position: absolute;
+      left: -2px;
+      right: -2px;
+      bottom: 4%;
+      height: 42%;
+      background: var(--yellow);
+      transform: skewX(-6deg);
+      z-index: -1;
+      border-radius: 2px;
+    }
     .bridge-tagline {
-      font-size: clamp(17px, 2.2vw, 22px);
+      font-size: clamp(17px, 2vw, 21px);
       color: var(--yellow-dark);
       font-weight: 800;
       font-style: italic;
-      margin-bottom: 40px;
+      margin-bottom: 32px;
     }
-    .bridge-body { max-width: 660px; margin: 0 auto; }
     .bridge-body p {
-      font-size: clamp(15px, 1.7vw, 17.5px);
-      line-height: 1.75;
+      font-size: clamp(15px, 1.6vw, 16.5px);
+      line-height: 1.7;
       color: #4a4e57;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     .bridge-body p:last-child { margin-bottom: 0; }
     .bridge-body strong { color: var(--navy); font-weight: 800; }
@@ -248,7 +360,7 @@
       display: inline-flex;
       align-items: center;
       gap: 12px;
-      margin-top: 44px;
+      margin-top: 36px;
       background: var(--navy);
       color: var(--yellow);
       padding: 16px 30px;
@@ -272,8 +384,21 @@
     @media (prefers-reduced-motion: reduce) {
       .bridge-cta i { animation: none; }
     }
+
+    /* Responsive: stack columns on tablet/mobile */
+    @media (max-width: 880px) {
+      .bridge-grid { grid-template-columns: 1fr; gap: 50px; }
+      .bridge-visual { max-width: 400px; }
+      .bridge-content { text-align: center; }
+    }
     @media (max-width: 640px) {
-      .bridge-section { padding: 72px 20px 80px; }
+      .bridge-section { padding: 80px 20px 90px; }
+      .bridge-visual { max-width: 320px; }
+      .bridge-stat-card { bottom: -18px; left: -14px; padding: 12px 14px 14px; }
+      .bridge-stat-icon { width: 38px; height: 38px; font-size: 17px; }
+      .bridge-stat-value { font-size: 16px; }
+      .bridge-stat-label { font-size: 10px; }
+      .bridge-badge-top { top: -12px; right: -8px; font-size: 10px; padding: 7px 12px; }
       .bridge-body p { font-size: 15px; }
     }
     .business-grid { display: grid; gap: 18px; max-width: 860px; margin: 0 auto; }
@@ -973,19 +1098,34 @@
 
   <!-- BRIDGE: identification copy between business cards and calculator -->
   <section class="bridge-section">
-    <div class="bridge-inner">
-      <div class="bridge-label"><i class="fas fa-fire"></i> El snack del momento</div>
-      <h2 class="bridge-headline">¿Estás buscando una nueva forma de generar ingresos?</h2>
-      <p class="bridge-tagline">Llegaste al lugar correcto.</p>
-      <div class="bridge-body">
-        <p>Los mini panqueques no son solo un snack — son <strong>el negocio del momento en Guatemala</strong>. Un producto que cabe en cualquier puesto, se cocina en 3 minutos y que cientos de emprendedores ya están vendiendo en ferias, cafeterías, food trucks y desde su propia casa.</p>
-        <p>La mayoría de nuestros clientes <strong>recupera la inversión en menos de 3 semanas</strong>. Muchos vuelven a comprar una segunda máquina poco tiempo después — no por decoración, sino porque ya estaban vendiendo tanto que necesitaban más equipo para seguir creciendo.</p>
-        <p>Si venís pensando en abrir un nuevo negocio o diversificar el que ya tenés, <strong>dejá de buscar</strong>. Este es de los productos más simples, rentables y fáciles de operar del mercado guatemalteco.</p>
+    <div class="bridge-grid">
+      <div class="bridge-visual">
+        <div class="bridge-badge-top"><i class="fas fa-fire"></i> Best seller</div>
+        <div class="bridge-visual-frame">
+          <img src="img/bandeja-deluxe.jpg" alt="Bandeja de mini panqueques con chocolate, fresa y banano — producto final que venden nuestros clientes" loading="lazy">
+        </div>
+        <div class="bridge-stat-card">
+          <div class="bridge-stat-icon"><i class="fas fa-users"></i></div>
+          <div class="bridge-stat-text">
+            <div class="bridge-stat-value">500+</div>
+            <div class="bridge-stat-label">Emprendedores<br>en Guatemala</div>
+          </div>
+        </div>
       </div>
-      <a href="#calculadora" class="bridge-cta">
-        <span>Mirá cuánto podrías ganar</span>
-        <i class="fas fa-arrow-down"></i>
-      </a>
+      <div class="bridge-content">
+        <div class="bridge-label"><i class="fas fa-fire"></i> El snack del momento</div>
+        <h2 class="bridge-headline">¿Estás buscando una nueva forma de generar <span class="headline-highlight">ingresos</span>?</h2>
+        <p class="bridge-tagline">Llegaste al lugar correcto.</p>
+        <div class="bridge-body">
+          <p>Los mini panqueques no son solo un snack — son <strong>el negocio del momento en Guatemala</strong>. Un producto que cabe en cualquier puesto, se cocina en 3 minutos y que cientos de emprendedores ya están vendiendo en ferias, cafeterías, food trucks y desde su propia casa.</p>
+          <p>La mayoría de nuestros clientes <strong>recupera la inversión en menos de 3 semanas</strong>. Muchos vuelven a comprar una segunda máquina poco tiempo después — no por decoración, sino porque ya estaban vendiendo tanto que necesitaban más equipo para seguir creciendo.</p>
+          <p>Si venís pensando en abrir un nuevo negocio o diversificar el que ya tenés, <strong>dejá de buscar</strong>. Este es de los productos más simples, rentables y fáciles de operar del mercado guatemalteco.</p>
+        </div>
+        <a href="#calculadora" class="bridge-cta">
+          <span>Mirá cuánto podrías ganar</span>
+          <i class="fas fa-arrow-down"></i>
+        </a>
+      </div>
     </div>
   </section>
 
