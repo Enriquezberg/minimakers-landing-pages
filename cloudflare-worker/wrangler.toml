@@ -1,0 +1,14 @@
+name = "qpaypro-checkout"
+main = "worker.js"
+compatibility_date = "2026-04-11"
+preview_urls = false  # No generar URLs de preview automáticas; solo el endpoint principal
+
+# No KV, no D1, no R2 — este worker solo hace HTTP forwarding a Recurrente + CRM Railway.
+
+# Observability: capturar logs en el dashboard de Cloudflare
+[observability]
+enabled = true
+
+# Variables de entorno "públicas" (no secretos — los secretos van aparte con `wrangler secret put`)
+[vars]
+# (ninguna por ahora — todos son secretos: REC_PUBLIC_KEY, REC_SECRET_KEY, CRM_URL, CRM_SECRET, META_ACCESS_TOKEN)
