@@ -151,9 +151,43 @@
     .video-wrapper { position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 32px 80px rgba(0,0,0,.55); background: #000; }
     .video-wrapper::before { content: ''; display: block; padding-top: 56.25%; }
     .video-wrapper img, .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border: 0; }
-    .video-hook-caption { position: absolute; left: 0; right: 0; top: 20px; text-align: center; z-index: 3; pointer-events: none; padding: 0 16px; }
+    .video-hook-caption { position: absolute; left: 0; right: 0; top: 20px; text-align: center; z-index: 3; pointer-events: none; padding: 0 16px; transition: opacity .3s; }
+    .video-hook-caption.hidden { opacity: 0; }
     .video-hook-caption span { display: inline-block; background: rgba(0,0,0,.72); color: #fff; padding: 9px 20px; border-radius: 50px; font-size: 14px; font-weight: 700; backdrop-filter: blur(6px); box-shadow: 0 4px 16px rgba(0,0,0,.35); }
     .video-hook-caption span i { color: var(--yellow); margin-right: 8px; }
+
+    /* Sound toggle button on hero video */
+    .video-sound-btn {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      background: var(--yellow);
+      color: var(--navy);
+      border: none;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      cursor: pointer;
+      z-index: 4;
+      box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 0 rgba(255,195,75,.5);
+      transition: all .25s ease;
+      animation: sound-pulse 2.2s ease-out infinite;
+    }
+    .video-sound-btn:hover { transform: scale(1.08); }
+    .video-sound-btn.active { animation: none; background: rgba(0,0,0,.6); color: #fff; }
+    .video-sound-btn.active:hover { background: rgba(0,0,0,.8); }
+    @keyframes sound-pulse {
+      0%   { box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 0 rgba(255,195,75,.55); }
+      70%  { box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 14px rgba(255,195,75,0); }
+      100% { box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 0 rgba(255,195,75,0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .video-sound-btn { animation: none; }
+    }
     @media (max-width: 640px) {
       .video-hook-caption span { font-size: 12px; padding: 7px 14px; }
     }
@@ -453,6 +487,58 @@
       line-height: 1.55;
     }
     .calc-disclaimer i { margin-right: 6px; color: rgba(255,195,75,.65); }
+
+    /* Mid timer — variant: compact horizontal bar between Calculadora and Reseñas */
+    .timer-mid {
+      background: var(--yellow);
+      padding: 26px 24px;
+      text-align: center;
+      position: relative;
+    }
+    .timer-mid-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .timer-mid-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy);
+      text-align: left;
+    }
+    .timer-mid-title i { font-size: 18px; }
+    .timer-mid-title strong { font-weight: 900; }
+    .timer-mid .countdown { gap: 8px; }
+    .timer-mid .time-box { padding: 10px 14px; min-width: 60px; }
+    .timer-mid .time-number { font-size: 24px; }
+    .timer-mid .time-label { font-size: 9px; margin-top: 4px; }
+    .timer-mid-cta {
+      background: var(--navy);
+      color: var(--yellow);
+      padding: 12px 22px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 13px;
+      white-space: nowrap;
+      transition: all .2s;
+      border: none;
+      cursor: pointer;
+    }
+    .timer-mid-cta:hover { background: #101216; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(33,36,39,.3); }
+    @media (max-width: 720px) {
+      .timer-mid { padding: 22px 18px; }
+      .timer-mid-title { font-size: 14px; justify-content: center; }
+      .timer-mid .time-number { font-size: 20px; }
+      .timer-mid .time-box { padding: 8px 10px; min-width: 50px; }
+    }
 
     /* ── TESTIMONIALS / REAL REVIEWS ───────────── */
     .testimonials-section { background: var(--navy); }
@@ -1034,9 +1120,12 @@
           >
             <source src="img/hero-video.mp4" type="video/mp4">
           </video>
-          <div class="video-hook-caption">
+          <div class="video-hook-caption" id="videoHookCaption">
             <span><i class="fas fa-fire"></i>Mirá cómo produce 25 panqueques en 3 minutos</span>
           </div>
+          <button type="button" class="video-sound-btn" id="videoSoundBtn" aria-label="Activar sonido">
+            <i class="fas fa-volume-mute"></i>
+          </button>
         </div>
       </div>
     </div>
@@ -1182,6 +1271,20 @@
       </div>
     </div>
   </section>
+
+  <!-- TIMER MID — urgency bar right after the ROI calculator -->
+  <div class="timer-mid">
+    <div class="timer-mid-inner">
+      <div class="timer-mid-title"><i class="fas fa-bolt"></i> Estos números son reales.<br><strong>Empezá hoy — el precio termina en:</strong></div>
+      <div class="countdown">
+        <div class="time-box"><span class="time-number t-days">00</span><div class="time-label">DÍAS</div></div>
+        <div class="time-box"><span class="time-number t-hours">00</span><div class="time-label">HORAS</div></div>
+        <div class="time-box"><span class="time-number t-minutes">00</span><div class="time-label">MIN</div></div>
+        <div class="time-box"><span class="time-number t-seconds">00</span><div class="time-label">SEG</div></div>
+      </div>
+      <button type="button" class="timer-mid-cta open-checkout">Comprar Ahora →</button>
+    </div>
+  </div>
 
   <!-- REAL REVIEWS — screenshots of WhatsApp & Messenger conversations -->
   <section class="section testimonials-section" id="resenas">
@@ -1478,14 +1581,14 @@
     </div>
   </section>
 
-  <!-- TIMER (moved here to create urgency RIGHT before the final CTA) -->
+  <!-- TIMER (final — urgency right before CTA) -->
   <div class="timer-section">
     <div class="timer-title"><i class="fas fa-clock"></i> Precio especial termina en:</div>
-    <div class="countdown" id="countdown">
-      <div class="time-box"><span class="time-number" id="days">00</span><div class="time-label">DÍAS</div></div>
-      <div class="time-box"><span class="time-number" id="hours">00</span><div class="time-label">HORAS</div></div>
-      <div class="time-box"><span class="time-number" id="minutes">00</span><div class="time-label">MIN</div></div>
-      <div class="time-box"><span class="time-number" id="seconds">00</span><div class="time-label">SEG</div></div>
+    <div class="countdown">
+      <div class="time-box"><span class="time-number t-days">00</span><div class="time-label">DÍAS</div></div>
+      <div class="time-box"><span class="time-number t-hours">00</span><div class="time-label">HORAS</div></div>
+      <div class="time-box"><span class="time-number t-minutes">00</span><div class="time-label">MIN</div></div>
+      <div class="time-box"><span class="time-number t-seconds">00</span><div class="time-label">SEG</div></div>
     </div>
   </div>
 
@@ -1828,6 +1931,34 @@
       });
     }
 
+    // ── Hero video: click to unmute ─────────────
+    (function() {
+      const video = document.getElementById('heroVideo');
+      const btn = document.getElementById('videoSoundBtn');
+      const caption = document.getElementById('videoHookCaption');
+      if (!video || !btn) return;
+      let unmuted = false;
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (!unmuted) {
+          video.muted = false;
+          video.volume = 0.7;
+          btn.classList.add('active');
+          btn.innerHTML = '<i class="fas fa-volume-up"></i>';
+          btn.setAttribute('aria-label', 'Silenciar');
+          if (caption) caption.classList.add('hidden');
+          unmuted = true;
+        } else {
+          video.muted = true;
+          btn.classList.remove('active');
+          btn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+          btn.setAttribute('aria-label', 'Activar sonido');
+          if (caption) caption.classList.remove('hidden');
+          unmuted = false;
+        }
+      });
+    })();
+
     // ── Hamburger menu ──────────────────────────
     (function() {
       const hamburger = document.getElementById('hamburger');
@@ -1948,7 +2079,7 @@
       }, { passive: true });
     })();
 
-    // ── Countdown (persistente con localStorage) ─
+    // ── Countdown (persistente con localStorage, soporta múltiples instancias via classes) ─
     (function() {
       const TIMER_KEY = 'mm_offer_end_v1';
       let end = parseInt(localStorage.getItem(TIMER_KEY) || '0');
@@ -1956,13 +2087,16 @@
         end = Date.now() + 3 * 24 * 60 * 60 * 1000;
         localStorage.setItem(TIMER_KEY, end);
       }
+      function setAll(cls, value) {
+        document.querySelectorAll('.' + cls).forEach(function(el) { el.textContent = value; });
+      }
       setInterval(function() {
         const d = end - Date.now();
         if (d < 0) return;
-        document.getElementById('days').textContent = String(Math.floor(d / 86400000)).padStart(2, '0');
-        document.getElementById('hours').textContent = String(Math.floor((d % 86400000) / 3600000)).padStart(2, '0');
-        document.getElementById('minutes').textContent = String(Math.floor((d % 3600000) / 60000)).padStart(2, '0');
-        document.getElementById('seconds').textContent = String(Math.floor((d % 60000) / 1000)).padStart(2, '0');
+        setAll('t-days',    String(Math.floor(d / 86400000)).padStart(2, '0'));
+        setAll('t-hours',   String(Math.floor((d % 86400000) / 3600000)).padStart(2, '0'));
+        setAll('t-minutes', String(Math.floor((d % 3600000) / 60000)).padStart(2, '0'));
+        setAll('t-seconds', String(Math.floor((d % 60000) / 1000)).padStart(2, '0'));
       }, 1000);
     })();
 
