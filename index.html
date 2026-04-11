@@ -2873,20 +2873,35 @@
       // State exposed globally so checkout modal can read the current mode
       window.__minimakers_config = { mode: 'all', card_enabled: true, cash_enabled: true, stock: -1, show_stock_badge: false };
 
+      function buildStockLabel(stock) {
+        // Adaptive copy based on how much stock is left
+        if (stock <= 0) {
+          return '<i class="fas fa-hourglass-half" style="margin-right:6px;"></i> <strong>Agotado temporal</strong> — acepta pre-ordenes por WhatsApp';
+        }
+        if (stock <= 5) {
+          return '<i class="fas fa-fire" style="color:#ef4444;margin-right:6px;"></i> ¡Últimas <strong>' + stock + ' unidades</strong>!';
+        }
+        if (stock <= 10) {
+          return '<i class="fas fa-bolt" style="margin-right:6px;"></i> Quedan solo <strong>' + stock + ' unidades</strong> en stock';
+        }
+        if (stock <= 20) {
+          return '<i class="fas fa-box" style="margin-right:6px;"></i> Stock limitado: <strong>' + stock + ' unidades</strong> disponibles';
+        }
+        // > 20 — no urgency, return null so caller hides the badge
+        return null;
+      }
+
       function applyConfig(cfg) {
         window.__minimakers_config = cfg;
 
-        // Update stock badge in final-cta: show real stock only when badge is on
+        // Update stock badge with adaptive copy based on stock level
         var stockBadges = document.querySelectorAll('.stock-badge');
         stockBadges.forEach(function(badge) {
-          if (cfg.show_stock_badge && cfg.stock > 0) {
-            badge.innerHTML = 'Quedan solo <strong>' + cfg.stock + ' unidades</strong> en stock';
-            badge.style.display = '';
-          } else if (cfg.mode === 'disabled' || cfg.stock === 0) {
-            badge.innerHTML = '<i class="fas fa-hourglass-half" style="margin-right:6px;"></i> <strong>Agotado temporal</strong> — acepta pre-ordenes por WhatsApp';
+          var label = buildStockLabel(cfg.stock);
+          if (label && (cfg.show_stock_badge || cfg.stock <= 0)) {
+            badge.innerHTML = label;
             badge.style.display = '';
           } else {
-            // Stock comfortable or unknown: hide the scarcity badge entirely
             badge.style.display = 'none';
           }
         });
