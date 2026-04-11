@@ -89,6 +89,7 @@ export default {
 async function handleCheckout(request, env) {
   try {
     const data = await request.json();
+    const testEventCode = (data.test_event_code || '').trim() || null;
 
     const required = ['first_name', 'last_name', 'email', 'phone', 'address', 'city', 'state'];
     for (const field of required) {
@@ -112,7 +113,7 @@ async function handleCheckout(request, env) {
         currency: PRODUCT.currency,
         quantity: qty
       }],
-      success_url: LANDING_URL + 'gracias.html?payment=success&order=' + orderNum + '&qty=' + qty + '&total=' + (totalCents / 100),
+      success_url: LANDING_URL + 'gracias.html?payment=success&order=' + orderNum + '&qty=' + qty + '&total=' + (totalCents / 100) + (testEventCode ? '&test_event_code=' + encodeURIComponent(testEventCode) : ''),
       cancel_url: LANDING_URL + '?payment=cancelled',
       metadata: {
         order_id: orderNum,
@@ -126,7 +127,8 @@ async function handleCheckout(request, env) {
         unit_price: String(unitCents / 100),
         total_amount: String(totalCents / 100),
         discount_pct: String(dcPct),
-        source: 'landing-page'
+        source: 'landing-page',
+        test_event_code: testEventCode || ''
       }
     };
 
@@ -182,7 +184,7 @@ async function handleCheckout(request, env) {
         currency: PRODUCT.currency,
         num_items: qty,
         order_id: orderNum
-      }).catch(function() {});
+      }, null, testEventCode).catch(function() {});
 
       return jsonResponse({ redirect_url: recData.checkout_url, order_id: orderNum }, 200, request);
     } else {
@@ -202,6 +204,7 @@ async function handleCheckout(request, env) {
 async function handleCashOrder(request, env) {
   try {
     const data = await request.json();
+    const testEventCode = (data.test_event_code || '').trim() || null;
     const refNum = data.order_id || 'MM-' + Date.now().toString(36).toUpperCase();
     var displayOrder = refNum;
 
@@ -253,7 +256,7 @@ async function handleCashOrder(request, env) {
       currency: PRODUCT.currency,
       num_items: qty,
       order_id: displayOrder
-    }, LANDING_URL + 'gracias.html?method=cash&order=' + displayOrder + '&qty=' + qty + '&total=' + (totalCents / 100)).catch(function() {});
+    }, LANDING_URL + 'gracias.html?method=cash&order=' + displayOrder + '&qty=' + qty + '&total=' + (totalCents / 100) + (testEventCode ? '&test_event_code=' + encodeURIComponent(testEventCode) : ''), testEventCode).catch(function() {});
 
     return jsonResponse({ result: 'ok', order_id: displayOrder }, 200, request);
   } catch (err) {
@@ -287,6 +290,7 @@ async function handleWebhook(request, env) {
       }
 
       // Meta Conversions API: Purchase (card — confirmed by Recurrente)
+      var webhookTestCode = (metadata.test_event_code || '').trim() || null;
       sendMetaEvent(env, 'Purchase', {
         email: metadata.email || customer.email || '',
         phone: metadata.phone || '',
@@ -299,7 +303,7 @@ async function handleWebhook(request, env) {
         value: amount,
         currency: PRODUCT.currency,
         order_id: metadata.order_id
-      }, LANDING_URL + 'gracias.html?payment=success&order=' + metadata.order_id).catch(function() {});
+      }, LANDING_URL + 'gracias.html?payment=success&order=' + metadata.order_id, webhookTestCode).catch(function() {});
 
       console.log('Payment succeeded:', metadata.order_id, customer.email, 'Q' + amount);
     }
@@ -334,7 +338,7 @@ async function sha256(str) {
   }).join('');
 }
 
-async function sendMetaEvent(env, eventName, userData, customData, eventSourceUrl) {
+async function sendMetaEvent(env, eventName, userData, customData, eventSourceUrl, testEventCode) {
   if (!env.META_ACCESS_TOKEN) return;
 
   var hashedUserData = {};
@@ -363,8 +367,14 @@ async function sendMetaEvent(env, eventName, userData, customData, eventSourceUr
     }]
   };
 
+  // test_event_code (top-level, no adentro de data[]) → marca el evento como TEST
+  // Meta lo rutea a Events Manager → Test Events y NO cuenta como conversión real
+  if (testEventCode) {
+    payload.test_event_code = testEventCode;
+  }
+
   try {
-    await fetch(
+    var resp = await fetch(
       'https://graph.facebook.com/' + META_API_VERSION + '/' + META_PIXEL_ID + '/events?access_token=' + env.META_ACCESS_TOKEN,
       {
         method: 'POST',
@@ -372,6 +382,10 @@ async function sendMetaEvent(env, eventName, userData, customData, eventSourceUr
         body: JSON.stringify(payload)
       }
     );
+    if (testEventCode) {
+      var respText = await resp.text();
+      console.log('Meta CAPI [TEST ' + testEventCode + '] ' + eventName + ' → ' + resp.status + ' ' + respText);
+    }
   } catch (e) {
     console.error('Meta CAPI error:', e.message);
   }
@@ -399,7 +413,7 @@ function jsonResponse(data, status = 200, request) {
   });
 }
 
-// Version 5.1 — 2026-04-11
+// Version 5.2 — 2026-04-11
 // - Recurrente checkout with redirect to gracias.html
 // - Webhook handler at /webhook for payment_intent.succeeded
 // - MiniMakers Ops CRM integration (Railway)
@@ -407,3 +421,6 @@ function jsonResponse(data, status = 200, request) {
 // - Order tracking with status updates
 // - Fixed: Recurrente errors no longer exposed to user
 // - Fixed: CAPI now sends event_id top-level (dedup with browser Pixel)
+// - Added: test_event_code support — Meta routes events to Test Events screen
+//   without counting as real conversions. Propagates through cash, card, and
+//   Recurrente webhook flows via data.test_event_code / metadata.test_event_code

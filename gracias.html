@@ -23,10 +23,12 @@
   // Purchase event — solo se dispara si llegamos con una orden real (cash o card)
   // El order_id viene del Worker (cash) o del success_url de Recurrente (card)
   // eventID = order_id para deduplicar con el evento server-side (CAPI) del Worker
+  // Si hay ?test_event_code= → saltamos el browser Pixel (CAPI lo maneja con test flag)
   (function() {
     var params = new URLSearchParams(window.location.search);
     var orderId = params.get('order');
     if (!orderId) return;  // carga directa / preview → no disparar nada
+    if (params.get('test_event_code')) return;  // test mode → solo CAPI server-side
 
     var qty = parseInt(params.get('qty'), 10) || 1;
     var total = parseFloat(params.get('total'));

@@ -596,56 +596,129 @@
     }
     .calc-disclaimer i { margin-right: 6px; color: rgba(255,195,75,.65); }
 
-    /* Mid timer — variant: compact horizontal bar between Calculadora and Reseñas */
+    /* Mid timer — centered big vertical layout between Calculadora and Reseñas */
     .timer-mid {
-      background: var(--yellow);
-      padding: 26px 24px;
+      background: linear-gradient(180deg, var(--yellow) 0%, #f6b52a 100%);
+      padding: 64px 24px 56px;
       text-align: center;
       position: relative;
+      overflow: hidden;
     }
+    .timer-mid::before,
+    .timer-mid::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(33,36,39,.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .timer-mid::before { top: -100px; left: -80px; width: 280px; height: 280px; }
+    .timer-mid::after  { bottom: -120px; right: -80px; width: 320px; height: 320px; }
     .timer-mid-inner {
-      max-width: 900px;
+      max-width: 720px;
       margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 24px;
-      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
     }
-    .timer-mid-title {
-      display: flex;
+    .timer-mid-eyebrow {
+      display: inline-flex;
       align-items: center;
-      gap: 10px;
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--navy);
-      text-align: left;
-    }
-    .timer-mid-title i { font-size: 18px; }
-    .timer-mid-title strong { font-weight: 900; }
-    .timer-mid .countdown { gap: 8px; }
-    .timer-mid .time-box { padding: 10px 14px; min-width: 60px; }
-    .timer-mid .time-number { font-size: 24px; }
-    .timer-mid .time-label { font-size: 9px; margin-top: 4px; }
-    .timer-mid-cta {
+      gap: 8px;
       background: var(--navy);
       color: var(--yellow);
-      padding: 12px 22px;
+      padding: 7px 18px;
       border-radius: 50px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 22px rgba(33,36,39,.25);
+    }
+    .timer-mid-eyebrow i { color: var(--yellow); font-size: 11px; }
+    .timer-mid-headline {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 900;
+      color: var(--navy);
+      line-height: 1.1;
+      margin-bottom: 10px;
+      letter-spacing: -.8px;
+    }
+    .timer-mid-sub {
+      font-size: clamp(14px, 1.7vw, 17px);
+      color: rgba(33,36,39,.75);
+      font-weight: 600;
+      margin-bottom: 32px;
+    }
+    .timer-mid .countdown {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    .timer-mid .time-box {
+      background: var(--navy);
+      padding: 18px 20px;
+      border-radius: 16px;
+      min-width: 90px;
+      box-shadow: 0 14px 32px rgba(33,36,39,.25);
+    }
+    .timer-mid .time-number {
+      font-size: clamp(36px, 5vw, 48px);
+      font-weight: 900;
+      display: block;
+      line-height: 1;
+      color: var(--yellow);
+      letter-spacing: -1.5px;
+    }
+    .timer-mid .time-label {
+      font-size: 10px;
+      margin-top: 8px;
+      color: rgba(255,255,255,.6);
+      font-weight: 700;
+      letter-spacing: 1.2px;
+    }
+    .timer-mid-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--navy);
+      color: var(--yellow);
+      padding: 18px 44px;
+      border-radius: 60px;
       text-decoration: none;
       font-weight: 800;
-      font-size: 13px;
+      font-size: 17px;
       white-space: nowrap;
-      transition: all .2s;
+      transition: all .25s ease;
       border: none;
       cursor: pointer;
+      box-shadow: 0 14px 36px rgba(33,36,39,.3), 0 0 0 0 rgba(33,36,39,.35);
+      animation: timer-cta-pulse 2.5s ease-out infinite;
     }
-    .timer-mid-cta:hover { background: #101216; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(33,36,39,.3); }
-    @media (max-width: 720px) {
-      .timer-mid { padding: 22px 18px; }
-      .timer-mid-title { font-size: 14px; justify-content: center; }
-      .timer-mid .time-number { font-size: 20px; }
-      .timer-mid .time-box { padding: 8px 10px; min-width: 50px; }
+    .timer-mid-cta i { font-size: 14px; }
+    .timer-mid-cta:hover {
+      background: #101216;
+      transform: translateY(-2px);
+      box-shadow: 0 20px 44px rgba(33,36,39,.4);
+      animation-play-state: paused;
+    }
+    @keyframes timer-cta-pulse {
+      0%   { box-shadow: 0 14px 36px rgba(33,36,39,.3), 0 0 0 0 rgba(33,36,39,.35); }
+      70%  { box-shadow: 0 14px 36px rgba(33,36,39,.3), 0 0 0 22px rgba(33,36,39,0); }
+      100% { box-shadow: 0 14px 36px rgba(33,36,39,.3), 0 0 0 0 rgba(33,36,39,0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .timer-mid-cta { animation: none; }
+    }
+    @media (max-width: 640px) {
+      .timer-mid { padding: 48px 18px 42px; }
+      .timer-mid .countdown { gap: 8px; margin-bottom: 26px; }
+      .timer-mid .time-box { padding: 14px 12px; min-width: 70px; border-radius: 12px; }
+      .timer-mid .time-number { font-size: 32px; }
+      .timer-mid .time-label { font-size: 9px; margin-top: 5px; }
+      .timer-mid-cta { padding: 16px 32px; font-size: 15px; }
     }
 
     /* ── TESTIMONIALS / REAL REVIEWS ───────────── */
@@ -857,8 +930,66 @@
     .savings-tag { display: inline-block; background: var(--navy); color: var(--yellow); padding: 6px 18px; border-radius: 50px; font-weight: 700; font-size: 13px; }
     .trust-row { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin: 16px 0 14px; font-size: 14px; font-weight: 600; color: var(--navy); }
     .trust-row i { margin-right: 7px; }
-    .btn-dark { display: inline-block; background: var(--navy); color: var(--yellow); padding: 18px 52px; font-size: 19px; font-weight: 800; border-radius: 60px; text-decoration: none; transition: all .3s; box-shadow: 0 12px 40px rgba(33,36,39,.3); letter-spacing: -.3px; cursor: pointer; }
-    .btn-dark:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(33,36,39,.4); }
+    .btn-dark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      background: var(--navy);
+      color: var(--yellow);
+      padding: 24px 72px;
+      font-size: 22px;
+      font-weight: 900;
+      border-radius: 70px;
+      text-decoration: none;
+      transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+      box-shadow: 0 16px 44px rgba(33,36,39,.35), 0 0 0 0 rgba(33,36,39,.4);
+      letter-spacing: -.3px;
+      cursor: pointer;
+      border: none;
+      position: relative;
+      overflow: hidden;
+      animation: btn-dark-pulse 2.4s ease-out infinite;
+    }
+    .btn-dark i { font-size: 18px; position: relative; z-index: 2; }
+    .btn-dark > span { position: relative; z-index: 2; }
+    /* Shimmer effect — a light streak that moves across the button */
+    .btn-dark::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(110deg, transparent 0%, rgba(255,195,75,.22) 45%, rgba(255,195,75,.32) 50%, rgba(255,195,75,.22) 55%, transparent 100%);
+      animation: btn-dark-shimmer 3.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .btn-dark:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 24px 56px rgba(33,36,39,.5);
+      background: #101216;
+      animation-play-state: paused;
+    }
+    .btn-dark:hover::before { animation-play-state: paused; }
+    @keyframes btn-dark-pulse {
+      0%   { box-shadow: 0 16px 44px rgba(33,36,39,.35), 0 0 0 0 rgba(33,36,39,.4); }
+      70%  { box-shadow: 0 16px 44px rgba(33,36,39,.35), 0 0 0 28px rgba(33,36,39,0); }
+      100% { box-shadow: 0 16px 44px rgba(33,36,39,.35), 0 0 0 0 rgba(33,36,39,0); }
+    }
+    @keyframes btn-dark-shimmer {
+      0%   { left: -100%; }
+      60%  { left: 160%; }
+      100% { left: 160%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .btn-dark { animation: none; }
+      .btn-dark::before { animation: none; display: none; }
+    }
+    @media (max-width: 640px) {
+      .btn-dark { padding: 20px 48px; font-size: 18px; }
+      .btn-dark i { font-size: 16px; }
+    }
 
     /* Volume */
     /* Social proof row above final CTA button */
@@ -1429,17 +1560,19 @@
     </div>
   </section>
 
-  <!-- TIMER MID — urgency bar right after the ROI calculator -->
+  <!-- TIMER MID — urgency section right after the ROI calculator -->
   <div class="timer-mid">
     <div class="timer-mid-inner">
-      <div class="timer-mid-title"><i class="fas fa-bolt"></i> Estos números son reales.<br><strong>Empezá hoy — el precio termina en:</strong></div>
+      <div class="timer-mid-eyebrow"><i class="fas fa-bolt"></i> Estos números son reales</div>
+      <h2 class="timer-mid-headline">Empezá hoy — el precio termina en:</h2>
+      <p class="timer-mid-sub">Después de esta oferta el precio vuelve a Q1,575</p>
       <div class="countdown">
         <div class="time-box"><span class="time-number t-days">00</span><div class="time-label">DÍAS</div></div>
         <div class="time-box"><span class="time-number t-hours">00</span><div class="time-label">HORAS</div></div>
         <div class="time-box"><span class="time-number t-minutes">00</span><div class="time-label">MIN</div></div>
         <div class="time-box"><span class="time-number t-seconds">00</span><div class="time-label">SEG</div></div>
       </div>
-      <button type="button" class="timer-mid-cta open-checkout">Comprar Ahora →</button>
+      <button type="button" class="timer-mid-cta open-checkout"><i class="fas fa-shopping-cart"></i> Comprar Ahora — Q1,200</button>
     </div>
   </div>
 
@@ -1770,7 +1903,7 @@
         <div class="fcs-divider"></div>
         <div class="fcs-item"><i class="fas fa-users"></i> <span><strong>500+</strong> emprendedores en Guatemala</span></div>
       </div>
-      <button type="button" class="btn-dark open-checkout" style="border:none;">Comprar Ahora →</button>
+      <button type="button" class="btn-dark open-checkout"><i class="fas fa-shopping-cart"></i><span>Comprar Ahora — Q1,200</span><i class="fas fa-arrow-right" style="font-size:14px;"></i></button>
       <p style="margin-top:16px; font-size:13px; opacity:.65; color:var(--navy);"><i class="fas fa-bolt"></i> Entrega en <strong>24–48 horas</strong> a toda Guatemala &nbsp;·&nbsp; <i class="fab fa-whatsapp"></i> Atención personalizada por WhatsApp</p>
 
       <div class="volume-section">
