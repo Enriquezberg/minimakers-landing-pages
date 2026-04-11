@@ -32,21 +32,25 @@ const PRODUCT = {
   currency: 'GTQ'
 };
 
-// Volume pricing — MUST match index.html pricing() logic
-// Returns unit price in cents for a given quantity
+// Volume pricing — per-unit schedule, MUST match index.html pricing() logic
+// 1=Q1200, 2=Q1150, 3=Q1100, 4=Q1050, 5=Q1000, 6+=Q900
 function unitPriceCents(qty) {
   qty = parseInt(qty, 10) || 1;
-  if (qty >= 6) return 90000;   // Q900
-  if (qty >= 4) return 102000;  // Q1,020
-  if (qty >= 2) return 110000;  // Q1,100
-  return 120000;                // Q1,200
+  if (qty >= 6)  return 90000;   // Q900
+  if (qty === 5) return 100000;  // Q1,000
+  if (qty === 4) return 105000;  // Q1,050
+  if (qty === 3) return 110000;  // Q1,100
+  if (qty === 2) return 115000;  // Q1,150
+  return 120000;                 // Q1,200
 }
 
 function discountPct(qty) {
   qty = parseInt(qty, 10) || 1;
-  if (qty >= 6) return 25;
-  if (qty >= 4) return 15;
-  if (qty >= 2) return 8;
+  if (qty >= 6)  return 25;
+  if (qty === 5) return 17;
+  if (qty === 4) return 13;
+  if (qty === 3) return 8;
+  if (qty === 2) return 4;
   return 0;
 }
 
