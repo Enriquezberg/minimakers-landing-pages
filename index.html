@@ -119,6 +119,42 @@
     }
 
     /* ── HEADER ────────────────────────────────── */
+    /* ── PREVIEW MODE INDICATOR (only visible when ?preview=1) ── */
+    .preview-badge {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: #9333ea;
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      box-shadow: 0 8px 24px rgba(147,51,234,.4);
+      z-index: 9999;
+      font-family: 'DM Sans', sans-serif;
+      pointer-events: none;
+    }
+    .preview-badge::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+      animation: preview-blink 1.2s ease-in-out infinite;
+    }
+    @keyframes preview-blink {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.3; }
+    }
+    html.preview-mode .preview-badge { display: inline-flex; align-items: center; }
+
     /* ── MARQUEE ANNOUNCEMENT BAR ──────────────── */
     .marquee-bar {
       background: var(--yellow);
@@ -2338,6 +2374,9 @@
     </div>
   </section>
 
+  <!-- Preview mode badge (only shows when ?preview=1) -->
+  <div class="preview-badge">PREVIEW MODE</div>
+
   <!-- WhatsApp Float -->
   <a href="https://wa.me/50231695584?text=Hola,%20quiero%20info%20sobre%20la%20m%C3%A1quina%2025%20mini%20panqueques" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
     <i class="fab fa-whatsapp"></i>
@@ -2559,6 +2598,41 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 
   <script>
+    // ── Preview mode flag (?preview=1) ──
+    // Lets us ship experimental features to production behind a flag
+    // so regular visitors don't see them, but internal testing does.
+    //
+    // Usage in code:
+    //   if (window.__PREVIEW__) { /* experimental code */ }
+    //
+    // Usage in CSS:
+    //   body.preview-mode .my-experimental-feature { display: block; }
+    //
+    // Enable by visiting: mini-panqueques-25.minimakersgt.com/?preview=1
+    // (persists for the session via sessionStorage)
+    (function() {
+      var urlFlag = new URLSearchParams(window.location.search).get('preview');
+      var storedFlag = null;
+      try { storedFlag = sessionStorage.getItem('mm_preview'); } catch(e) {}
+      var isPreview = urlFlag === '1' || storedFlag === '1';
+      if (urlFlag === '1') {
+        try { sessionStorage.setItem('mm_preview', '1'); } catch(e) {}
+      } else if (urlFlag === '0') {
+        // ?preview=0 explicitly disables it
+        try { sessionStorage.removeItem('mm_preview'); } catch(e) {}
+        isPreview = false;
+      }
+      window.__PREVIEW__ = isPreview;
+      if (isPreview) {
+        document.documentElement.classList.add('preview-mode');
+        if (document.body) document.body.classList.add('preview-mode');
+        else document.addEventListener('DOMContentLoaded', function() {
+          document.body.classList.add('preview-mode');
+        });
+        console.info('[MiniMakers] Preview mode ACTIVE — experimental features visible');
+      }
+    })();
+
     // ── Force scroll to top on page load (unless anchor hash is present) ──
     // Fixes issue where mobile browsers restore previous scroll position
     // and land the user deep into the page after a refresh.
