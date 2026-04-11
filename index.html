@@ -4,15 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="favicon.png">
-  <meta name="description" content="Máquina Industrial 25 Mini Panqueques - Inversión que se paga sola. Envío gratis a toda Guatemala. Q1,200 con garantía de 1 año.">
+  <meta name="description" content="Máquina Industrial 25 Mini Panqueques — La inversión que se paga sola. Envío gratis a toda Guatemala, pago contra entrega y garantía de 1 año. Q1,200.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://mini-panqueques-25.minimakersgt.com/">
+
+  <!-- Open Graph (Facebook / Instagram / WhatsApp share previews) -->
+  <meta property="og:site_name" content="MiniMakers GT">
   <meta property="og:title" content="Máquina 25 Mini Panqueques | MiniMakers GT">
-  <meta property="og:description" content="La inversión que se paga sola. Empieza tu negocio de snacks rentable en Guatemala. ROI en 1-2 semanas.">
-  <meta property="og:image" content="https://d2j6dbq0eux0bg.cloudfront.net/images/42285054/4591850846.jpg">
+  <meta property="og:description" content="La inversión que se paga sola. Empieza tu negocio de snacks rentable en Guatemala. ROI en 1–2 semanas, envío gratis y pago contra entrega.">
+  <meta property="og:image" content="https://mini-panqueques-25.minimakersgt.com/img/bandeja-deluxe.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Bandeja de mini panqueques con chocolate, fresa y banano">
   <meta property="og:type" content="product">
-  <meta property="og:url" content="https://enriquezberg.github.io/minimakers-landing-pages/mini-panqueques-25/">
+  <meta property="og:url" content="https://mini-panqueques-25.minimakersgt.com/">
+  <meta property="og:locale" content="es_GT">
   <meta property="product:price:amount" content="1200">
   <meta property="product:price:currency" content="GTQ">
-  <title>Máquina 25 Mini Panqueques | MiniMakers GT</title>
+  <meta property="product:availability" content="in stock">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Máquina 25 Mini Panqueques | MiniMakers GT">
+  <meta name="twitter:description" content="La inversión que se paga sola. Empieza tu negocio de snacks rentable en Guatemala.">
+  <meta name="twitter:image" content="https://mini-panqueques-25.minimakersgt.com/img/bandeja-deluxe.jpg">
+
+  <title>Máquina 25 Mini Panqueques — Q1,200 · Envío Gratis · MiniMakers GT</title>
 
   <!-- JSON-LD Product Schema -->
   <script type="application/ld+json">
@@ -29,7 +46,7 @@
     "brand": { "@type": "Brand", "name": "MiniMakers GT" },
     "offers": {
       "@type": "Offer",
-      "url": "https://minimakersgt.com/products/maquina-industrial-25-mini-panqueques",
+      "url": "https://mini-panqueques-25.minimakersgt.com/",
       "priceCurrency": "GTQ",
       "price": "1200",
       "priceValidUntil": "2026-12-31",
@@ -1363,7 +1380,7 @@
     <div class="container">
       <div class="section-header">
         <div class="section-label">Calculadora</div>
-        <h2 class="section-title">¿Cuánto puedes ganar?</h2>
+        <h2 class="section-title">¿Cuánto podés ganar?</h2>
         <p class="section-sub" style="color:rgba(255,255,255,.6); margin:0 auto;">Ajusta los sliders y descubre tu rentabilidad real</p>
       </div>
       <div class="calculator-box">
@@ -2429,14 +2446,22 @@
 
       function formatQ(n) { return 'Q' + n.toLocaleString('es-GT'); }
 
-      // Pass UTM params to gracias.html
+      // Pass UTM params + test_event_code to gracias.html
       function graciasURL(base) {
         var u = new URLSearchParams(window.location.search);
-        ['utm_source','utm_medium','utm_campaign'].forEach(function(k) {
+        ['utm_source','utm_medium','utm_campaign','test_event_code'].forEach(function(k) {
           if (u.get(k)) base += '&' + k + '=' + encodeURIComponent(u.get(k));
         });
         return base;
       }
+
+      // Test mode: si la URL trae ?test_event_code=..., saltamos el browser Pixel
+      // (los eventos viajan solo por CAPI server-side con test_event_code).
+      // Esto evita que los tests contaminen métricas reales de campañas activas.
+      function getTestEventCode() {
+        return new URLSearchParams(window.location.search).get('test_event_code') || null;
+      }
+      function isTestMode() { return !!getTestEventCode(); }
 
       var overlay = document.getElementById('checkoutOverlay');
       var closeBtn = document.getElementById('checkoutClose');
@@ -2507,9 +2532,9 @@
         selectedMethod = null;
         currentQty = 1;
         updateQtyUI(false);
-        // Meta Pixel: InitiateCheckout
+        // Meta Pixel: InitiateCheckout (skip en test mode — CAPI lo maneja con test_event_code)
         var p = pricing(currentQty);
-        if (typeof fbq === 'function') {
+        if (typeof fbq === 'function' && !isTestMode()) {
           fbq('track', 'InitiateCheckout', {
             content_name: 'Maquina Industrial 25 Mini Panqueques',
             content_ids: ['MI25MP'],
@@ -2584,9 +2609,9 @@
           card.classList.add('selected');
           selectedMethod = card.getAttribute('data-method');
           updateSubmitBtn();
-          // Meta Pixel: AddPaymentInfo
+          // Meta Pixel: AddPaymentInfo (skip en test mode)
           var p = pricing(currentQty);
-          if (typeof fbq === 'function') {
+          if (typeof fbq === 'function' && !isTestMode()) {
             fbq('track', 'AddPaymentInfo', {
               content_name: 'Maquina Industrial 25 Mini Panqueques',
               content_ids: ['MI25MP'],
@@ -2643,7 +2668,8 @@
               nit: payload.nit,
               quantity: payload.quantity,
               unit_price: payload.unit_price,
-              total_amount: payload.total_amount
+              total_amount: payload.total_amount,
+              test_event_code: getTestEventCode()
             })
           })
           .then(function(res) { return res.json(); })
@@ -2681,10 +2707,11 @@
         submitBtn.classList.add('loading');
         errorMsg.classList.remove('visible');
 
+        var cardPayload = Object.assign({}, payload, { test_event_code: getTestEventCode() });
         fetch(WORKER_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(cardPayload)
         })
         .then(function(res) { return res.json(); })
         .then(function(data) {

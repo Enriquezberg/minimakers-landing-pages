@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /cloudflare-worker/
+Disallow: /mini-panqueques-25/
+
+Sitemap: https://mini-panqueques-25.minimakersgt.com/sitemap.xml
