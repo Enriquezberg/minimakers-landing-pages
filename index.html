@@ -104,12 +104,12 @@
     /* ── HEADER ────────────────────────────────── */
     /* ── MARQUEE ANNOUNCEMENT BAR ──────────────── */
     .marquee-bar {
-      background: #0d0f12;
-      color: var(--yellow);
+      background: var(--yellow);
+      color: var(--navy);
       padding: 11px 0;
       overflow: hidden;
       position: relative;
-      border-bottom: 1px solid rgba(255, 195, 75, 0.14);
+      border-bottom: 1px solid rgba(33, 36, 39, 0.12);
     }
     .marquee-bar::before,
     .marquee-bar::after {
@@ -123,11 +123,11 @@
     }
     .marquee-bar::before {
       left: 0;
-      background: linear-gradient(90deg, #0d0f12 0%, transparent 100%);
+      background: linear-gradient(90deg, var(--yellow) 0%, transparent 100%);
     }
     .marquee-bar::after {
       right: 0;
-      background: linear-gradient(270deg, #0d0f12 0%, transparent 100%);
+      background: linear-gradient(270deg, var(--yellow) 0%, transparent 100%);
     }
     .marquee-track {
       display: flex;
@@ -143,17 +143,18 @@
       font-weight: 700;
       white-space: nowrap;
       letter-spacing: 0.2px;
+      color: var(--navy);
     }
     .marquee-item i {
-      color: var(--yellow);
+      color: var(--navy);
       font-size: 14px;
     }
-    .marquee-item strong { color: #fff; font-weight: 800; }
+    .marquee-item strong { color: var(--navy); font-weight: 900; }
     .marquee-dot {
       align-self: center;
       width: 5px;
       height: 5px;
-      background: rgba(255, 195, 75, 0.45);
+      background: rgba(33, 36, 39, 0.35);
       border-radius: 50%;
       flex-shrink: 0;
     }
@@ -2076,7 +2077,7 @@
       if (!music || !btn) return;
 
       const TARGET_VOLUME = 0.45;
-      const FADE_OUT_THRESHOLD = 0.25; // fade when user scrolled 25% of page
+      const FADE_OUT_THRESHOLD = 0.16; // fade when user scrolled 16% of page
       const FADE_OUT_DURATION  = 2000; // 2 seconds
       const FADE_IN_DURATION   = 500;
 
