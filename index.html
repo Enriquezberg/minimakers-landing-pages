@@ -213,8 +213,14 @@
     .proof-item i { color: var(--yellow); }
     .proof-divider { width: 1px; height: 22px; background: #e5e7eb; }
 
-    /* ── TIMER ─────────────────────────────────── */
-    .timer-section { background: var(--yellow); padding: 32px 24px; text-align: center; }
+    /* ── TIMER (final CTA variant) ─────────────── */
+    .timer-section { background: var(--yellow); padding: 60px 24px 0; text-align: center; }
+    .final-cta .timer-section { padding: 0 0 20px; background: transparent; }
+    .final-cta .timer-title { font-size: 15px; margin-bottom: 12px; opacity: .75; }
+    .final-cta .time-box { padding: 10px 14px; min-width: 64px; }
+    .final-cta .time-number { font-size: 26px; }
+    .final-cta .time-label { font-size: 9px; margin-top: 3px; }
+    .final-cta .countdown { gap: 8px; }
     .timer-title { font-size: 21px; font-weight: 800; color: var(--navy); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .countdown { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
     .time-box { background: var(--navy); padding: 16px 22px; border-radius: 12px; min-width: 80px; }
@@ -753,22 +759,22 @@
     .faq-question.active .faq-chevron { background: var(--yellow); color: var(--navy); transform: rotate(180deg); }
 
     /* ── FINAL CTA ─────────────────────────────── */
-    .final-cta { background: var(--yellow); padding: 100px 24px; text-align: center; }
-    .final-cta .section-title { color: var(--navy); display: flex; align-items: center; justify-content: center; gap: 10px; }
-    .stock-badge { display: inline-block; background: var(--navy); color: #fff; padding: 10px 28px; border-radius: 50px; font-size: 16px; font-weight: 700; margin-bottom: 36px; }
+    .final-cta { background: var(--yellow); padding: 56px 24px 64px; text-align: center; }
+    .final-cta .section-title { color: var(--navy); display: flex; align-items: center; justify-content: center; gap: 10px; font-size: clamp(24px, 3.2vw, 36px); margin-bottom: 16px; }
+    .stock-badge { display: inline-block; background: var(--navy); color: #fff; padding: 8px 22px; border-radius: 50px; font-size: 14px; font-weight: 700; margin-bottom: 18px; }
     .stock-badge strong { color: var(--yellow); }
-    .price-box { margin: 28px 0 32px; }
-    .price-old { font-size: 20px; text-decoration: line-through; color: rgba(33,36,39,.5); margin-bottom: 8px; }
-    .price-current { font-size: clamp(64px, 10vw, 96px); font-weight: 900; color: var(--navy); line-height: 1; letter-spacing: -4px; margin-bottom: 14px; }
-    .savings-tag { display: inline-block; background: var(--navy); color: var(--yellow); padding: 8px 22px; border-radius: 50px; font-weight: 700; font-size: 16px; }
-    .trust-row { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin: 32px 0; font-size: 16px; font-weight: 600; color: var(--navy); }
+    .price-box { margin: 12px 0 18px; }
+    .price-old { font-size: 16px; text-decoration: line-through; color: rgba(33,36,39,.5); margin-bottom: 4px; }
+    .price-current { font-size: clamp(56px, 8.5vw, 84px); font-weight: 900; color: var(--navy); line-height: 1; letter-spacing: -3px; margin-bottom: 10px; }
+    .savings-tag { display: inline-block; background: var(--navy); color: var(--yellow); padding: 6px 18px; border-radius: 50px; font-weight: 700; font-size: 13px; }
+    .trust-row { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin: 16px 0 14px; font-size: 14px; font-weight: 600; color: var(--navy); }
     .trust-row i { margin-right: 7px; }
-    .btn-dark { display: inline-block; background: var(--navy); color: var(--yellow); padding: 22px 60px; font-size: 22px; font-weight: 800; border-radius: 60px; text-decoration: none; transition: all .3s; box-shadow: 0 12px 40px rgba(33,36,39,.3); letter-spacing: -.3px; cursor: pointer; }
+    .btn-dark { display: inline-block; background: var(--navy); color: var(--yellow); padding: 18px 52px; font-size: 19px; font-weight: 800; border-radius: 60px; text-decoration: none; transition: all .3s; box-shadow: 0 12px 40px rgba(33,36,39,.3); letter-spacing: -.3px; cursor: pointer; }
     .btn-dark:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(33,36,39,.4); }
 
     /* Volume */
     /* Social proof row above final CTA button */
-    .final-cta-social { display: flex; align-items: center; justify-content: center; gap: 18px; margin: 18px 0 6px; flex-wrap: wrap; font-size: 14px; color: var(--navy); }
+    .final-cta-social { display: flex; align-items: center; justify-content: center; gap: 16px; margin: 10px 0 18px; flex-wrap: wrap; font-size: 13px; color: var(--navy); }
     .final-cta-social .fcs-item { display: flex; align-items: center; gap: 8px; }
     .final-cta-social .fcs-stars { color: #f59e0b; font-size: 16px; letter-spacing: 1px; }
     .final-cta-social strong { font-weight: 800; }
@@ -778,7 +784,7 @@
       .final-cta-social .fcs-divider { display: none; }
     }
 
-    .volume-section { margin-top: 52px; padding-top: 40px; border-top: 2px solid rgba(33,36,39,.15); }
+    .volume-section { margin-top: 36px; padding-top: 30px; border-top: 2px solid rgba(33,36,39,.15); }
     .volume-title { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .volume-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(138px, 1fr)); gap: 12px; max-width: 660px; margin: 0 auto; }
     .volume-card { background: rgba(33,36,39,.07); border: 2px solid rgba(33,36,39,.15); border-radius: 12px; padding: 18px 12px; text-align: center; transition: all .25s; cursor: default; }
@@ -1602,20 +1608,18 @@
     </div>
   </section>
 
-  <!-- TIMER (final — urgency right before CTA) -->
-  <div class="timer-section">
-    <div class="timer-title"><i class="fas fa-clock"></i> Precio especial termina en:</div>
-    <div class="countdown">
-      <div class="time-box"><span class="time-number t-days">00</span><div class="time-label">DÍAS</div></div>
-      <div class="time-box"><span class="time-number t-hours">00</span><div class="time-label">HORAS</div></div>
-      <div class="time-box"><span class="time-number t-minutes">00</span><div class="time-label">MIN</div></div>
-      <div class="time-box"><span class="time-number t-seconds">00</span><div class="time-label">SEG</div></div>
-    </div>
-  </div>
-
-  <!-- FINAL CTA -->
+  <!-- FINAL CTA (timer fusionado adentro) -->
   <section class="final-cta">
     <div class="container" style="max-width:860px;">
+      <div class="timer-section">
+        <div class="timer-title"><i class="fas fa-clock"></i> Precio especial termina en:</div>
+        <div class="countdown">
+          <div class="time-box"><span class="time-number t-days">00</span><div class="time-label">DÍAS</div></div>
+          <div class="time-box"><span class="time-number t-hours">00</span><div class="time-label">HORAS</div></div>
+          <div class="time-box"><span class="time-number t-minutes">00</span><div class="time-label">MIN</div></div>
+          <div class="time-box"><span class="time-number t-seconds">00</span><div class="time-label">SEG</div></div>
+        </div>
+      </div>
       <h2 class="section-title"><i class="fas fa-gift"></i> Oferta por tiempo limitado</h2>
       <div class="stock-badge">Quedan solo <strong>4 unidades</strong> en stock</div>
       <div class="price-box">
@@ -1637,7 +1641,7 @@
         <div class="fcs-item"><i class="fas fa-users"></i> <span><strong>500+</strong> emprendedores en Guatemala</span></div>
       </div>
       <button type="button" class="btn-dark open-checkout" style="border:none;">Comprar Ahora →</button>
-      <p style="margin-top:22px; font-size:15px; opacity:.65; color:var(--navy);"><i class="fas fa-bolt"></i> Entrega en <strong>24–48 horas</strong> a toda Guatemala &nbsp;·&nbsp; <i class="fab fa-whatsapp"></i> Atención personalizada por WhatsApp</p>
+      <p style="margin-top:16px; font-size:13px; opacity:.65; color:var(--navy);"><i class="fas fa-bolt"></i> Entrega en <strong>24–48 horas</strong> a toda Guatemala &nbsp;·&nbsp; <i class="fab fa-whatsapp"></i> Atención personalizada por WhatsApp</p>
 
       <div class="volume-section">
         <p class="volume-title"><i class="fas fa-building"></i> ¿Comprando para tu negocio? Descuentos por volumen:</p>
