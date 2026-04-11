@@ -62,7 +62,7 @@ function clampQty(qty) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     // CORS preflight
@@ -72,25 +72,106 @@ export default {
 
     // Route: Webhook from Recurrente
     if (url.pathname === '/webhook' && request.method === 'POST') {
-      return handleWebhook(request, env);
+      return handleWebhook(request, env, ctx);
     }
 
     // Route: Cash order from landing page
     if (url.pathname === '/cash' && request.method === 'POST') {
-      return handleCashOrder(request, env);
+      return handleCashOrder(request, env, ctx);
+    }
+
+    // Route: Public stock + mode config (proxy to CRM Railway, edge cached)
+    if (url.pathname === '/config' && request.method === 'GET') {
+      return handleConfig(request, env, ctx);
     }
 
     // Route: Create checkout from landing page
     if (request.method === 'POST') {
-      return handleCheckout(request, env);
+      return handleCheckout(request, env, ctx);
     }
 
     return jsonResponse({ error: 'Method not allowed' }, 405, request);
   }
 };
 
+// ── Stock + payment mode config (proxied from CRM Railway) ────────────────
+async function handleConfig(request, env, ctx) {
+  const url = new URL(request.url);
+  const sku = url.searchParams.get('sku') || 'MI25MP';
+  const cacheKey = `config:${sku}`;
+
+  // Check in-memory cache via Cache API (edge-level, ~60s TTL)
+  const cache = caches.default;
+  const cacheUrl = new Request(`https://config-cache.local/${cacheKey}`, request);
+  const cached = await cache.match(cacheUrl);
+  if (cached) {
+    // Return a fresh Response with CORS headers
+    const cachedBody = await cached.text();
+    return new Response(cachedBody, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=60',
+        'X-Config-Source': 'edge-cache',
+        ...corsHeaders(request)
+      }
+    });
+  }
+
+  // Fallback default if CRM is unreachable
+  const fallback = {
+    sku: sku,
+    stock: -1,
+    mode: 'all',
+    show_stock_badge: false,
+    card_enabled: true,
+    cash_enabled: true,
+    updated_at: new Date().toISOString(),
+    source: 'fallback'
+  };
+
+  if (!env.CRM_URL) {
+    return jsonResponse(fallback, 200, request);
+  }
+
+  try {
+    const crmResp = await fetch(
+      env.CRM_URL + '/api/landing/config?sku=' + encodeURIComponent(sku),
+      { method: 'GET', cf: { cacheTtl: 30, cacheEverything: false } }
+    );
+    if (!crmResp.ok) {
+      return jsonResponse(fallback, 200, request);
+    }
+    const data = await crmResp.json();
+    const body = JSON.stringify(data);
+
+    const response = new Response(body, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=60',
+        'X-Config-Source': 'crm',
+        ...corsHeaders(request)
+      }
+    });
+
+    // Store in edge cache for next ~60s
+    if (ctx && ctx.waitUntil) {
+      const cacheResp = new Response(body, {
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' }
+      });
+      ctx.waitUntil(cache.put(cacheUrl, cacheResp));
+    }
+
+    return response;
+  } catch (err) {
+    console.error('[config] error fetching from CRM:', err.message);
+    return jsonResponse(fallback, 200, request);
+  }
+}
+
 // ── Create Recurrente Checkout ──────────────────
-async function handleCheckout(request, env) {
+async function handleCheckout(request, env, ctx) {
   try {
     const data = await request.json();
     const testEventCode = (data.test_event_code || '').trim() || null;
@@ -151,7 +232,7 @@ async function handleCheckout(request, env) {
     if (recData.checkout_url) {
       // Save order to MiniMakers CRM
       if (env.CRM_URL && env.CRM_SECRET) {
-        saveToCRM(env.CRM_URL, env.CRM_SECRET, {
+        ctx.waitUntil(saveToCRM(env.CRM_URL, env.CRM_SECRET, {
           order_id: orderNum,
           action: 'create',
           date: new Date().toISOString(),
@@ -168,11 +249,11 @@ async function handleCheckout(request, env) {
           unit_price: unitCents / 100,
           total_amount: totalCents / 100,
           discount_pct: dcPct
-        }).catch(function() {});
+        }).catch(function() {}));
       }
 
       // Meta Conversions API: InitiateCheckout (card)
-      sendMetaEvent(env, 'InitiateCheckout', {
+      ctx.waitUntil(sendMetaEvent(env, 'InitiateCheckout', {
         email: data.email.trim(),
         phone: data.phone.trim(),
         firstName: data.first_name.trim(),
@@ -188,7 +269,7 @@ async function handleCheckout(request, env) {
         currency: PRODUCT.currency,
         num_items: qty,
         order_id: orderNum
-      }, null, testEventCode).catch(function() {});
+      }, null, testEventCode).catch(function() {}));
 
       return jsonResponse({ redirect_url: recData.checkout_url, order_id: orderNum }, 200, request);
     } else {
@@ -205,12 +286,15 @@ async function handleCheckout(request, env) {
 }
 
 // ── Handle Cash Order ─────────────────────────────
-async function handleCashOrder(request, env) {
+async function handleCashOrder(request, env, ctx) {
   try {
     const data = await request.json();
     const testEventCode = (data.test_event_code || '').trim() || null;
     const refNum = data.order_id || 'MM-' + Date.now().toString(36).toUpperCase();
     var displayOrder = refNum;
+
+    // DEBUG temporal para verificar flujo de test mode
+    console.log('[DEBUG handleCashOrder] incoming body keys:', Object.keys(data).join(','), '| test_event_code=' + (testEventCode || 'NONE') + ' | order_id=' + refNum);
 
     // Quantity + volume pricing — server-side authoritative
     const qty = clampQty(data.quantity);
@@ -243,8 +327,8 @@ async function handleCashOrder(request, env) {
       } catch(e) { console.error('CRM save error:', e.message); }
     }
 
-    // Meta Conversions API: Purchase (cash)
-    sendMetaEvent(env, 'Purchase', {
+    // Meta Conversions API: Purchase (cash) — waitUntil keeps Worker alive for CAPI
+    ctx.waitUntil(sendMetaEvent(env, 'Purchase', {
       email: (data.email || '').trim(),
       phone: (data.phone || '').trim(),
       firstName: (data.first_name || '').trim(),
@@ -260,7 +344,7 @@ async function handleCashOrder(request, env) {
       currency: PRODUCT.currency,
       num_items: qty,
       order_id: displayOrder
-    }, LANDING_URL + 'gracias.html?method=cash&order=' + displayOrder + '&qty=' + qty + '&total=' + (totalCents / 100) + (testEventCode ? '&test_event_code=' + encodeURIComponent(testEventCode) : ''), testEventCode).catch(function() {});
+    }, LANDING_URL + 'gracias.html?method=cash&order=' + displayOrder + '&qty=' + qty + '&total=' + (totalCents / 100) + (testEventCode ? '&test_event_code=' + encodeURIComponent(testEventCode) : ''), testEventCode).catch(function() {}));
 
     return jsonResponse({ result: 'ok', order_id: displayOrder }, 200, request);
   } catch (err) {
@@ -270,7 +354,7 @@ async function handleCashOrder(request, env) {
 }
 
 // ── Handle Recurrente Webhook ───────────────────
-async function handleWebhook(request, env) {
+async function handleWebhook(request, env, ctx) {
   try {
     const payload = await request.json();
     const eventType = payload.event_type || '';
@@ -284,18 +368,18 @@ async function handleWebhook(request, env) {
 
       // Update order status in MiniMakers CRM
       if (env.CRM_URL && env.CRM_SECRET && metadata.order_id) {
-        saveToCRM(env.CRM_URL, env.CRM_SECRET, {
+        ctx.waitUntil(saveToCRM(env.CRM_URL, env.CRM_SECRET, {
           order_id: metadata.order_id,
           action: 'update',
           status: 'Pagado Pendiente Envio',
           payment_status: 'pagado',
           recurrente_id: payload.id || ''
-        }).catch(function() {});
+        }).catch(function() {}));
       }
 
       // Meta Conversions API: Purchase (card — confirmed by Recurrente)
       var webhookTestCode = (metadata.test_event_code || '').trim() || null;
-      sendMetaEvent(env, 'Purchase', {
+      ctx.waitUntil(sendMetaEvent(env, 'Purchase', {
         email: metadata.email || customer.email || '',
         phone: metadata.phone || '',
         firstName: (metadata.customer_name || '').split(' ')[0] || '',
@@ -307,7 +391,7 @@ async function handleWebhook(request, env) {
         value: amount,
         currency: PRODUCT.currency,
         order_id: metadata.order_id
-      }, LANDING_URL + 'gracias.html?payment=success&order=' + metadata.order_id, webhookTestCode).catch(function() {});
+      }, LANDING_URL + 'gracias.html?payment=success&order=' + metadata.order_id, webhookTestCode).catch(function() {}));
 
       console.log('Payment succeeded:', metadata.order_id, customer.email, 'Q' + amount);
     }
@@ -343,7 +427,11 @@ async function sha256(str) {
 }
 
 async function sendMetaEvent(env, eventName, userData, customData, eventSourceUrl, testEventCode) {
-  if (!env.META_ACCESS_TOKEN) return;
+  console.log('[DEBUG sendMetaEvent] event=' + eventName + ' order_id=' + (customData && customData.order_id) + ' test_event_code=' + (testEventCode || 'NONE') + ' hasToken=' + !!env.META_ACCESS_TOKEN);
+  if (!env.META_ACCESS_TOKEN) {
+    console.error('[DEBUG sendMetaEvent] NO META_ACCESS_TOKEN — aborting');
+    return;
+  }
 
   var hashedUserData = {};
   if (userData.email) hashedUserData.em = [await sha256(userData.email)];
@@ -386,12 +474,10 @@ async function sendMetaEvent(env, eventName, userData, customData, eventSourceUr
         body: JSON.stringify(payload)
       }
     );
-    if (testEventCode) {
-      var respText = await resp.text();
-      console.log('Meta CAPI [TEST ' + testEventCode + '] ' + eventName + ' → ' + resp.status + ' ' + respText);
-    }
+    var respText = await resp.text();
+    console.log('[DEBUG CAPI response] ' + eventName + ' | test=' + (testEventCode || 'NONE') + ' | status=' + resp.status + ' | body=' + respText.slice(0, 500));
   } catch (e) {
-    console.error('Meta CAPI error:', e.message);
+    console.error('[DEBUG CAPI error] ' + eventName + ': ' + e.message);
   }
 }
 
@@ -404,7 +490,7 @@ function corsHeaders(request) {
   }
   return {
     'Access-Control-Allow-Origin': origin || ALLOWED_ORIGINS[0],
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Max-Age': '86400'
   };

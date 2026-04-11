@@ -2866,6 +2866,110 @@
       });
     });
 
+    // ── Stock-aware config (driven by CRM Railway via Worker) ─
+    (function() {
+      var WORKER_URL = 'https://qpaypro-checkout.luisenriquez0714.workers.dev';
+
+      // State exposed globally so checkout modal can read the current mode
+      window.__minimakers_config = { mode: 'all', card_enabled: true, cash_enabled: true, stock: -1, show_stock_badge: false };
+
+      function applyConfig(cfg) {
+        window.__minimakers_config = cfg;
+
+        // Update stock badge in final-cta: show real stock only when badge is on
+        var stockBadges = document.querySelectorAll('.stock-badge');
+        stockBadges.forEach(function(badge) {
+          if (cfg.show_stock_badge && cfg.stock > 0) {
+            badge.innerHTML = 'Quedan solo <strong>' + cfg.stock + ' unidades</strong> en stock';
+            badge.style.display = '';
+          } else if (cfg.mode === 'disabled' || cfg.stock === 0) {
+            badge.innerHTML = '<i class="fas fa-hourglass-half" style="margin-right:6px;"></i> <strong>Agotado temporal</strong> — acepta pre-ordenes por WhatsApp';
+            badge.style.display = '';
+          } else {
+            // Stock comfortable or unknown: hide the scarcity badge entirely
+            badge.style.display = 'none';
+          }
+        });
+
+        // If mode is cash_only → hide the card payment method in checkout modal
+        var cardCard = document.querySelector('.payment-method-card[data-method="card"]');
+        if (cardCard) {
+          if (!cfg.card_enabled) {
+            cardCard.style.display = 'none';
+          } else {
+            cardCard.style.display = '';
+          }
+        }
+
+        // Show a notice inside the checkout modal when card is disabled
+        var checkoutHeader = document.querySelector('.checkout-header p');
+        if (checkoutHeader) {
+          var noticeId = 'checkoutModeNotice';
+          var existing = document.getElementById(noticeId);
+          if (cfg.mode === 'cash_only') {
+            if (!existing) {
+              var notice = document.createElement('div');
+              notice.id = noticeId;
+              notice.style.cssText = 'background:rgba(255,195,75,.18);color:#fff;padding:10px 14px;margin-top:8px;border-radius:8px;font-size:12px;font-weight:600;display:inline-block;';
+              notice.innerHTML = '<i class="fas fa-info-circle" style="color:#ffc34b;margin-right:6px;"></i> Solo aceptamos pago contra entrega mientras reponemos stock';
+              checkoutHeader.parentNode.appendChild(notice);
+            }
+          } else if (existing) {
+            existing.remove();
+          }
+        }
+
+        // If mode is disabled (stock=0) → swap all "open-checkout" buttons with WhatsApp preorder links
+        if (cfg.mode === 'disabled') {
+          var preorderMsg = encodeURIComponent('¡Hola! Quiero reservar una Máquina Industrial 25 Mini Panqueques en el próximo lote. ¿Cuándo llegan nuevas unidades?');
+          var preorderUrl = 'https://wa.me/50231695584?text=' + preorderMsg;
+          document.querySelectorAll('.open-checkout').forEach(function(btn) {
+            // Convert button → anchor in-place
+            var a = document.createElement('a');
+            a.href = preorderUrl;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.className = btn.className;
+            a.innerHTML = '<i class="fab fa-whatsapp" style="margin-right:8px;"></i> Pre-ordenar por WhatsApp';
+            // Remove any click handlers attached to the original button
+            btn.replaceWith(a);
+          });
+          // Also disable quantity selector
+          var qtySection = document.querySelector('.checkout-qty-section');
+          if (qtySection) qtySection.style.opacity = '0.4';
+        }
+      }
+
+      function fetchConfig() {
+        // Abort if we're still on localhost (development) — use defaults
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+          return;
+        }
+        fetch(WORKER_URL + '/config?sku=MI25MP', {
+          method: 'GET',
+          cache: 'no-store',
+          headers: { 'Accept': 'application/json' }
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(cfg) {
+          if (cfg && typeof cfg.mode === 'string') {
+            applyConfig(cfg);
+          }
+        })
+        .catch(function(err) {
+          // On error, keep default permissive config — don't break the landing
+          console.warn('[config] failed to load, using defaults:', err && err.message);
+        });
+      }
+
+      // Run after DOM is interactive
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fetchConfig);
+      } else {
+        fetchConfig();
+      }
+    })();
+
     // ── Checkout Modal ──────────────────────────
     (function() {
       var WORKER_URL = 'https://qpaypro-checkout.luisenriquez0714.workers.dev';
