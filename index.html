@@ -316,9 +316,17 @@
     }
     .stock-live.on-light strong { color: var(--navy); }
     .stock-live.on-light i { color: var(--yellow-dark); }
+    .stock-live.on-light.alert {
+      background: rgba(239,68,68,.09);
+      border: 1.5px solid rgba(239,68,68,.55);
+      color: #9f1239;
+      box-shadow: 0 4px 14px rgba(239,68,68,.12);
+    }
+    .stock-live.on-light.alert strong { color: #7f1d1d; font-weight: 900; }
+    .stock-live.on-light.alert i { color: #dc2626; }
     .stock-live.on-light.urgent {
-      background: rgba(239,68,68,.1);
-      border-color: rgba(239,68,68,.5);
+      background: rgba(239,68,68,.14);
+      border-color: rgba(239,68,68,.6);
       color: #b91c1c;
     }
     .stock-live.on-light.urgent strong { color: #7f1d1d; }
@@ -593,11 +601,21 @@
     }
     .bridge-body p:last-child { margin-bottom: 0; }
     .bridge-body strong { color: var(--navy); font-weight: 800; }
+    .bridge-cta-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 36px;
+    }
+    .bridge-cta-row .stock-live { margin-top: 0; }
+    @media (max-width: 880px) {
+      .bridge-cta-row { justify-content: center; }
+    }
     .bridge-cta {
       display: inline-flex;
       align-items: center;
       gap: 12px;
-      margin-top: 36px;
       background: var(--navy);
       color: var(--yellow);
       padding: 16px 30px;
@@ -1714,10 +1732,6 @@
           <button type="button" class="btn-primary open-checkout" style="border:none;">Comprar Ahora — Q1,200</button>
           <a href="#galeria" class="btn-ghost">Ver galería ↓</a>
         </div>
-        <div class="stock-live hidden-empty" data-stock-live style="display:none;">
-          <i class="fas fa-box"></i>
-          <span class="stock-live-text">Cargando stock…</span>
-        </div>
       </div>
       <div class="video-col">
         <div class="video-wrapper" id="videoWrapper">
@@ -1783,10 +1797,16 @@
           <p>La mayoría de nuestros clientes <strong>recupera la inversión en menos de 3 semanas</strong>. Muchos regresan por una segunda máquina porque ya estaban vendiendo demasiado.</p>
           <p>Si venís pensando en abrir un nuevo negocio o <strong>ampliar la oferta culinaria del que ya tenés</strong>, dejá de buscar. Llegaste al producto correcto.</p>
         </div>
-        <a href="#calculadora" class="bridge-cta">
-          <span>Descubrí cuánto podés ganar</span>
-          <i class="fas fa-arrow-down"></i>
-        </a>
+        <div class="bridge-cta-row">
+          <a href="#calculadora" class="bridge-cta">
+            <span>Descubrí cuánto podés ganar</span>
+            <i class="fas fa-arrow-down"></i>
+          </a>
+          <div class="stock-live on-light alert hidden-empty" data-stock-live style="display:none;">
+            <i class="fas fa-box"></i>
+            <span class="stock-live-text">Cargando stock…</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -1922,7 +1942,7 @@
         <div class="time-box"><span class="time-number t-minutes">00</span><div class="time-label">MIN</div></div>
         <div class="time-box"><span class="time-number t-seconds">00</span><div class="time-label">SEG</div></div>
       </div>
-      <div class="stock-live on-light hidden-empty" data-stock-live style="display:none; margin-bottom: 18px;">
+      <div class="stock-live on-light alert hidden-empty" data-stock-live style="display:none; margin-bottom: 18px;">
         <i class="fas fa-box"></i>
         <span class="stock-live-text">Cargando stock…</span>
       </div>
