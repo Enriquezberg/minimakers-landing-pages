@@ -19,13 +19,28 @@
   'https://connect.facebook.net/en_US/fbevents.js');
   fbq('init', '424336247007631');
   fbq('track', 'PageView');
-  fbq('track', 'Purchase', {
-    content_name: 'Maquina Industrial 25 Mini Panqueques',
-    content_ids: ['MI25MP'],
-    content_type: 'product',
-    value: 1200,
-    currency: 'GTQ'
-  });
+
+  // Purchase event — solo se dispara si llegamos con una orden real (cash o card)
+  // El order_id viene del Worker (cash) o del success_url de Recurrente (card)
+  // eventID = order_id para deduplicar con el evento server-side (CAPI) del Worker
+  (function() {
+    var params = new URLSearchParams(window.location.search);
+    var orderId = params.get('order');
+    if (!orderId) return;  // carga directa / preview → no disparar nada
+
+    var qty = parseInt(params.get('qty'), 10) || 1;
+    var total = parseFloat(params.get('total'));
+    if (!total || isNaN(total)) total = 1200 * qty;  // fallback defensivo
+
+    fbq('track', 'Purchase', {
+      content_name: 'Maquina Industrial 25 Mini Panqueques',
+      content_ids: ['MI25MP'],
+      content_type: 'product',
+      value: total,
+      currency: 'GTQ',
+      num_items: qty
+    }, { eventID: orderId });
+  })();
   </script>
   <noscript><img height="1" width="1" style="display:none"
   src="https://www.facebook.com/tr?id=424336247007631&ev=PageView&noscript=1"

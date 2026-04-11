@@ -347,10 +347,15 @@ async function sendMetaEvent(env, eventName, userData, customData, eventSourceUr
   if (userData.zip) hashedUserData.zp = [await sha256(userData.zip)];
   hashedUserData.country = [await sha256('gt')];
 
+  // event_id top-level → Meta deduplica con el Pixel browser-side cuando ambos mandan el mismo ID
+  // Usamos order_id como event_id para que sea estable entre cliente y servidor
+  var eventId = customData && customData.order_id ? String(customData.order_id) : null;
+
   var payload = {
     data: [{
       event_name: eventName,
       event_time: Math.floor(Date.now() / 1000),
+      event_id: eventId,
       action_source: 'website',
       event_source_url: eventSourceUrl || LANDING_URL,
       user_data: hashedUserData,
@@ -394,10 +399,11 @@ function jsonResponse(data, status = 200, request) {
   });
 }
 
-// Version 5.0 — 2026-04-09
+// Version 5.1 — 2026-04-11
 // - Recurrente checkout with redirect to gracias.html
 // - Webhook handler at /webhook for payment_intent.succeeded
 // - MiniMakers Ops CRM integration (Railway)
-// - Cash order handler at /cash — now returns AB#### order number from CRM
+// - Cash order handler at /cash — returns AB#### order number from CRM
 // - Order tracking with status updates
 // - Fixed: Recurrente errors no longer exposed to user
+// - Fixed: CAPI now sends event_id top-level (dedup with browser Pixel)
