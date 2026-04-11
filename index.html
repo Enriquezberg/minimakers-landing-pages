@@ -102,6 +102,76 @@
     }
 
     /* ── HEADER ────────────────────────────────── */
+    /* ── MARQUEE ANNOUNCEMENT BAR ──────────────── */
+    .marquee-bar {
+      background: #0d0f12;
+      color: var(--yellow);
+      padding: 11px 0;
+      overflow: hidden;
+      position: relative;
+      border-bottom: 1px solid rgba(255, 195, 75, 0.14);
+    }
+    .marquee-bar::before,
+    .marquee-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 60px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .marquee-bar::before {
+      left: 0;
+      background: linear-gradient(90deg, #0d0f12 0%, transparent 100%);
+    }
+    .marquee-bar::after {
+      right: 0;
+      background: linear-gradient(270deg, #0d0f12 0%, transparent 100%);
+    }
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee-scroll 45s linear infinite;
+    }
+    .marquee-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 28px;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      letter-spacing: 0.2px;
+    }
+    .marquee-item i {
+      color: var(--yellow);
+      font-size: 14px;
+    }
+    .marquee-item strong { color: #fff; font-weight: 800; }
+    .marquee-dot {
+      align-self: center;
+      width: 5px;
+      height: 5px;
+      background: rgba(255, 195, 75, 0.45);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    @keyframes marquee-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .marquee-track { animation: none; }
+    }
+    @media (max-width: 640px) {
+      .marquee-bar { padding: 9px 0; }
+      .marquee-item { padding: 0 18px; font-size: 12px; gap: 7px; }
+      .marquee-item i { font-size: 12px; }
+      .marquee-bar::before,
+      .marquee-bar::after { width: 30px; }
+    }
+
     .header { background: var(--navy); padding: 16px 24px; position: sticky; top: 0; z-index: 1000; }
     .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
     .logo { color: #fff; font-size: 22px; font-weight: 800; text-decoration: none; letter-spacing: -0.5px; }
@@ -1082,6 +1152,42 @@
 </head>
 <body>
 
+  <!-- ANNOUNCEMENT MARQUEE BAR — scrolling trust signals at the very top -->
+  <div class="marquee-bar" aria-label="Beneficios destacados">
+    <div class="marquee-track">
+      <!-- Set 1 -->
+      <span class="marquee-item"><i class="fas fa-truck"></i> <strong>Envío GRATIS</strong> a toda Guatemala</span>
+      <span class="marquee-dot"></span>
+      <span class="marquee-item"><i class="fas fa-hand-holding-usd"></i> <strong>Pago contra entrega</strong></span>
+      <span class="marquee-dot"></span>
+      <span class="marquee-item"><i class="fas fa-credit-card"></i> Hasta <strong>12 cuotas</strong> sin recargo</span>
+      <span class="marquee-dot"></span>
+      <span class="marquee-item"><i class="fas fa-shield-alt"></i> Garantía de <strong>1 año</strong></span>
+      <span class="marquee-dot"></span>
+      <span class="marquee-item"><i class="fas fa-bolt"></i> Entrega en <strong>24–48 horas</strong></span>
+      <span class="marquee-dot"></span>
+      <span class="marquee-item"><i class="fas fa-star"></i> <strong>4.9/5</strong> con 500+ clientes</span>
+      <span class="marquee-dot"></span>
+      <span class="marquee-item"><i class="fas fa-file-invoice"></i> <strong>Factura SAT</strong> incluida</span>
+      <span class="marquee-dot"></span>
+      <!-- Set 2 (duplicated for seamless loop) -->
+      <span class="marquee-item"><i class="fas fa-truck"></i> <strong>Envío GRATIS</strong> a toda Guatemala</span>
+      <span class="marquee-dot"></span>
+      <span class="marquee-item"><i class="fas fa-hand-holding-usd"></i> <strong>Pago contra entrega</strong></span>
+      <span class="marquee-dot"></span>
+      <span class="marquee-item"><i class="fas fa-credit-card"></i> Hasta <strong>12 cuotas</strong> sin recargo</span>
+      <span class="marquee-dot"></span>
+      <span class="marquee-item"><i class="fas fa-shield-alt"></i> Garantía de <strong>1 año</strong></span>
+      <span class="marquee-dot"></span>
+      <span class="marquee-item"><i class="fas fa-bolt"></i> Entrega en <strong>24–48 horas</strong></span>
+      <span class="marquee-dot"></span>
+      <span class="marquee-item"><i class="fas fa-star"></i> <strong>4.9/5</strong> con 500+ clientes</span>
+      <span class="marquee-dot"></span>
+      <span class="marquee-item"><i class="fas fa-file-invoice"></i> <strong>Factura SAT</strong> incluida</span>
+      <span class="marquee-dot"></span>
+    </div>
+  </div>
+
   <!-- HEADER with Nav Links + Hamburger -->
   <header class="header">
     <div class="header-content">
@@ -1124,6 +1230,8 @@
           <span class="pill"><i class="fas fa-chart-line"></i>ROI en 1–2 semanas</span>
           <span class="pill"><i class="fas fa-shield-alt"></i>Garantía 1 año</span>
           <span class="pill"><i class="fas fa-broom"></i>Fácil de limpiar</span>
+          <span class="pill"><i class="fas fa-credit-card"></i>Pago en cuotas</span>
+          <span class="pill"><i class="fas fa-hand-holding-usd"></i>Pago contra entrega</span>
         </div>
         <div class="hero-ctas">
           <button type="button" class="btn-primary open-checkout" style="border:none;">Comprar Ahora — Q1,200</button>
