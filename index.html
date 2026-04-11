@@ -1150,6 +1150,10 @@
         </div>
       </div>
     </div>
+    <!-- Background music — independent of video loop, fades out at 10% scroll -->
+    <audio id="heroMusic" preload="auto">
+      <source src="img/hero-music.mp3" type="audio/mpeg">
+    </audio>
   </section>
 
   <!-- SOCIAL PROOF BAR -->
@@ -1956,41 +1960,102 @@
       });
     }
 
-    // ── Hero video: click to unmute + auto-unmute on first interaction ──
+    // ── Hero background music (separate from video, fades out on scroll) ──
     (function() {
-      const video = document.getElementById('heroVideo');
+      const music = document.getElementById('heroMusic');
       const btn = document.getElementById('videoSoundBtn');
       const caption = document.getElementById('videoHookCaption');
-      if (!video || !btn) return;
-      let unmuted = false;
+      if (!music || !btn) return;
+
+      const TARGET_VOLUME = 0.45;
+      const FADE_OUT_THRESHOLD = 0.10; // fade when user scrolled 10% of page
+      const FADE_OUT_DURATION  = 2000; // 2 seconds
+      const FADE_IN_DURATION   = 500;
+
+      let isPlaying = false;
+      let hasAutoFaded = false;
+      let fadeTimer = null;
+
+      function getScrollPct() {
+        const scrolled = window.scrollY || window.pageYOffset || 0;
+        const maxScroll = (document.documentElement.scrollHeight || 0) - window.innerHeight;
+        if (maxScroll <= 0) return 0;
+        return scrolled / maxScroll;
+      }
+
+      function fadeTo(targetVol, duration, onDone) {
+        if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
+        const startVol = music.volume;
+        const startTime = Date.now();
+        fadeTimer = setInterval(function() {
+          const elapsed = Date.now() - startTime;
+          const t = Math.min(1, elapsed / duration);
+          music.volume = startVol + (targetVol - startVol) * t;
+          if (t >= 1) {
+            clearInterval(fadeTimer);
+            fadeTimer = null;
+            if (onDone) onDone();
+          }
+        }, 40);
+      }
 
       function activate() {
-        if (unmuted) return;
-        video.muted = false;
-        video.volume = 0.5;
-        btn.classList.add('active');
-        btn.innerHTML = '<i class="fas fa-volume-up"></i>';
-        btn.setAttribute('aria-label', 'Silenciar');
-        if (caption) caption.classList.add('hidden');
-        unmuted = true;
+        if (isPlaying) return;
+        // Don't auto-start if user is already past the fade threshold
+        if (getScrollPct() >= FADE_OUT_THRESHOLD) return;
+        music.volume = 0;
+        const p = music.play();
+        const onStart = function() {
+          isPlaying = true;
+          hasAutoFaded = false;
+          fadeTo(TARGET_VOLUME, FADE_IN_DURATION);
+          btn.classList.add('active');
+          btn.innerHTML = '<i class="fas fa-volume-up"></i>';
+          btn.setAttribute('aria-label', 'Silenciar');
+          if (caption) caption.classList.add('hidden');
+        };
+        if (p && typeof p.then === 'function') {
+          p.then(onStart).catch(function() { /* autoplay blocked, user must click */ });
+        } else {
+          onStart();
+        }
       }
 
       function deactivate() {
-        video.muted = true;
+        if (!isPlaying) return;
+        fadeTo(0, 800, function() {
+          music.pause();
+          isPlaying = false;
+        });
         btn.classList.remove('active');
         btn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Activar sonido</span>';
         btn.setAttribute('aria-label', 'Activar sonido');
         if (caption) caption.classList.remove('hidden');
-        unmuted = false;
       }
 
+      // Manual toggle via button
       btn.addEventListener('click', function(e) {
         e.stopPropagation();
-        if (!unmuted) activate(); else deactivate();
+        if (isPlaying) { deactivate(); hasAutoFaded = true; }
+        else {
+          // Force activate regardless of scroll position (user explicit request)
+          music.volume = 0;
+          const p = music.play();
+          const onStart = function() {
+            isPlaying = true;
+            hasAutoFaded = false;
+            fadeTo(TARGET_VOLUME, FADE_IN_DURATION);
+            btn.classList.add('active');
+            btn.innerHTML = '<i class="fas fa-volume-up"></i>';
+            btn.setAttribute('aria-label', 'Silenciar');
+            if (caption) caption.classList.add('hidden');
+          };
+          if (p && typeof p.then === 'function') p.then(onStart).catch(function() {});
+          else onStart();
+        }
       });
 
-      // Auto-activate on first user interaction anywhere on the page
-      // (browsers block autoplay-with-sound, but allow it after user gesture)
+      // Auto-activate on first user interaction (browsers block audio autoplay)
       function firstInteraction() {
         activate();
         window.removeEventListener('scroll', firstInteraction);
@@ -2002,6 +2067,36 @@
       window.addEventListener('click', firstInteraction, { once: true });
       window.addEventListener('keydown', firstInteraction, { once: true });
       window.addEventListener('touchstart', firstInteraction, { once: true, passive: true });
+
+      // Fade-out when user scrolls past threshold
+      let scrollCheckPending = false;
+      window.addEventListener('scroll', function() {
+        if (hasAutoFaded || !isPlaying || scrollCheckPending) return;
+        scrollCheckPending = true;
+        requestAnimationFrame(function() {
+          scrollCheckPending = false;
+          if (getScrollPct() >= FADE_OUT_THRESHOLD) {
+            hasAutoFaded = true;
+            fadeTo(0, FADE_OUT_DURATION, function() {
+              music.pause();
+              isPlaying = false;
+            });
+            btn.classList.remove('active');
+            btn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Activar sonido</span>';
+            btn.setAttribute('aria-label', 'Activar sonido');
+            if (caption) caption.classList.remove('hidden');
+          }
+        });
+      }, { passive: true });
+
+      // When track ends naturally, update button state
+      music.addEventListener('ended', function() {
+        isPlaying = false;
+        btn.classList.remove('active');
+        btn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Activar sonido</span>';
+        btn.setAttribute('aria-label', 'Activar sonido');
+        if (caption) caption.classList.remove('hidden');
+      });
     })();
 
     // ── Hamburger menu ──────────────────────────
