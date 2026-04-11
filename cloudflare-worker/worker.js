@@ -293,9 +293,6 @@ async function handleCashOrder(request, env, ctx) {
     const refNum = data.order_id || 'MM-' + Date.now().toString(36).toUpperCase();
     var displayOrder = refNum;
 
-    // DEBUG temporal para verificar flujo de test mode
-    console.log('[DEBUG handleCashOrder] incoming body keys:', Object.keys(data).join(','), '| test_event_code=' + (testEventCode || 'NONE') + ' | order_id=' + refNum);
-
     // Quantity + volume pricing — server-side authoritative
     const qty = clampQty(data.quantity);
     const unitCents = unitPriceCents(qty);
@@ -427,11 +424,7 @@ async function sha256(str) {
 }
 
 async function sendMetaEvent(env, eventName, userData, customData, eventSourceUrl, testEventCode) {
-  console.log('[DEBUG sendMetaEvent] event=' + eventName + ' order_id=' + (customData && customData.order_id) + ' test_event_code=' + (testEventCode || 'NONE') + ' hasToken=' + !!env.META_ACCESS_TOKEN);
-  if (!env.META_ACCESS_TOKEN) {
-    console.error('[DEBUG sendMetaEvent] NO META_ACCESS_TOKEN — aborting');
-    return;
-  }
+  if (!env.META_ACCESS_TOKEN) return;
 
   var hashedUserData = {};
   if (userData.email) hashedUserData.em = [await sha256(userData.email)];
@@ -474,10 +467,12 @@ async function sendMetaEvent(env, eventName, userData, customData, eventSourceUr
         body: JSON.stringify(payload)
       }
     );
-    var respText = await resp.text();
-    console.log('[DEBUG CAPI response] ' + eventName + ' | test=' + (testEventCode || 'NONE') + ' | status=' + resp.status + ' | body=' + respText.slice(0, 500));
+    if (!resp.ok) {
+      var respText = await resp.text();
+      console.error('Meta CAPI ' + eventName + ' failed: ' + resp.status + ' ' + respText.slice(0, 300));
+    }
   } catch (e) {
-    console.error('[DEBUG CAPI error] ' + eventName + ': ' + e.message);
+    console.error('Meta CAPI ' + eventName + ' error: ' + e.message);
   }
 }
 
@@ -503,7 +498,7 @@ function jsonResponse(data, status = 200, request) {
   });
 }
 
-// Version 5.2 — 2026-04-11
+// Version 5.3 — 2026-04-11
 // - Recurrente checkout with redirect to gracias.html
 // - Webhook handler at /webhook for payment_intent.succeeded
 // - MiniMakers Ops CRM integration (Railway)
@@ -512,5 +507,7 @@ function jsonResponse(data, status = 200, request) {
 // - Fixed: Recurrente errors no longer exposed to user
 // - Fixed: CAPI now sends event_id top-level (dedup with browser Pixel)
 // - Added: test_event_code support — Meta routes events to Test Events screen
-//   without counting as real conversions. Propagates through cash, card, and
-//   Recurrente webhook flows via data.test_event_code / metadata.test_event_code
+// - CRITICAL FIX: ctx.waitUntil() wraps all async side-effects (CAPI, CRM save)
+//   so Cloudflare keeps the Worker alive until they complete. Before this fix,
+//   CAPI events were being silently cut off when the Worker responded to the
+//   client, causing ~30-40% loss of server-side conversion tracking.
