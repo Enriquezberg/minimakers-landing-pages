@@ -156,37 +156,51 @@
     .video-hook-caption span { display: inline-block; background: rgba(0,0,0,.72); color: #fff; padding: 9px 20px; border-radius: 50px; font-size: 14px; font-weight: 700; backdrop-filter: blur(6px); box-shadow: 0 4px 16px rgba(0,0,0,.35); }
     .video-hook-caption span i { color: var(--yellow); margin-right: 8px; }
 
-    /* Sound toggle button on hero video */
+    /* Sound toggle button on hero video — pill with text + icon */
     .video-sound-btn {
       position: absolute;
-      bottom: 16px;
-      right: 16px;
+      bottom: 18px;
+      right: 18px;
       background: var(--yellow);
       color: var(--navy);
       border: none;
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      display: flex;
+      padding: 12px 20px;
+      border-radius: 50px;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      font-size: 17px;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: .3px;
       cursor: pointer;
       z-index: 4;
-      box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 0 rgba(255,195,75,.5);
+      box-shadow: 0 8px 22px rgba(0,0,0,.4), 0 0 0 0 rgba(255,195,75,.55);
       transition: all .25s ease;
-      animation: sound-pulse 2.2s ease-out infinite;
+      animation: sound-pulse 2s ease-out infinite;
     }
-    .video-sound-btn:hover { transform: scale(1.08); }
-    .video-sound-btn.active { animation: none; background: rgba(0,0,0,.6); color: #fff; }
-    .video-sound-btn.active:hover { background: rgba(0,0,0,.8); }
+    .video-sound-btn i { font-size: 16px; }
+    .video-sound-btn:hover { transform: translateY(-2px) scale(1.03); }
+    .video-sound-btn.active {
+      animation: none;
+      background: rgba(0,0,0,.65);
+      color: #fff;
+      padding: 10px 14px;
+      font-size: 0;
+      gap: 0;
+    }
+    .video-sound-btn.active i { font-size: 16px; }
+    .video-sound-btn.active:hover { background: rgba(0,0,0,.85); }
     @keyframes sound-pulse {
-      0%   { box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 0 rgba(255,195,75,.55); }
-      70%  { box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 14px rgba(255,195,75,0); }
-      100% { box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 0 rgba(255,195,75,0); }
+      0%   { box-shadow: 0 8px 22px rgba(0,0,0,.4), 0 0 0 0 rgba(255,195,75,.6); }
+      70%  { box-shadow: 0 8px 22px rgba(0,0,0,.4), 0 0 0 18px rgba(255,195,75,0); }
+      100% { box-shadow: 0 8px 22px rgba(0,0,0,.4), 0 0 0 0 rgba(255,195,75,0); }
     }
     @media (prefers-reduced-motion: reduce) {
       .video-sound-btn { animation: none; }
+    }
+    @media (max-width: 640px) {
+      .video-sound-btn { bottom: 14px; right: 14px; padding: 10px 16px; font-size: 12px; }
     }
     @media (max-width: 640px) {
       .video-hook-caption span { font-size: 12px; padding: 7px 14px; }
@@ -1125,6 +1139,7 @@
           </div>
           <button type="button" class="video-sound-btn" id="videoSoundBtn" aria-label="Activar sonido">
             <i class="fas fa-volume-mute"></i>
+            <span>Activar sonido</span>
           </button>
         </div>
       </div>
@@ -1143,6 +1158,39 @@
       <div class="proof-item"><i class="fas fa-hand-holding-usd"></i> Pago contra entrega</div>
     </div>
   </div>
+
+  <!-- BRIDGE: identification copy — comes FIRST to create emotional hook -->
+  <section class="bridge-section">
+    <div class="bridge-grid">
+      <div class="bridge-visual">
+        <div class="bridge-badge-top"><i class="fas fa-fire"></i> Best seller</div>
+        <div class="bridge-visual-frame">
+          <img src="img/bandeja-deluxe.jpg" alt="Bandeja de mini panqueques con chocolate, fresa y banano — producto final que venden nuestros clientes" loading="lazy">
+        </div>
+        <div class="bridge-stat-card">
+          <div class="bridge-stat-icon"><i class="fas fa-users"></i></div>
+          <div class="bridge-stat-text">
+            <div class="bridge-stat-value">500+</div>
+            <div class="bridge-stat-label">Emprendedores<br>en Guatemala</div>
+          </div>
+        </div>
+      </div>
+      <div class="bridge-content">
+        <div class="bridge-label"><i class="fas fa-fire"></i> El snack del momento</div>
+        <h2 class="bridge-headline">¿Estás buscando una nueva forma de generar <span class="headline-highlight">ingresos</span>?</h2>
+        <p class="bridge-tagline">Llegaste al lugar correcto.</p>
+        <div class="bridge-body">
+          <p>Los mini panqueques son <strong>el negocio del momento en Guatemala</strong>. Un producto simple, rentable y que se vende solo en ferias, cafeterías, food trucks y desde casa.</p>
+          <p>La mayoría de nuestros clientes <strong>recupera la inversión en menos de 3 semanas</strong>. Muchos regresan por una segunda máquina porque ya estaban vendiendo demasiado.</p>
+          <p>Si venís pensando en abrir un nuevo negocio, <strong>dejá de buscar</strong>. Llegaste al producto correcto.</p>
+        </div>
+        <a href="#negocios" class="bridge-cta">
+          <span>Ideal para estos negocios</span>
+          <i class="fas fa-arrow-down"></i>
+        </a>
+      </div>
+    </div>
+  </section>
 
   <!-- PERFECTOS PARA — emojis replaced with FA icons -->
   <section class="section business-section" id="negocios">
@@ -1182,36 +1230,9 @@
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- BRIDGE: identification copy between business cards and calculator -->
-  <section class="bridge-section">
-    <div class="bridge-grid">
-      <div class="bridge-visual">
-        <div class="bridge-badge-top"><i class="fas fa-fire"></i> Best seller</div>
-        <div class="bridge-visual-frame">
-          <img src="img/bandeja-deluxe.jpg" alt="Bandeja de mini panqueques con chocolate, fresa y banano — producto final que venden nuestros clientes" loading="lazy">
-        </div>
-        <div class="bridge-stat-card">
-          <div class="bridge-stat-icon"><i class="fas fa-users"></i></div>
-          <div class="bridge-stat-text">
-            <div class="bridge-stat-value">500+</div>
-            <div class="bridge-stat-label">Emprendedores<br>en Guatemala</div>
-          </div>
-        </div>
-      </div>
-      <div class="bridge-content">
-        <div class="bridge-label"><i class="fas fa-fire"></i> El snack del momento</div>
-        <h2 class="bridge-headline">¿Estás buscando una nueva forma de generar <span class="headline-highlight">ingresos</span>?</h2>
-        <p class="bridge-tagline">Llegaste al lugar correcto.</p>
-        <div class="bridge-body">
-          <p>Los mini panqueques no son solo un snack — son <strong>el negocio del momento en Guatemala</strong>. Un producto que cabe en cualquier puesto, se cocina en 3 minutos y que cientos de emprendedores ya están vendiendo en ferias, cafeterías, food trucks y desde su propia casa.</p>
-          <p>La mayoría de nuestros clientes <strong>recupera la inversión en menos de 3 semanas</strong>. Muchos vuelven a comprar una segunda máquina poco tiempo después — no por decoración, sino porque ya estaban vendiendo tanto que necesitaban más equipo para seguir creciendo.</p>
-          <p>Si venís pensando en abrir un nuevo negocio o diversificar el que ya tenés, <strong>dejá de buscar</strong>. Este es de los productos más simples, rentables y fáciles de operar del mercado guatemalteco.</p>
-        </div>
+      <div style="text-align:center; margin-top: 44px;">
         <a href="#calculadora" class="bridge-cta">
-          <span>Mirá cuánto podrías ganar</span>
+          <span>Descubrí cuánto vas a ganar</span>
           <i class="fas fa-arrow-down"></i>
         </a>
       </div>
@@ -1931,32 +1952,52 @@
       });
     }
 
-    // ── Hero video: click to unmute ─────────────
+    // ── Hero video: click to unmute + auto-unmute on first interaction ──
     (function() {
       const video = document.getElementById('heroVideo');
       const btn = document.getElementById('videoSoundBtn');
       const caption = document.getElementById('videoHookCaption');
       if (!video || !btn) return;
       let unmuted = false;
+
+      function activate() {
+        if (unmuted) return;
+        video.muted = false;
+        video.volume = 0.5;
+        btn.classList.add('active');
+        btn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        btn.setAttribute('aria-label', 'Silenciar');
+        if (caption) caption.classList.add('hidden');
+        unmuted = true;
+      }
+
+      function deactivate() {
+        video.muted = true;
+        btn.classList.remove('active');
+        btn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Activar sonido</span>';
+        btn.setAttribute('aria-label', 'Activar sonido');
+        if (caption) caption.classList.remove('hidden');
+        unmuted = false;
+      }
+
       btn.addEventListener('click', function(e) {
         e.stopPropagation();
-        if (!unmuted) {
-          video.muted = false;
-          video.volume = 0.7;
-          btn.classList.add('active');
-          btn.innerHTML = '<i class="fas fa-volume-up"></i>';
-          btn.setAttribute('aria-label', 'Silenciar');
-          if (caption) caption.classList.add('hidden');
-          unmuted = true;
-        } else {
-          video.muted = true;
-          btn.classList.remove('active');
-          btn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-          btn.setAttribute('aria-label', 'Activar sonido');
-          if (caption) caption.classList.remove('hidden');
-          unmuted = false;
-        }
+        if (!unmuted) activate(); else deactivate();
       });
+
+      // Auto-activate on first user interaction anywhere on the page
+      // (browsers block autoplay-with-sound, but allow it after user gesture)
+      function firstInteraction() {
+        activate();
+        window.removeEventListener('scroll', firstInteraction);
+        window.removeEventListener('click', firstInteraction);
+        window.removeEventListener('keydown', firstInteraction);
+        window.removeEventListener('touchstart', firstInteraction);
+      }
+      window.addEventListener('scroll', firstInteraction, { passive: true, once: true });
+      window.addEventListener('click', firstInteraction, { once: true });
+      window.addEventListener('keydown', firstInteraction, { once: true });
+      window.addEventListener('touchstart', firstInteraction, { once: true, passive: true });
     })();
 
     // ── Hamburger menu ──────────────────────────
