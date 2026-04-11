@@ -1320,16 +1320,40 @@
     .payment-method-badge.popular { background: #fef3c7; color: #b45309; }
     .pm-detail { background: #f8fafc; border-top: 1px solid #e5e7eb; padding: 14px 20px; }
     .payment-method-card.selected .pm-detail { background: #fffbeb; border-top-color: #fde68a; }
-    .cuotas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .cuota-option { background: #fff; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 10px 14px; text-align: center; transition: all .2s; }
+    .cuotas-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .cuota-option {
+      background: #fff;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 7px 6px 8px;
+      text-align: center;
+      transition: all .2s;
+      cursor: pointer;
+      user-select: none;
+    }
+    .cuota-option:hover { border-color: #cbd5e1; background: #f9fafb; }
     .payment-method-card.selected .cuota-option { border-color: #fde68a; }
-    .cuota-option .cuota-label { font-size: 11px; color: var(--gray-6); font-weight: 600; text-transform: uppercase; letter-spacing: .3px; }
-    .cuota-option .cuota-value { font-size: 18px; font-weight: 900; color: var(--navy); margin-top: 2px; }
-    .cuota-option .cuota-sub { font-size: 11px; color: var(--gray-6); }
-    .cuota-option.featured { background: var(--navy); border-color: var(--navy); }
-    .cuota-option.featured .cuota-label { color: rgba(255,255,255,.6); }
-    .cuota-option.featured .cuota-value { color: var(--yellow); }
-    .cuota-option.featured .cuota-sub { color: rgba(255,255,255,.5); }
+    .cuota-option .cuota-label { font-size: 10px; color: var(--gray-6); font-weight: 600; text-transform: uppercase; letter-spacing: .2px; }
+    .cuota-option .cuota-value { font-size: 14px; font-weight: 900; color: var(--navy); margin-top: 2px; line-height: 1.1; }
+    .cuota-option .cuota-sub { font-size: 9px; color: var(--gray-6); margin-top: 1px; }
+    .cuota-option.selected {
+      background: var(--navy);
+      border-color: var(--navy);
+      box-shadow: 0 4px 14px rgba(33,36,39,.25);
+      transform: translateY(-1px);
+    }
+    .cuota-option.selected .cuota-label { color: rgba(255,255,255,.65); }
+    .cuota-option.selected .cuota-value { color: var(--yellow); }
+    .cuota-option.selected .cuota-sub { color: rgba(255,255,255,.55); }
+    .cuota-hint { font-size: 11px; color: var(--gray-6); margin-top: 10px; text-align: center; line-height: 1.4; }
+    .cuota-hint i { color: var(--yellow-dark); margin-right: 4px; }
+    @media (max-width: 380px) {
+      .cuotas-grid { gap: 5px; }
+      .cuota-option { padding: 6px 4px 7px; }
+      .cuota-option .cuota-value { font-size: 13px; }
+      .cuota-option .cuota-label { font-size: 9px; }
+      .cuota-option .cuota-sub { font-size: 8px; }
+    }
     .pm-powered { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 10px; font-size: 11px; color: #94a3b8; }
     .pm-powered-logo { font-weight: 800; color: #6366f1; }
     .pm-cash-perks { display: flex; flex-direction: column; gap: 8px; }
@@ -1340,11 +1364,41 @@
     .checkout-divider { height: 1px; background: #e5e7eb; margin: 16px 0; }
 
     @media (max-width: 520px) {
-      .checkout-modal { border-radius: 16px 16px 0 0; max-height: 95vh; margin-top: auto; }
-      .checkout-header { padding: 22px 20px; border-radius: 16px 16px 0 0; }
-      .checkout-summary { padding: 16px 20px; }
-      .checkout-body { padding: 22px 20px; }
-      .checkout-row { grid-template-columns: 1fr; }
+      /* Full-screen modal on mobile — no overlay bleeding through */
+      .checkout-overlay {
+        padding: 0;
+        align-items: stretch;
+        backdrop-filter: none;
+        background: rgba(0,0,0,.85);
+      }
+      .checkout-modal {
+        border-radius: 0;
+        max-width: none;
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+        box-shadow: none;
+      }
+      .checkout-header { padding: 18px 18px 14px; border-radius: 0; }
+      .checkout-header h2 { font-size: 19px; }
+      .checkout-header p { font-size: 13px; }
+      .checkout-close { top: 12px; right: 12px; }
+      .checkout-summary { padding: 14px 18px; gap: 12px; }
+      .checkout-thumb { width: 52px; height: 52px; }
+      .checkout-product-name { font-size: 14px; line-height: 1.3; }
+      .checkout-product-price { font-size: 18px; }
+      .checkout-qty-section { padding: 14px 18px 16px; }
+      .checkout-body { padding: 18px 18px 28px; }
+      .checkout-row { grid-template-columns: 1fr; gap: 0; }
+      .checkout-field { margin-bottom: 12px; }
+      .checkout-field label { font-size: 12px; margin-bottom: 4px; }
+      .checkout-field input, .checkout-field select { padding: 11px 14px; font-size: 15px; border-radius: 9px; }
+      .qty-hint { padding: 10px 12px; font-size: 12px; }
+      .qty-row { gap: 12px; }
+      .qty-btn { width: 36px; height: 40px; font-size: 18px; }
+      .qty-input { width: 44px; height: 40px; font-size: 16px; }
+      .qty-total-value { font-size: 19px; }
+      .checkout-submit { padding: 14px 20px; font-size: 15px; }
     }
 
     /* ── WHATSAPP FLOAT ─────────────────────────── */
@@ -2315,27 +2369,28 @@
               </div>
               <div class="pm-detail">
                 <div class="cuotas-grid">
-                  <div class="cuota-option">
-                    <div class="cuota-label">De contado</div>
+                  <div class="cuota-option" data-cuota="1">
+                    <div class="cuota-label">Contado</div>
                     <div class="cuota-value">Q1,200</div>
-                    <div class="cuota-sub">Pago único</div>
+                    <div class="cuota-sub">pago único</div>
                   </div>
-                  <div class="cuota-option">
+                  <div class="cuota-option" data-cuota="3">
                     <div class="cuota-label">3 cuotas</div>
                     <div class="cuota-value">Q400</div>
-                    <div class="cuota-sub">/mes sin recargo</div>
+                    <div class="cuota-sub">/ mes</div>
                   </div>
-                  <div class="cuota-option">
+                  <div class="cuota-option" data-cuota="6">
                     <div class="cuota-label">6 cuotas</div>
                     <div class="cuota-value">Q200</div>
-                    <div class="cuota-sub">/mes sin recargo</div>
+                    <div class="cuota-sub">/ mes</div>
                   </div>
-                  <div class="cuota-option featured">
+                  <div class="cuota-option" data-cuota="12">
                     <div class="cuota-label">12 cuotas</div>
                     <div class="cuota-value">Q100</div>
-                    <div class="cuota-sub">/mes sin recargo</div>
+                    <div class="cuota-sub">/ mes</div>
                   </div>
                 </div>
+                <p class="cuota-hint"><i class="fas fa-info-circle"></i> Elegís las cuotas al momento del pago en Recurrente</p>
                 <div class="pm-powered"><i class="fas fa-lock" style="font-size:10px;"></i> Pago seguro con <span class="pm-powered-logo">Recurrente</span></div>
               </div>
             </div>
@@ -2941,6 +2996,25 @@
               num_items: currentQty,
               payment_method: selectedMethod
             });
+          }
+        });
+      });
+
+      // Cuota option visual selection (real choice is on Recurrente's page)
+      document.querySelectorAll('.cuota-option').forEach(function(opt) {
+        opt.addEventListener('click', function(e) {
+          e.stopPropagation();  // Don't re-trigger payment card selection
+          // Deselect siblings
+          const siblings = opt.parentElement.querySelectorAll('.cuota-option');
+          siblings.forEach(function(s) { s.classList.remove('selected'); });
+          opt.classList.add('selected');
+          // Also make sure the card payment method is selected
+          const card = opt.closest('.payment-method-card');
+          if (card && !card.classList.contains('selected')) {
+            document.querySelectorAll('.payment-method-card').forEach(function(c) { c.classList.remove('selected'); });
+            card.classList.add('selected');
+            selectedMethod = card.getAttribute('data-method');
+            updateSubmitBtn();
           }
         });
       });
