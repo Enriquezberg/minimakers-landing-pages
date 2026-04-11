@@ -32,6 +32,31 @@ const PRODUCT = {
   currency: 'GTQ'
 };
 
+// Volume pricing — MUST match index.html pricing() logic
+// Returns unit price in cents for a given quantity
+function unitPriceCents(qty) {
+  qty = parseInt(qty, 10) || 1;
+  if (qty >= 6) return 90000;   // Q900
+  if (qty >= 4) return 102000;  // Q1,020
+  if (qty >= 2) return 110000;  // Q1,100
+  return 120000;                // Q1,200
+}
+
+function discountPct(qty) {
+  qty = parseInt(qty, 10) || 1;
+  if (qty >= 6) return 25;
+  if (qty >= 4) return 15;
+  if (qty >= 2) return 8;
+  return 0;
+}
+
+function clampQty(qty) {
+  qty = parseInt(qty, 10) || 1;
+  if (qty < 1) return 1;
+  if (qty > 20) return 20;
+  return qty;
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -74,14 +99,20 @@ async function handleCheckout(request, env) {
 
     const orderNum = 'MM-' + Date.now().toString(36).toUpperCase();
 
+    // Quantity + volume pricing — server-side authoritative (never trust client)
+    const qty = clampQty(data.quantity);
+    const unitCents = unitPriceCents(qty);
+    const totalCents = unitCents * qty;
+    const dcPct = discountPct(qty);
+
     const checkoutPayload = {
       items: [{
-        name: PRODUCT.name,
-        amount_in_cents: PRODUCT.price_cents,
+        name: PRODUCT.name + (qty > 1 ? ' (' + qty + ' unidades — −' + dcPct + '%)' : ''),
+        amount_in_cents: unitCents,
         currency: PRODUCT.currency,
-        quantity: 1
+        quantity: qty
       }],
-      success_url: LANDING_URL + 'gracias.html?payment=success&order=' + orderNum,
+      success_url: LANDING_URL + 'gracias.html?payment=success&order=' + orderNum + '&qty=' + qty + '&total=' + (totalCents / 100),
       cancel_url: LANDING_URL + '?payment=cancelled',
       metadata: {
         order_id: orderNum,
@@ -91,6 +122,10 @@ async function handleCheckout(request, env) {
         address: data.address.trim() + ', ' + data.city.trim() + ', ' + data.state,
         zip: data.zip || '01010',
         nit: data.nit || 'C/F',
+        quantity: String(qty),
+        unit_price: String(unitCents / 100),
+        total_amount: String(totalCents / 100),
+        discount_pct: String(dcPct),
         source: 'landing-page'
       }
     };
@@ -122,7 +157,11 @@ async function handleCheckout(request, env) {
           nit: data.nit || 'C/F',
           method: 'card',
           product_name: PRODUCT.name,
-          product_sku: PRODUCT.sku
+          product_sku: PRODUCT.sku,
+          quantity: qty,
+          unit_price: unitCents / 100,
+          total_amount: totalCents / 100,
+          discount_pct: dcPct
         }).catch(function() {});
       }
 
@@ -139,8 +178,9 @@ async function handleCheckout(request, env) {
         content_name: PRODUCT.name,
         content_ids: [PRODUCT.sku],
         content_type: 'product',
-        value: PRODUCT.price_cents / 100,
+        value: totalCents / 100,
         currency: PRODUCT.currency,
+        num_items: qty,
         order_id: orderNum
       }).catch(function() {});
 
@@ -165,6 +205,12 @@ async function handleCashOrder(request, env) {
     const refNum = data.order_id || 'MM-' + Date.now().toString(36).toUpperCase();
     var displayOrder = refNum;
 
+    // Quantity + volume pricing — server-side authoritative
+    const qty = clampQty(data.quantity);
+    const unitCents = unitPriceCents(qty);
+    const totalCents = unitCents * qty;
+    const dcPct = discountPct(qty);
+
     if (env.CRM_URL && env.CRM_SECRET) {
       try {
         var crmResp = await saveToCRM(env.CRM_URL, env.CRM_SECRET, {
@@ -179,7 +225,11 @@ async function handleCashOrder(request, env) {
           nit: data.nit || 'C/F',
           method: 'cash',
           product_name: PRODUCT.name,
-          product_sku: PRODUCT.sku
+          product_sku: PRODUCT.sku,
+          quantity: qty,
+          unit_price: unitCents / 100,
+          total_amount: totalCents / 100,
+          discount_pct: dcPct
         });
         var crmData = await crmResp.json();
         if (crmData.order_id) displayOrder = crmData.order_id;
@@ -199,10 +249,11 @@ async function handleCashOrder(request, env) {
       content_name: PRODUCT.name,
       content_ids: [PRODUCT.sku],
       content_type: 'product',
-      value: PRODUCT.price_cents / 100,
+      value: totalCents / 100,
       currency: PRODUCT.currency,
+      num_items: qty,
       order_id: displayOrder
-    }, LANDING_URL + 'gracias.html?method=cash&order=' + displayOrder).catch(function() {});
+    }, LANDING_URL + 'gracias.html?method=cash&order=' + displayOrder + '&qty=' + qty + '&total=' + (totalCents / 100)).catch(function() {});
 
     return jsonResponse({ result: 'ok', order_id: displayOrder }, 200, request);
   } catch (err) {

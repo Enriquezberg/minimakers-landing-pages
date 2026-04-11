@@ -36,23 +36,33 @@ function doPost(e) {
     var date = data.date ? new Date(data.date) : new Date();
     var formattedDate = Utilities.formatDate(date, 'America/Guatemala', 'yyyy-MM-dd HH:mm');
 
+    // Total amount: prefer total_amount (new), fall back to amount (legacy)
+    var totalAmount = data.total_amount || data.amount || '';
+    var qty = data.quantity || 1;
+    var unitPrice = data.unit_price || '';
+    var discountPct = data.discount_pct || 0;
+
     sheet.appendRow([
-      formattedDate,
-      data.order_id || '',
-      data.name || '',
-      data.email || '',
-      data.phone || '',
-      data.address || '',
-      data.nit || 'C/F',
-      data.method || '',
-      data.amount || '',
-      data.status || 'pending',
-      data.recurrente_id || ''
+      formattedDate,                // A — Fecha
+      data.order_id || '',          // B — Pedido
+      data.name || '',              // C — Nombre
+      data.email || '',             // D — Email
+      data.phone || '',             // E — Teléfono
+      data.address || '',           // F — Dirección
+      data.nit || 'C/F',            // G — NIT
+      data.method || '',            // H — Método
+      totalAmount,                  // I — Monto total
+      data.status || 'pending',     // J — Estado
+      data.recurrente_id || '',     // K — Recurrente ID
+      qty,                          // L — Cantidad
+      unitPrice,                    // M — Precio unitario
+      discountPct                   // N — Descuento %
     ]);
 
     // Send email notification to owner
     try {
-      var subject = 'Nuevo pedido MiniMakers: ' + (data.order_id || 'Sin ID');
+      var qtyLabel = qty > 1 ? (qty + ' unidades × Q' + unitPrice + ' (−' + discountPct + '%)') : '1 unidad';
+      var subject = 'Nuevo pedido MiniMakers: ' + (data.order_id || 'Sin ID') + ' — Q' + totalAmount;
       var body = 'Nuevo pedido recibido:\n\n';
       body += 'Pedido: ' + (data.order_id || '') + '\n';
       body += 'Nombre: ' + (data.name || '') + '\n';
@@ -60,7 +70,8 @@ function doPost(e) {
       body += 'Teléfono: ' + (data.phone || '') + '\n';
       body += 'Dirección: ' + (data.address || '') + '\n';
       body += 'Método: ' + (data.method || '') + '\n';
-      body += 'Monto: ' + (data.amount || '') + '\n';
+      body += 'Cantidad: ' + qtyLabel + '\n';
+      body += 'Total: Q' + totalAmount + '\n';
       body += 'Estado: ' + (data.status || 'pending') + '\n';
 
       MailApp.sendEmail(Session.getActiveUser().getEmail(), subject, body);
