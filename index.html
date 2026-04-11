@@ -274,6 +274,56 @@
       .pill.highlight::before { animation: none; }
     }
     .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    /* Live stock indicator — compact pill shown near CTAs */
+    .stock-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,195,75,.14);
+      border: 1px solid rgba(255,195,75,.45);
+      color: var(--yellow);
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      margin-top: 16px;
+      transition: all .3s ease;
+    }
+    .stock-live i { font-size: 13px; }
+    .stock-live strong { color: #fff; font-weight: 900; }
+    .stock-live.urgent {
+      background: rgba(239,68,68,.14);
+      border-color: rgba(239,68,68,.5);
+      color: #fca5a5;
+      animation: stock-urgent-pulse 2s ease-out infinite;
+    }
+    .stock-live.urgent strong { color: #fff; }
+    .stock-live.urgent i { color: #ef4444; }
+    @keyframes stock-urgent-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,.35); }
+      50%      { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .stock-live.urgent { animation: none; }
+    }
+    /* Dark variant for light backgrounds (bridge, final-cta) */
+    .stock-live.on-light {
+      background: rgba(33,36,39,.08);
+      border-color: rgba(33,36,39,.25);
+      color: var(--navy);
+    }
+    .stock-live.on-light strong { color: var(--navy); }
+    .stock-live.on-light i { color: var(--yellow-dark); }
+    .stock-live.on-light.urgent {
+      background: rgba(239,68,68,.1);
+      border-color: rgba(239,68,68,.5);
+      color: #b91c1c;
+    }
+    .stock-live.on-light.urgent strong { color: #7f1d1d; }
+    .stock-live.on-light.urgent i { color: #ef4444; }
+    .stock-live.hidden-empty { display: none; }
     .btn-primary { background: var(--yellow); color: var(--navy); padding: 16px 32px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 17px; transition: all .2s; display: inline-block; white-space: nowrap; cursor: pointer; }
     .btn-primary:hover { background: var(--yellow-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,195,75,.4); }
     .btn-ghost { border: 2px solid rgba(255,255,255,.28); color: #fff; padding: 14px 28px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 16px; transition: all .2s; display: inline-block; cursor: pointer; }
@@ -1664,6 +1714,10 @@
           <button type="button" class="btn-primary open-checkout" style="border:none;">Comprar Ahora — Q1,200</button>
           <a href="#galeria" class="btn-ghost">Ver galería ↓</a>
         </div>
+        <div class="stock-live hidden-empty" data-stock-live style="display:none;">
+          <i class="fas fa-box"></i>
+          <span class="stock-live-text">Cargando stock…</span>
+        </div>
       </div>
       <div class="video-col">
         <div class="video-wrapper" id="videoWrapper">
@@ -1867,6 +1921,10 @@
         <div class="time-box"><span class="time-number t-hours">00</span><div class="time-label">HORAS</div></div>
         <div class="time-box"><span class="time-number t-minutes">00</span><div class="time-label">MIN</div></div>
         <div class="time-box"><span class="time-number t-seconds">00</span><div class="time-label">SEG</div></div>
+      </div>
+      <div class="stock-live on-light hidden-empty" data-stock-live style="display:none; margin-bottom: 18px;">
+        <i class="fas fa-box"></i>
+        <span class="stock-live-text">Cargando stock…</span>
       </div>
       <button type="button" class="timer-mid-cta open-checkout"><i class="fas fa-shopping-cart"></i> Comprar Ahora — Q1,200</button>
     </div>
@@ -2891,6 +2949,15 @@
         return null;
       }
 
+      function buildStockLiveText(stock) {
+        // Compact inline version for hero and mid-timer
+        if (stock <= 0) return { text: '<strong>Agotado temporal</strong> — pre-orden por WhatsApp', urgent: true };
+        if (stock <= 5) return { text: '¡Solo quedan <strong>' + stock + ' unidades</strong>!', urgent: true };
+        if (stock <= 10) return { text: 'Quedan <strong>' + stock + ' unidades</strong> en stock', urgent: false };
+        if (stock <= 20) return { text: 'Stock limitado: <strong>' + stock + ' unidades</strong>', urgent: false };
+        return null;
+      }
+
       function applyConfig(cfg) {
         window.__minimakers_config = cfg;
 
@@ -2903,6 +2970,21 @@
             badge.style.display = '';
           } else {
             badge.style.display = 'none';
+          }
+        });
+
+        // Update inline stock pills near CTAs (hero + mid-timer)
+        var stockLives = document.querySelectorAll('[data-stock-live]');
+        stockLives.forEach(function(el) {
+          var info = buildStockLiveText(cfg.stock);
+          var textEl = el.querySelector('.stock-live-text');
+          if (info && (cfg.show_stock_badge || cfg.stock <= 0) && textEl) {
+            textEl.innerHTML = info.text;
+            el.classList.toggle('urgent', info.urgent);
+            el.classList.remove('hidden-empty');
+            el.style.display = '';
+          } else {
+            el.style.display = 'none';
           }
         });
 
