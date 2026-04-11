@@ -149,6 +149,104 @@
     .footer p { font-size: 13px; color: rgba(255,255,255,.35); }
     .footer a { color: var(--yellow); text-decoration: none; }
 
+    /* ── WHATSAPP REDIRECT BANNER ───────────────── */
+    .wa-redirect-banner {
+      background: linear-gradient(135deg, #25D366 0%, #1eb85a 100%);
+      border-radius: 16px;
+      padding: 22px 24px;
+      margin-bottom: 24px;
+      text-align: center;
+      box-shadow: 0 16px 42px rgba(37,211,102,.3), 0 0 0 0 rgba(37,211,102,.5);
+      animation: wa-banner-pulse 2.2s ease-out infinite;
+      position: relative;
+      overflow: hidden;
+    }
+    .wa-redirect-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 60%;
+      height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+      transform: rotate(25deg);
+      animation: wa-shine 3s ease-in-out infinite;
+    }
+    @keyframes wa-banner-pulse {
+      0%   { box-shadow: 0 16px 42px rgba(37,211,102,.3), 0 0 0 0 rgba(37,211,102,.5); }
+      70%  { box-shadow: 0 16px 42px rgba(37,211,102,.3), 0 0 0 18px rgba(37,211,102,0); }
+      100% { box-shadow: 0 16px 42px rgba(37,211,102,.3), 0 0 0 0 rgba(37,211,102,0); }
+    }
+    @keyframes wa-shine {
+      0%   { left: -60%; }
+      60%  { left: 120%; }
+      100% { left: 120%; }
+    }
+    .wa-redirect-icon {
+      font-size: 36px;
+      color: #fff;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+    .wa-redirect-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+      position: relative;
+      z-index: 1;
+    }
+    .wa-redirect-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,.88);
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+      line-height: 1.5;
+    }
+    .wa-redirect-countdown {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(0,0,0,.25);
+      padding: 10px 18px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      position: relative;
+      z-index: 1;
+      backdrop-filter: blur(4px);
+    }
+    .wa-redirect-countdown .count {
+      display: inline-block;
+      min-width: 16px;
+      font-variant-numeric: tabular-nums;
+    }
+    .wa-redirect-now {
+      display: block;
+      margin-top: 12px;
+      background: #fff;
+      color: #128C7E;
+      padding: 12px 24px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+      position: relative;
+      z-index: 1;
+    }
+    .wa-redirect-now:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+    @media (prefers-reduced-motion: reduce) {
+      .wa-redirect-banner { animation: none; }
+      .wa-redirect-banner::before { animation: none; display: none; }
+    }
+
     /* ── CONFETTI (subtle) ──────────────────────── */
     .confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
     .confetti-piece { position: absolute; width: 8px; height: 8px; top: -10px; border-radius: 2px; opacity: 0; animation: confettiFall linear forwards; }
@@ -223,6 +321,18 @@
             <div class="product-variant">950W | 110V | Acero inoxidable</div>
           </div>
           <div class="product-price">Q1,200</div>
+        </div>
+
+        <!-- WhatsApp Redirect Banner (only visible for cash orders with pending WhatsApp confirmation) -->
+        <div class="wa-redirect-banner" id="waRedirectBanner" style="display:none;">
+          <div class="wa-redirect-icon"><i class="fab fa-whatsapp"></i></div>
+          <div class="wa-redirect-title">Redirigiendo a WhatsApp…</div>
+          <div class="wa-redirect-sub">Te vamos a llevar a WhatsApp para que confirmes tu pedido y dirección de envío con nuestro equipo.</div>
+          <div class="wa-redirect-countdown">
+            <i class="fas fa-clock"></i>
+            <span>Redirección en <span class="count" id="waCountdown">5</span>s</span>
+          </div>
+          <button type="button" class="wa-redirect-now" id="waRedirectNowBtn"><i class="fab fa-whatsapp" style="margin-right:8px;"></i> Ir a WhatsApp ahora</button>
         </div>
 
         <div class="divider"></div>
@@ -370,6 +480,45 @@
           container.appendChild(piece);
         }
       }
+
+      // ── WhatsApp auto-redirect for cash orders ──
+      // When a user completes a cash order, the landing page stores their
+      // pre-built WhatsApp message in sessionStorage + navigates here.
+      // We show a banner with a 5-second countdown then redirect to WhatsApp
+      // in the SAME tab (no popup) so the user never loses context.
+      try {
+        var waMessage = sessionStorage.getItem('mm_wa_message');
+        var waNum = sessionStorage.getItem('mm_wa_num') || '50231695584';
+        if (waMessage && method === 'cash') {
+          var banner = document.getElementById('waRedirectBanner');
+          var countdownEl = document.getElementById('waCountdown');
+          var nowBtn = document.getElementById('waRedirectNowBtn');
+          var waTargetUrl = 'https://wa.me/' + waNum + '?text=' + encodeURIComponent(waMessage);
+
+          if (banner) {
+            banner.style.display = 'block';
+            var seconds = 5;
+            var fired = false;
+            function goToWhatsApp() {
+              if (fired) return;
+              fired = true;
+              try { sessionStorage.removeItem('mm_wa_message'); } catch(e) {}
+              try { sessionStorage.removeItem('mm_wa_num'); } catch(e) {}
+              try { sessionStorage.removeItem('mm_wa_order'); } catch(e) {}
+              window.location.href = waTargetUrl;
+            }
+            if (nowBtn) nowBtn.addEventListener('click', goToWhatsApp);
+            var countdownInterval = setInterval(function() {
+              seconds--;
+              if (countdownEl) countdownEl.textContent = seconds;
+              if (seconds <= 0) {
+                clearInterval(countdownInterval);
+                goToWhatsApp();
+              }
+            }, 1000);
+          }
+        }
+      } catch(e) { /* sessionStorage blocked — user will see the default gracias page */ }
     })();
   </script>
 </body>

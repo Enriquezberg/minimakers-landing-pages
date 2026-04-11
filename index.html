@@ -3110,6 +3110,35 @@
           submitBtn.disabled = true;
           submitBtn.classList.add('loading');
 
+          // Build WhatsApp message — reusable for success and fallback paths
+          var utmParams = new URLSearchParams(window.location.search);
+          var utmSource = utmParams.get('utm_source') || 'landing-page';
+          var utmMedium = utmParams.get('utm_medium') || 'directo';
+          var utmCampaign = utmParams.get('utm_campaign') || '';
+          function buildWaMessage(orderNum) {
+            var qtyLabel = payload.quantity === 1 ? '1 unidad' : payload.quantity + ' unidades';
+            var discountLine = p.discountPct > 0 ? ' (−' + p.discountPct + '% descuento por volumen)' : '';
+            var m = '¡Hola! Quiero comprar la Máquina Industrial 25 Mini Panqueques con pago contra entrega.\n\n';
+            m += 'Pedido: ' + orderNum + '\n';
+            m += 'Cantidad: ' + qtyLabel + discountLine + '\n';
+            m += 'Precio unitario: ' + formatQ(payload.unit_price) + '\n';
+            m += 'Total a pagar: ' + formatQ(payload.total_amount) + '\n\n';
+            m += 'Nombre: ' + payload.first_name + ' ' + payload.last_name + '\n';
+            m += 'Tel: ' + payload.phone + '\n';
+            m += 'Email: ' + payload.email + '\n';
+            m += 'Dirección: ' + payload.address + ', ' + payload.city + ', ' + payload.state + ' ' + payload.zip + '\n';
+            m += 'NIT: ' + payload.nit;
+            m += '\n\n📍 Origen: ' + utmSource + ' / ' + utmMedium + (utmCampaign ? ' / ' + utmCampaign : '');
+            return m;
+          }
+          function storeWaMessage(orderNum) {
+            try {
+              sessionStorage.setItem('mm_wa_message', buildWaMessage(orderNum));
+              sessionStorage.setItem('mm_wa_num', WHATSAPP_NUM);
+              sessionStorage.setItem('mm_wa_order', orderNum);
+            } catch(e) { /* sessionStorage blocked */ }
+          }
+
           // Save cash order to CRM via Worker — wait for AB order number
           fetch(WORKER_URL + '/cash', {
             method: 'POST',
@@ -3134,28 +3163,12 @@
           .then(function(res) { return res.json(); })
           .then(function(data) {
             var displayOrder = data.order_id || refNum;
-            var utmParams = new URLSearchParams(window.location.search);
-            var utmSource = utmParams.get('utm_source') || 'landing-page';
-            var utmMedium = utmParams.get('utm_medium') || 'directo';
-            var utmCampaign = utmParams.get('utm_campaign') || '';
-            var qtyLabel = payload.quantity === 1 ? '1 unidad' : payload.quantity + ' unidades';
-            var discountLine = p.discountPct > 0 ? ' (−' + p.discountPct + '% descuento por volumen)' : '';
-            var msg = '¡Hola! Quiero comprar la Máquina Industrial 25 Mini Panqueques con pago contra entrega.\n\n';
-            msg += 'Pedido: ' + displayOrder + '\n';
-            msg += 'Cantidad: ' + qtyLabel + discountLine + '\n';
-            msg += 'Precio unitario: ' + formatQ(payload.unit_price) + '\n';
-            msg += 'Total a pagar: ' + formatQ(payload.total_amount) + '\n\n';
-            msg += 'Nombre: ' + payload.first_name + ' ' + payload.last_name + '\n';
-            msg += 'Tel: ' + payload.phone + '\n';
-            msg += 'Email: ' + payload.email + '\n';
-            msg += 'Dirección: ' + payload.address + ', ' + payload.city + ', ' + payload.state + ' ' + payload.zip + '\n';
-            msg += 'NIT: ' + payload.nit;
-            msg += '\n\n📍 Origen: ' + utmSource + ' / ' + utmMedium + (utmCampaign ? ' / ' + utmCampaign : '');
-            window.open('https://wa.me/' + WHATSAPP_NUM + '?text=' + encodeURIComponent(msg), '_blank');
+            storeWaMessage(displayOrder);
             window.location.href = graciasURL('gracias.html?method=cash&order=' + displayOrder + '&qty=' + payload.quantity + '&total=' + payload.total_amount);
           })
           .catch(function() {
             // Fallback: redirect even if CRM fails
+            storeWaMessage(refNum);
             window.location.href = graciasURL('gracias.html?method=cash&order=' + refNum + '&qty=' + payload.quantity + '&total=' + payload.total_amount);
           });
           return;
