@@ -213,7 +213,11 @@ async function handleCheckout(request, env, ctx) {
         total_amount: String(totalCents / 100),
         discount_pct: String(dcPct),
         source: 'landing-page',
-        test_event_code: testEventCode || ''
+        test_event_code: testEventCode || '',
+        fbc: cardFbc || '',
+        fbp: (data.fbp || '').trim() || '',
+        client_ip: request.headers.get('cf-connecting-ip') || '',
+        client_ua: request.headers.get('user-agent') || ''
       }
     };
 
@@ -252,7 +256,14 @@ async function handleCheckout(request, env, ctx) {
         }).catch(function() {}));
       }
 
+      // Build fbc from fbclid if _fbc cookie wasn't available
+      var cardFbc = (data.fbc || '').trim() || null;
+      if (!cardFbc && data.fbclid) {
+        cardFbc = 'fb.1.' + Date.now() + '.' + data.fbclid;
+      }
+
       // Meta Conversions API: InitiateCheckout (card)
+      var checkoutReqCtx = getRequestContext(request);
       ctx.waitUntil(sendMetaEvent(env, 'InitiateCheckout', {
         email: data.email.trim(),
         phone: data.phone.trim(),
@@ -260,7 +271,9 @@ async function handleCheckout(request, env, ctx) {
         lastName: data.last_name.trim(),
         city: data.city.trim(),
         state: data.state,
-        zip: data.zip || '01010'
+        zip: data.zip || '01010',
+        fbc: cardFbc,
+        fbp: (data.fbp || '').trim() || null
       }, {
         content_name: PRODUCT.name,
         content_ids: [PRODUCT.sku],
@@ -269,7 +282,7 @@ async function handleCheckout(request, env, ctx) {
         currency: PRODUCT.currency,
         num_items: qty,
         order_id: orderNum
-      }, null, testEventCode).catch(function() {}));
+      }, null, testEventCode, checkoutReqCtx).catch(function() {}));
 
       return jsonResponse({ redirect_url: recData.checkout_url, order_id: orderNum }, 200, request);
     } else {
@@ -324,7 +337,14 @@ async function handleCashOrder(request, env, ctx) {
       } catch(e) { console.error('CRM save error:', e.message); }
     }
 
+    // Build fbc from fbclid if _fbc cookie wasn't available
+    var fbc = (data.fbc || '').trim() || null;
+    if (!fbc && data.fbclid) {
+      fbc = 'fb.1.' + Date.now() + '.' + data.fbclid;
+    }
+
     // Meta Conversions API: Purchase (cash) — waitUntil keeps Worker alive for CAPI
+    var reqCtx = getRequestContext(request);
     ctx.waitUntil(sendMetaEvent(env, 'Purchase', {
       email: (data.email || '').trim(),
       phone: (data.phone || '').trim(),
@@ -332,7 +352,9 @@ async function handleCashOrder(request, env, ctx) {
       lastName: (data.last_name || '').trim(),
       city: (data.city || '').trim(),
       state: data.state || '',
-      zip: data.zip || '01010'
+      zip: data.zip || '01010',
+      fbc: fbc,
+      fbp: (data.fbp || '').trim() || null
     }, {
       content_name: PRODUCT.name,
       content_ids: [PRODUCT.sku],
@@ -341,7 +363,7 @@ async function handleCashOrder(request, env, ctx) {
       currency: PRODUCT.currency,
       num_items: qty,
       order_id: displayOrder
-    }, LANDING_URL + 'gracias.html?method=cash&order=' + displayOrder + '&qty=' + qty + '&total=' + (totalCents / 100) + (testEventCode ? '&test_event_code=' + encodeURIComponent(testEventCode) : ''), testEventCode).catch(function() {}));
+    }, LANDING_URL + 'gracias.html?method=cash&order=' + displayOrder + '&qty=' + qty + '&total=' + (totalCents / 100) + (testEventCode ? '&test_event_code=' + encodeURIComponent(testEventCode) : ''), testEventCode, reqCtx).catch(function() {}));
 
     return jsonResponse({ result: 'ok', order_id: displayOrder }, 200, request);
   } catch (err) {
@@ -376,11 +398,17 @@ async function handleWebhook(request, env, ctx) {
 
       // Meta Conversions API: Purchase (card — confirmed by Recurrente)
       var webhookTestCode = (metadata.test_event_code || '').trim() || null;
+      var webhookReqCtx = {
+        ip: (metadata.client_ip || '').trim() || null,
+        ua: (metadata.client_ua || '').trim() || null
+      };
       ctx.waitUntil(sendMetaEvent(env, 'Purchase', {
         email: metadata.email || customer.email || '',
         phone: metadata.phone || '',
         firstName: (metadata.customer_name || '').split(' ')[0] || '',
-        lastName: (metadata.customer_name || '').split(' ').slice(1).join(' ') || ''
+        lastName: (metadata.customer_name || '').split(' ').slice(1).join(' ') || '',
+        fbc: (metadata.fbc || '').trim() || null,
+        fbp: (metadata.fbp || '').trim() || null
       }, {
         content_name: PRODUCT.name,
         content_ids: [PRODUCT.sku],
@@ -388,7 +416,7 @@ async function handleWebhook(request, env, ctx) {
         value: amount,
         currency: PRODUCT.currency,
         order_id: metadata.order_id
-      }, LANDING_URL + 'gracias.html?payment=success&order=' + metadata.order_id, webhookTestCode).catch(function() {}));
+      }, LANDING_URL + 'gracias.html?payment=success&order=' + metadata.order_id, webhookTestCode, webhookReqCtx).catch(function() {}));
 
       console.log('Payment succeeded:', metadata.order_id, customer.email, 'Q' + amount);
     }
@@ -400,6 +428,14 @@ async function handleWebhook(request, env, ctx) {
     console.error('Webhook error:', err.message);
     return new Response('Error', { status: 500 });
   }
+}
+
+// ── Extract request context for CAPI matching ────────
+function getRequestContext(request) {
+  return {
+    ip: request.headers.get('cf-connecting-ip') || request.headers.get('x-real-ip') || '',
+    ua: request.headers.get('user-agent') || ''
+  };
 }
 
 // ── Save to MiniMakers CRM ────────────────────────
@@ -423,7 +459,7 @@ async function sha256(str) {
   }).join('');
 }
 
-async function sendMetaEvent(env, eventName, userData, customData, eventSourceUrl, testEventCode) {
+async function sendMetaEvent(env, eventName, userData, customData, eventSourceUrl, testEventCode, requestContext) {
   if (!env.META_ACCESS_TOKEN) return;
 
   var hashedUserData = {};
@@ -435,6 +471,17 @@ async function sendMetaEvent(env, eventName, userData, customData, eventSourceUr
   if (userData.state) hashedUserData.st = [await sha256(userData.state)];
   if (userData.zip) hashedUserData.zp = [await sha256(userData.zip)];
   hashedUserData.country = [await sha256('gt')];
+
+  // fbc/fbp — critical for ad click attribution
+  // fbc = Facebook Click ID (connects the ad click to the conversion)
+  // fbp = Facebook Browser ID (identifies the user across sessions)
+  if (userData.fbc) hashedUserData.fbc = userData.fbc;       // NOT hashed
+  if (userData.fbp) hashedUserData.fbp = userData.fbp;       // NOT hashed
+  // client IP + user agent — fallback matching when fbc/fbp unavailable
+  if (requestContext) {
+    if (requestContext.ip) hashedUserData.client_ip_address = requestContext.ip;
+    if (requestContext.ua) hashedUserData.client_user_agent = requestContext.ua;
+  }
 
   // event_id top-level → Meta deduplica con el Pixel browser-side cuando ambos mandan el mismo ID
   // Usamos order_id como event_id para que sea estable entre cliente y servidor

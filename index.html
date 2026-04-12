@@ -3221,6 +3221,20 @@
       }
       function isTestMode() { return !!getTestEventCode(); }
 
+      // Meta matching params — fbc (click ID), fbp (browser ID) from cookies
+      // These are critical for CAPI attribution (connecting ad click → purchase)
+      function getCookie(name) {
+        var m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return m ? decodeURIComponent(m[1]) : null;
+      }
+      function getMetaMatchingParams() {
+        return {
+          fbc: getCookie('_fbc') || null,
+          fbp: getCookie('_fbp') || null,
+          fbclid: new URLSearchParams(window.location.search).get('fbclid') || null
+        };
+      }
+
       var overlay = document.getElementById('checkoutOverlay');
       var closeBtn = document.getElementById('checkoutClose');
       var form = document.getElementById('checkoutForm');
@@ -3461,7 +3475,7 @@
           fetch(WORKER_URL + '/cash', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+            body: JSON.stringify(Object.assign({
               order_id: refNum,
               first_name: payload.first_name,
               last_name: payload.last_name,
@@ -3476,7 +3490,7 @@
               unit_price: payload.unit_price,
               total_amount: payload.total_amount,
               test_event_code: getTestEventCode()
-            })
+            }, getMetaMatchingParams()))
           })
           .then(function(res) { return res.json(); })
           .then(function(data) {
@@ -3497,7 +3511,7 @@
         submitBtn.classList.add('loading');
         errorMsg.classList.remove('visible');
 
-        var cardPayload = Object.assign({}, payload, { test_event_code: getTestEventCode() });
+        var cardPayload = Object.assign({}, payload, { test_event_code: getTestEventCode() }, getMetaMatchingParams());
         fetch(WORKER_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
