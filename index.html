@@ -3585,6 +3585,160 @@
         link.href = url.toString();
       });
     })();
+
+    // ── GA4 Custom Events — section views + interactions ──────────
+    // Tracks what visitors actually engage with so we can optimize.
+    // All events fire ONCE per session (no spam from scrolling back/forth).
+    (function() {
+      if (typeof gtag !== 'function') return;
+
+      // ─── Section view tracking (IntersectionObserver) ───
+      // Fires when 30% of a section is visible for the first time
+      var sectionsFired = {};
+      var sectionMap = {
+        '.bridge-section':        'section_view_bridge',
+        '#calculadora':           'section_view_calculator',
+        '#galeria':               'section_view_gallery',
+        '.timer-mid':             'section_view_mid_timer',
+        '#negocios':              'section_view_negocios',
+        '#resenas':               'section_view_reviews',
+        '#specs':                 'section_view_specs',
+        '#faq':                   'section_view_faq',
+        '.final-cta':             'section_view_final_cta',
+        '.volume-cta-section':    'section_view_volume_pricing'
+      };
+
+      if ('IntersectionObserver' in window) {
+        var sectionObs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (!entry.isIntersecting) return;
+            var el = entry.target;
+            // Find which section this is
+            for (var sel in sectionMap) {
+              if (el.matches(sel) && !sectionsFired[sel]) {
+                sectionsFired[sel] = true;
+                gtag('event', sectionMap[sel], { event_category: 'scroll', event_label: sel });
+                sectionObs.unobserve(el);
+                break;
+              }
+            }
+          });
+        }, { threshold: 0.3 });
+
+        for (var sel in sectionMap) {
+          var el = document.querySelector(sel);
+          if (el) sectionObs.observe(el);
+        }
+      }
+
+      // ─── Scroll depth milestones (25%, 50%, 75%, 100%) ───
+      var scrollMilestones = { 25: false, 50: false, 75: false, 90: false };
+      window.addEventListener('scroll', function() {
+        var scrollPct = Math.round(
+          (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+        );
+        for (var m in scrollMilestones) {
+          if (!scrollMilestones[m] && scrollPct >= parseInt(m)) {
+            scrollMilestones[m] = true;
+            gtag('event', 'scroll_depth', { event_category: 'engagement', event_label: m + '%', value: parseInt(m) });
+          }
+        }
+      }, { passive: true });
+
+      // ─── CTA click tracking ───
+      // Hero CTA
+      var heroCta = document.querySelector('.hero .btn-primary.open-checkout');
+      if (heroCta) heroCta.addEventListener('click', function() {
+        gtag('event', 'cta_click', { event_category: 'conversion', event_label: 'hero' });
+      });
+
+      // Mid-timer CTA
+      var midCta = document.querySelector('.timer-mid-cta.open-checkout');
+      if (midCta) midCta.addEventListener('click', function() {
+        gtag('event', 'cta_click', { event_category: 'conversion', event_label: 'mid_timer' });
+      });
+
+      // Final CTA
+      var finalCta = document.querySelector('.final-cta .btn-dark.open-checkout');
+      if (finalCta) finalCta.addEventListener('click', function() {
+        gtag('event', 'cta_click', { event_category: 'conversion', event_label: 'final_cta' });
+      });
+
+      // Sticky mobile CTA
+      var stickyCta = document.querySelector('.sticky-btn.open-checkout');
+      if (stickyCta) stickyCta.addEventListener('click', function() {
+        gtag('event', 'cta_click', { event_category: 'conversion', event_label: 'sticky_mobile' });
+      });
+
+      // ─── Checkout funnel tracking ───
+      // Step 1 → Step 2 (payment method selection)
+      var goToPayment = document.getElementById('goToPaymentStep');
+      if (goToPayment) goToPayment.addEventListener('click', function() {
+        gtag('event', 'checkout_step', { event_category: 'conversion', event_label: 'step2_payment' });
+      });
+
+      // ─── Interaction tracking ───
+      // Calculator slider interaction (fire once)
+      var calcFired = false;
+      ['sellPriceSlider', 'portionsSlider'].forEach(function(id) {
+        var slider = document.getElementById(id);
+        if (slider) slider.addEventListener('input', function() {
+          if (!calcFired) {
+            calcFired = true;
+            gtag('event', 'calculator_interact', { event_category: 'engagement', event_label: 'slider_moved' });
+          }
+        });
+      });
+
+      // Gallery lightbox open
+      document.querySelectorAll('[data-lightbox]').forEach(function(item) {
+        item.addEventListener('click', function() {
+          gtag('event', 'gallery_open', { event_category: 'engagement', event_label: 'lightbox' });
+        });
+      });
+
+      // Review screenshot open
+      document.querySelectorAll('[data-review]').forEach(function(item) {
+        item.addEventListener('click', function() {
+          gtag('event', 'review_open', { event_category: 'engagement', event_label: 'screenshot' });
+        });
+      });
+
+      // Video sound activate
+      var soundBtn = document.getElementById('videoSoundBtn');
+      if (soundBtn) soundBtn.addEventListener('click', function() {
+        gtag('event', 'video_sound', { event_category: 'engagement', event_label: 'activate' });
+      });
+
+      // Catalog link click (exit to catalog)
+      var catalogLinks = document.querySelectorAll('a[href*="minimakersgt.com/products"]');
+      catalogLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+          gtag('event', 'catalog_exit', { event_category: 'navigation', event_label: link.href });
+        });
+      });
+
+      // Wholesale WhatsApp click
+      var wholesaleBtn = document.querySelector('.wholesale-btn-v2');
+      if (wholesaleBtn) wholesaleBtn.addEventListener('click', function() {
+        gtag('event', 'wholesale_click', { event_category: 'conversion', event_label: 'whatsapp_mayorista' });
+      });
+
+      // WhatsApp float click
+      var waFloat = document.querySelector('.whatsapp-float');
+      if (waFloat) waFloat.addEventListener('click', function() {
+        gtag('event', 'whatsapp_float', { event_category: 'conversion', event_label: 'float_button' });
+      });
+
+      // FAQ accordion open
+      document.querySelectorAll('.faq-question').forEach(function(q) {
+        q.addEventListener('click', function() {
+          var questionText = q.textContent.trim().substring(0, 50);
+          gtag('event', 'faq_open', { event_category: 'engagement', event_label: questionText });
+        });
+      });
+
+    })();
   </script>
 
 </body>
