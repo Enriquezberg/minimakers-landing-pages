@@ -679,8 +679,9 @@
     .proof-divider { width: 1px; background: #e5e7eb; align-self: stretch; }
     .proof-cta { display: inline-flex; align-items: center; gap: 8px; }
     .proof-wa-link {
-      display: inline-flex;
+      display: flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
       margin-top: 14px;
       font-size: 13px;
@@ -1163,15 +1164,41 @@
     }
 
     /* Screenshot carousel — horizontal scroll en todos los tamaños para no ocupar mucho vertical */
+    .reviews-carousel-wrap { position: relative; max-width: 1140px; margin: 0 auto; }
+    .reviews-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,.95);
+      color: var(--navy);
+      font-size: 18px;
+      cursor: pointer;
+      z-index: 3;
+      box-shadow: 0 6px 20px rgba(0,0,0,.35);
+      transition: all .2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .reviews-nav-btn:hover:not(:disabled) { background: var(--yellow); transform: translateY(-50%) scale(1.08); box-shadow: 0 8px 24px rgba(0,0,0,.45); }
+    .reviews-nav-btn:disabled { opacity: .35; cursor: not-allowed; }
+    .reviews-nav-btn.prev { left: -24px; }
+    .reviews-nav-btn.next { right: -24px; }
+    @media (max-width: 880px) {
+      .reviews-nav-btn { display: none; }
+    }
     .reviews-grid {
       display: flex;
       gap: 18px;
-      max-width: 1100px;
-      margin: 0 auto;
       overflow-x: auto;
       overflow-y: hidden;
       scroll-snap-type: x mandatory;
       scroll-padding: 20px;
+      scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
       padding: 6px 20px 14px;
       scrollbar-width: thin;
@@ -1559,8 +1586,9 @@
     .final-cta-social strong { font-weight: 800; }
     .final-cta-social .fcs-divider { width: 1px; height: 18px; background: rgba(33,36,39,.2); }
     .final-cta-wa-link {
-      display: inline-flex;
+      display: flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
       margin-top: 14px;
       font-size: 13px;
@@ -2423,7 +2451,10 @@
         <p class="section-sub" style="color:rgba(255,255,255,.55); margin:0 auto;">Sin filtros, sin inventos.</p>
       </div>
 
-      <div class="reviews-grid">
+      <div class="reviews-carousel-wrap">
+        <button type="button" class="reviews-nav-btn prev" id="reviewsPrev" aria-label="Reseña anterior"><i class="fas fa-chevron-left"></i></button>
+        <button type="button" class="reviews-nav-btn next" id="reviewsNext" aria-label="Siguiente reseña"><i class="fas fa-chevron-right"></i></button>
+      <div class="reviews-grid" id="reviewsGrid">
         <!-- 1. REPEAT CUSTOMER — most powerful -->
         <div class="review-card wa" data-review>
           <div class="review-platform"><i class="fab fa-whatsapp"></i> WhatsApp <span class="review-badge repeat"><i class="fas fa-redo-alt" style="margin-right:3px;"></i> Repeat</span></div>
@@ -2540,6 +2571,7 @@
             <span class="review-quote">"Gracias por el pedido se les agradece"</span>
           </div>
         </div>
+      </div>
       </div>
 
       <p class="reviews-swipe-hint"><i class="fas fa-hand-point-left"></i>Deslizá para ver más<i class="fas fa-hand-point-right"></i></p>
@@ -3682,17 +3714,42 @@
         if (window.gtag) gtag('event', 'checkout_phone_only_mode', { event_category: 'checkout', event_label: 'disabled' });
       });
 
-      // Field-fill tracking (una vez por campo)
+      // Field-fill tracking (una vez por campo) + persistencia en localStorage
       var fieldsFired = {};
-      var trackableFields = ['cko_fname', 'cko_lname', 'cko_email', 'cko_phone', 'cko_state', 'cko_city', 'cko_address'];
+      var trackableFields = ['cko_fname', 'cko_lname', 'cko_email', 'cko_phone', 'cko_state', 'cko_city', 'cko_address', 'cko_nit'];
+      var STORAGE_KEY = 'mm_checkout_data';
+
+      function persistCheckoutData() {
+        try {
+          var data = {};
+          trackableFields.forEach(function(id) {
+            var f = document.getElementById(id);
+            if (f && f.value) data[id] = f.value;
+          });
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        } catch (e) { /* localStorage unavailable / quota exceeded */ }
+      }
+      function restoreCheckoutData() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          var data = JSON.parse(raw);
+          trackableFields.forEach(function(id) {
+            var f = document.getElementById(id);
+            if (f && data[id] != null && !f.value) f.value = data[id];
+          });
+        } catch (e) { /* ignore */ }
+      }
       trackableFields.forEach(function(id) {
         var f = document.getElementById(id);
         if (!f) return;
         f.addEventListener('blur', function() {
+          persistCheckoutData();
           if (fieldsFired[id] || !f.value.trim()) return;
           fieldsFired[id] = true;
           if (window.gtag) gtag('event', 'checkout_field_filled', { event_category: 'checkout', event_label: id.replace('cko_','') });
         });
+        f.addEventListener('change', persistCheckoutData);
       });
 
       function resetSubmitBtn() {
@@ -3711,6 +3768,7 @@
         currentQty = 1;
         updateQtyUI(false);
         resetSubmitBtn();
+        restoreCheckoutData();
         // Meta Pixel: InitiateCheckout (skip en test mode — CAPI lo maneja con test_event_code)
         var p = pricing(currentQty);
         if (typeof fbq === 'function' && !isTestMode()) {
@@ -4143,6 +4201,34 @@
         });
       });
 
+    })();
+  </script>
+
+  <!-- Reviews carousel nav arrows (desktop) -->
+  <script>
+    (function() {
+      var grid = document.getElementById('reviewsGrid');
+      var prev = document.getElementById('reviewsPrev');
+      var next = document.getElementById('reviewsNext');
+      if (!grid || !prev || !next) return;
+
+      function updateButtons() {
+        var maxScroll = grid.scrollWidth - grid.clientWidth - 1;
+        prev.disabled = grid.scrollLeft <= 0;
+        next.disabled = grid.scrollLeft >= maxScroll;
+      }
+      function step() {
+        var card = grid.querySelector('.review-card');
+        if (!card) return 320;
+        var style = window.getComputedStyle(grid);
+        var gap = parseInt(style.gap || style.columnGap || '18', 10) || 18;
+        return card.getBoundingClientRect().width + gap;
+      }
+      prev.addEventListener('click', function() { grid.scrollBy({ left: -step(), behavior: 'smooth' }); });
+      next.addEventListener('click', function() { grid.scrollBy({ left: step(), behavior: 'smooth' }); });
+      grid.addEventListener('scroll', updateButtons, { passive: true });
+      window.addEventListener('resize', updateButtons);
+      updateButtons();
     })();
   </script>
 
