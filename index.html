@@ -1162,21 +1162,36 @@
       .reviews-stat-divider { display: none; }
     }
 
-    /* Screenshot grid */
-    .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 1040px; margin: 0 auto; }
-    @media (max-width: 880px) { .reviews-grid { grid-template-columns: repeat(2, 1fr); } }
-    /* Mobile: horizontal carousel with snap points */
+    /* Screenshot carousel — horizontal scroll en todos los tamaños para no ocupar mucho vertical */
+    .reviews-grid {
+      display: flex;
+      gap: 18px;
+      max-width: 1100px;
+      margin: 0 auto;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-padding: 20px;
+      -webkit-overflow-scrolling: touch;
+      padding: 6px 20px 14px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,195,75,.4) transparent;
+    }
+    .reviews-grid::-webkit-scrollbar { height: 6px; }
+    .reviews-grid::-webkit-scrollbar-track { background: transparent; }
+    .reviews-grid::-webkit-scrollbar-thumb { background: rgba(255,195,75,.35); border-radius: 3px; }
+    .reviews-grid::-webkit-scrollbar-thumb:hover { background: rgba(255,195,75,.6); }
+    .reviews-grid .review-card {
+      flex: 0 0 320px;
+      scroll-snap-align: start;
+    }
+    @media (max-width: 880px) {
+      .reviews-grid .review-card { flex: 0 0 48%; max-width: 360px; }
+    }
     @media (max-width: 640px) {
       .reviews-grid {
-        display: flex;
-        grid-template-columns: none;
         gap: 12px;
         max-width: none;
-        overflow-x: auto;
-        overflow-y: hidden;
-        scroll-snap-type: x mandatory;
-        scroll-padding: 20px;
-        -webkit-overflow-scrolling: touch;
         padding: 4px 20px 8px;
         margin: 0 -20px;
         scrollbar-width: none;
@@ -1185,7 +1200,6 @@
       .reviews-grid .review-card {
         flex: 0 0 72%;
         max-width: 280px;
-        scroll-snap-align: start;
       }
       /* V2: sección reseñas compacta en mobile */
       .testimonials-section { padding: 32px 20px 20px; }
@@ -1203,7 +1217,7 @@
     }
     /* Carousel hint for mobile users */
     .reviews-swipe-hint {
-      display: none;
+      display: block;
       text-align: center;
       font-size: 12px;
       color: rgba(255,255,255,.55);
@@ -1212,9 +1226,6 @@
       letter-spacing: .4px;
     }
     .reviews-swipe-hint i { color: var(--yellow); margin: 0 6px; }
-    @media (max-width: 640px) {
-      .reviews-swipe-hint { display: block; }
-    }
 
     .review-card {
       background: rgba(255,255,255,.04);
