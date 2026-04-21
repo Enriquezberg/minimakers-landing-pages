@@ -3695,6 +3695,11 @@
         });
       });
 
+      function resetSubmitBtn() {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('loading');
+      }
+
       function openCheckout() {
         overlay.classList.add('open');
         document.body.style.overflow = 'hidden';
@@ -3705,6 +3710,7 @@
         selectedMethod = null;
         currentQty = 1;
         updateQtyUI(false);
+        resetSubmitBtn();
         // Meta Pixel: InitiateCheckout (skip en test mode — CAPI lo maneja con test_event_code)
         var p = pricing(currentQty);
         if (typeof fbq === 'function' && !isTestMode()) {
@@ -3781,6 +3787,13 @@
       backBtn.addEventListener('click', function() {
         stepPayment.classList.remove('active');
         stepForm.classList.add('active');
+        resetSubmitBtn();
+      });
+
+      // Si el usuario viene de Recurrente vía el botón "atrás" del browser,
+      // la página se restaura del bfcache con el botón congelado en "loading".
+      window.addEventListener('pageshow', function(e) {
+        if (e.persisted) resetSubmitBtn();
       });
 
       // Payment method selection
@@ -3789,6 +3802,7 @@
           document.querySelectorAll('.payment-method-card').forEach(function(c) { c.classList.remove('selected'); });
           card.classList.add('selected');
           selectedMethod = card.getAttribute('data-method');
+          resetSubmitBtn();
           updateSubmitBtn();
           if (window.gtag) gtag('event', 'checkout_payment_method_select', { event_category: 'checkout', event_label: selectedMethod });
           // Meta Pixel: AddPaymentInfo (skip en test mode)
