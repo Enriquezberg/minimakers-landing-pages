@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="favicon.png">
-  <meta name="description" content="Máquina Industrial 25 Mini Panqueques — La inversión que se paga sola. Envío gratis a toda Guatemala, pago contra entrega y garantía de 1 año. Q1,075.">
+  <meta name="description" content="Máquina Industrial 25 Mini Panqueques — La inversión que se paga sola. Envío gratis a toda Guatemala, pago contra entrega y garantía de 1 año. Q1,200.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://mini-panqueques-25.minimakersgt.com/">
 
@@ -19,7 +19,7 @@
   <meta property="og:type" content="product">
   <meta property="og:url" content="https://mini-panqueques-25.minimakersgt.com/">
   <meta property="og:locale" content="es_GT">
-  <meta property="product:price:amount" content="1075">
+  <meta property="product:price:amount" content="1200">
   <meta property="product:price:currency" content="GTQ">
   <meta property="product:availability" content="in stock">
 
@@ -29,7 +29,7 @@
   <meta name="twitter:description" content="La inversión que se paga sola. Empieza tu negocio de snacks rentable en Guatemala.">
   <meta name="twitter:image" content="https://mini-panqueques-25.minimakersgt.com/img/bandeja-deluxe.jpg">
 
-  <title>Máquina 25 Mini Panqueques — Q1,075 · Envío Gratis · MiniMakers GT</title>
+  <title>Máquina 25 Mini Panqueques — Q1,200 · Envío Gratis · MiniMakers GT</title>
 
   <!-- JSON-LD Product Schema -->
   <script type="application/ld+json">
@@ -48,7 +48,7 @@
       "@type": "Offer",
       "url": "https://mini-panqueques-25.minimakersgt.com/",
       "priceCurrency": "GTQ",
-      "price": "1075",
+      "price": "1200",
       "priceValidUntil": "2026-12-31",
       "availability": "https://schema.org/InStock",
       "seller": { "@type": "Organization", "name": "MiniMakers GT" }
@@ -95,7 +95,7 @@
     content_name: 'Maquina Industrial 25 Mini Panqueques',
     content_ids: ['MI25MP'],
     content_type: 'product',
-    value: 1075,
+    value: 1200,
     currency: 'GTQ'
   });
   </script>
@@ -266,59 +266,6 @@
     .mobile-menu.open { display: flex; flex-direction: column; gap: 12px; }
     .mobile-menu .nav-link { font-size: 16px; padding: 8px 0; }
 
-    /* WhatsApp CTA en menú — compacto con borde rotante verde (mismo patrón que .pill.highlight) */
-    .cta-whatsapp-menu {
-      position: relative;
-      display: block;
-      text-align: center;
-      margin-top: 8px;
-      padding: 2px;
-      border-radius: 50px;
-      overflow: hidden;
-      isolation: isolate;
-      text-decoration: none;
-      z-index: 0;
-    }
-    .cta-whatsapp-menu::before {
-      content: '';
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 280%;
-      aspect-ratio: 1;
-      background: conic-gradient(
-        from 0deg,
-        rgba(37,211,102,0) 0%,
-        rgba(37,211,102,0) 60%,
-        rgba(37,211,102,.95) 72%,
-        rgba(134,239,172,.6)  80%,
-        rgba(37,211,102,0)   88%
-      );
-      transform: translate(-50%, -50%) rotate(0deg);
-      animation: wa-border-rotate 3.5s linear infinite;
-      z-index: -2;
-    }
-    .cta-whatsapp-menu .cta-wa-inner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: #25D366;
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 50px;
-      font-weight: 700;
-      font-size: 14px;
-      letter-spacing: .2px;
-    }
-    .cta-whatsapp-menu .cta-wa-inner i { font-size: 16px; }
-    @keyframes wa-border-rotate {
-      to { transform: translate(-50%, -50%) rotate(360deg); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .cta-whatsapp-menu::before { animation: none; }
-    }
-
     @media (max-width: 768px) {
       .nav-links { display: none; }
       .hamburger { display: block; }
@@ -326,49 +273,8 @@
     }
 
     /* ── HERO ──────────────────────────────────── */
-    .hero { background: var(--navy); padding: 80px 24px 48px; color: #fff; }
+    .hero { background: var(--navy); padding: 80px 24px 64px; color: #fff; }
     .hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
-
-    /* V2 — Hero de 1 columna (el video bajó a su propia sección debajo) */
-    .hero-inner.hero-v2 {
-      grid-template-columns: 1fr;
-      max-width: 760px;
-      gap: 0;
-      text-align: left;
-    }
-    .hero-inner.hero-v2 h1 { font-size: clamp(40px, 7vw, 72px); line-height: 1.05; }
-
-    /* V2 — Botón primary con pulse animation para llamar atención */
-    .btn-primary-attention {
-      position: relative;
-      animation: cta-pulse 2.4s ease-out infinite;
-    }
-    @keyframes cta-pulse {
-      0%   { box-shadow: 0 10px 30px rgba(0,0,0,.18), 0 0 0 0 rgba(255,195,75,.55); transform: translateY(0) scale(1); }
-      45%  { box-shadow: 0 12px 34px rgba(0,0,0,.22), 0 0 0 14px rgba(255,195,75,0); transform: translateY(-1px) scale(1.025); }
-      70%  { box-shadow: 0 10px 30px rgba(0,0,0,.18), 0 0 0 0 rgba(255,195,75,0); transform: translateY(0) scale(1); }
-      100% { box-shadow: 0 10px 30px rgba(0,0,0,.18), 0 0 0 0 rgba(255,195,75,0); transform: translateY(0) scale(1); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .btn-primary-attention { animation: none; }
-    }
-
-    /* V2 — Sección del video full-width, debajo del hero */
-    .hero-video-section {
-      background: var(--navy);
-      padding: 0 24px 72px;
-    }
-    .hero-video-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    .hero-video-section .video-wrapper {
-      max-width: 100%;
-      aspect-ratio: 16 / 9;
-    }
-    @media (max-width: 640px) {
-      .hero-video-section { padding: 0 16px 48px; }
-    }
     .hero-label { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,195,75,.12); color: var(--yellow); border: 1px solid rgba(255,195,75,.3); padding: 6px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; margin-bottom: 20px; letter-spacing: .5px; }
     .hero h1 { font-size: clamp(38px, 4.5vw, 58px); font-weight: 800; line-height: 1.05; margin-bottom: 18px; letter-spacing: -1.5px; }
     .hero h1 span { color: var(--yellow); }
@@ -377,18 +283,13 @@
     .pill { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); padding: 7px 14px; border-radius: 50px; font-size: 14px; color: rgba(255,255,255,.88); }
     .pill i { color: var(--yellow); margin-right: 6px; }
 
-    /* Pill with rotating gradient border for high-priority pills
-       — Mismo tamaño que .pill base: padding 7px 14px, font-size 14px,
-       border 1px (virtual via ::after inset 1px). */
+    /* Pill with rotating gradient border for high-priority pills */
     .pill.highlight {
       position: relative;
-      padding: 7px 14px;
-      font-size: 14px;
-      font-weight: 400;
-      line-height: 1.2;
       background: rgba(255,195,75,.08);
-      border: 1px solid transparent; /* mismo box-size que .pill base */
+      border: none;
       color: var(--yellow);
+      font-weight: 700;
       overflow: hidden;
       isolation: isolate;
       z-index: 0;
@@ -415,7 +316,7 @@
     .pill.highlight::after {
       content: '';
       position: absolute;
-      inset: 1px;
+      inset: 1.5px;
       background: #171b20;
       border-radius: inherit;
       z-index: -1;
@@ -512,109 +413,6 @@
     .video-hook-caption span { display: inline-block; background: rgba(0,0,0,.72); color: #fff; padding: 9px 20px; border-radius: 50px; font-size: 14px; font-weight: 700; backdrop-filter: blur(6px); box-shadow: 0 4px 16px rgba(0,0,0,.35); }
     .video-hook-caption span i { color: var(--yellow); margin-right: 8px; }
 
-    /* Mini-calculadora en el hero (V2) */
-    .hero-mini-calc {
-      background: rgba(255,255,255,.08);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 16px;
-      padding: 18px 20px;
-      margin: 22px 0 20px;
-      color: #fff;
-    }
-    .mini-calc-title {
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .8px;
-      opacity: .85;
-      margin-bottom: 14px;
-    }
-    .mini-calc-title i { color: var(--yellow); margin-right: 6px; }
-    .mini-calc-inputs { display: flex; flex-direction: column; gap: 14px; }
-    .mini-calc-field label {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 6px;
-      opacity: .8;
-    }
-    .mini-calc-field label strong { color: var(--yellow); font-weight: 800; opacity: 1; }
-    .mini-calc-field input[type="range"] {
-      -webkit-appearance: none; appearance: none;
-      width: 100%;
-      height: 6px;
-      background: rgba(255,255,255,.15);
-      border-radius: 3px;
-      outline: none;
-    }
-    .mini-calc-field input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none; appearance: none;
-      width: 18px; height: 18px;
-      background: var(--yellow);
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,.3);
-    }
-    .mini-calc-field input[type="range"]::-moz-range-thumb {
-      width: 18px; height: 18px;
-      background: var(--yellow);
-      border-radius: 50%;
-      cursor: pointer;
-      border: none;
-      box-shadow: 0 2px 6px rgba(0,0,0,.3);
-    }
-    .mini-calc-result {
-      margin-top: 16px;
-      padding: 12px 16px;
-      background: rgba(255,195,75,.15);
-      border-left: 3px solid var(--yellow);
-      border-radius: 8px;
-      font-size: 15px;
-    }
-    .mini-calc-result strong {
-      color: var(--yellow);
-      font-size: 19px;
-      font-weight: 800;
-      margin-left: 4px;
-    }
-    .mini-calc-link {
-      display: inline-block;
-      margin-top: 10px;
-      font-size: 12px;
-      color: rgba(255,255,255,.6);
-      text-decoration: none;
-      transition: color .2s;
-    }
-    .mini-calc-link:hover { color: var(--yellow); }
-
-    /* Overlay de pausa (V2 — visible solo cuando el usuario pausó el video) */
-    .video-pause-overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,.35);
-      z-index: 3;
-      pointer-events: none;
-      transition: opacity .2s ease;
-    }
-    .video-pause-overlay.visible { display: flex; }
-    .video-pause-overlay i {
-      width: 76px; height: 76px;
-      background: rgba(255,255,255,.95);
-      color: var(--navy);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 28px;
-      padding-left: 6px; /* optical center */
-      box-shadow: 0 12px 32px rgba(0,0,0,.45);
-    }
-    @media (max-width: 640px) {
-      .video-pause-overlay i { width: 60px; height: 60px; font-size: 22px; }
-    }
-
     /* Sound toggle button on hero video — pill with text + icon */
     .video-sound-btn {
       position: absolute;
@@ -666,38 +464,11 @@
     }
 
     /* ── SOCIAL PROOF BAR ──────────────────────── */
-    .proof-bar { background: linear-gradient(180deg, #fff7ed 0%, #fff 100%); border-bottom: 1px solid #f0f0f0; padding: 32px 24px 36px; }
-    .proof-inner { max-width: 900px; margin: 0 auto; text-align: center; }
-    .proof-headline { font-size: clamp(20px, 3.2vw, 26px); font-weight: 800; color: var(--navy); margin: 0 0 4px; letter-spacing: -.3px; }
-    .proof-headline strong { color: var(--yellow-dark); }
-    .proof-subhead { font-size: 14px; color: var(--gray-5); margin: 0 0 20px; font-weight: 500; }
-    .proof-stats { display: flex; justify-content: center; align-items: stretch; gap: 0; margin: 0 auto 22px; flex-wrap: wrap; }
-    .proof-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 0 22px; min-width: 0; }
-    .proof-item .proof-num { font-size: 22px; font-weight: 900; color: var(--navy); line-height: 1; font-family: 'DM Sans', sans-serif; }
-    .proof-item .proof-label { font-size: 11px; color: var(--gray-5); text-transform: uppercase; letter-spacing: .5px; font-weight: 600; }
-    .proof-item i { color: var(--yellow-dark); font-size: 18px; margin-bottom: 2px; }
-    .proof-divider { width: 1px; background: #e5e7eb; align-self: stretch; }
-    .proof-cta { display: inline-flex; align-items: center; gap: 8px; }
-    .proof-wa-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 14px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #128C7E;
-      text-decoration: none;
-      transition: color .2s, transform .2s;
-    }
-    .proof-wa-link:hover { color: #075E54; transform: translateX(2px); }
-    .proof-wa-link i.fa-whatsapp { color: #25D366; font-size: 16px; }
-    @media (max-width: 640px) {
-      .proof-bar { padding: 24px 20px 28px; }
-      .proof-stats { gap: 4px; }
-      .proof-item { padding: 0 12px; }
-      .proof-item .proof-num { font-size: 18px; }
-      .proof-item .proof-label { font-size: 10px; }
-    }
+    .proof-bar { background: #fff; border-bottom: 1px solid #f0f0f0; padding: 18px 24px; }
+    .proof-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; }
+    .proof-item { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; }
+    .proof-item i { color: var(--yellow); }
+    .proof-divider { width: 1px; height: 22px; background: #e5e7eb; }
 
     /* ── TIMER (final CTA variant) ─────────────── */
     .timer-section { background: var(--yellow); padding: 60px 24px 0; text-align: center; }
@@ -1132,16 +903,12 @@
       .timer-mid-cta { animation: none; }
     }
     @media (max-width: 640px) {
-      /* V2: timer-mid compacto — se venía con padding y separaciones grandes */
-      .timer-mid { padding: 32px 18px 32px; }
-      .timer-mid-eyebrow { margin-bottom: 14px; padding: 5px 14px; font-size: 10.5px; }
-      .timer-mid-headline { font-size: 22px; margin-bottom: 6px; letter-spacing: -.3px; line-height: 1.2; }
-      .timer-mid-sub { font-size: 13px; margin-bottom: 18px; }
-      .timer-mid .countdown { gap: 8px; margin-bottom: 20px; }
-      .timer-mid .time-box { padding: 10px 10px; min-width: 62px; border-radius: 10px; }
-      .timer-mid .time-number { font-size: 26px; }
-      .timer-mid .time-label { font-size: 9px; margin-top: 3px; }
-      .timer-mid-cta { padding: 13px 26px; font-size: 14px; }
+      .timer-mid { padding: 48px 18px 42px; }
+      .timer-mid .countdown { gap: 8px; margin-bottom: 26px; }
+      .timer-mid .time-box { padding: 14px 12px; min-width: 70px; border-radius: 12px; }
+      .timer-mid .time-number { font-size: 32px; }
+      .timer-mid .time-label { font-size: 9px; margin-top: 5px; }
+      .timer-mid-cta { padding: 16px 32px; font-size: 15px; }
     }
 
     /* ── TESTIMONIALS / REAL REVIEWS ───────────── */
@@ -1170,36 +937,23 @@
       .reviews-grid {
         display: flex;
         grid-template-columns: none;
-        gap: 12px;
+        gap: 14px;
         max-width: none;
         overflow-x: auto;
         overflow-y: hidden;
         scroll-snap-type: x mandatory;
         scroll-padding: 20px;
         -webkit-overflow-scrolling: touch;
-        padding: 4px 20px 8px;
+        padding: 4px 20px 20px;
         margin: 0 -20px;
         scrollbar-width: none;
       }
       .reviews-grid::-webkit-scrollbar { display: none; }
       .reviews-grid .review-card {
-        flex: 0 0 72%;
-        max-width: 280px;
+        flex: 0 0 78%;
+        max-width: 300px;
         scroll-snap-align: start;
       }
-      /* V2: sección reseñas compacta en mobile */
-      .testimonials-section { padding: 32px 20px 20px; }
-      .testimonials-section .section-header { margin-bottom: 22px; }
-      .testimonials-section .section-title { font-size: 24px; margin-bottom: 4px; letter-spacing: -.3px; }
-      .testimonials-section .section-sub { font-size: 13px; }
-      .testimonials-section .section-label { margin-bottom: 10px; padding: 4px 12px; font-size: 11px; }
-      .testimonials-section .review-img-wrap { aspect-ratio: 3 / 4; }
-      .testimonials-section .review-platform { padding: 10px 12px 8px; font-size: 11px; }
-      .testimonials-section .review-caption { padding: 10px 12px 12px; }
-      .testimonials-section .review-caption strong { font-size: 13px; }
-      .testimonials-section .review-caption .review-quote { font-size: 11px; }
-      .reviews-swipe-hint { margin-top: 10px; font-size: 11px; }
-      .reviews-disclaimer { margin-top: 6px; font-size: 10px; padding: 0 12px; line-height: 1.4; }
     }
     /* Carousel hint for mobile users */
     .reviews-swipe-hint {
@@ -1351,47 +1105,10 @@
       .lightbox-counter { top: 16px; font-size: 11px; padding: 5px 12px; }
     }
     @media (max-width: 640px) {
-      /* V2: galería como carrusel horizontal con snap (97.5% tráfico es mobile) */
-      .gallery-grid {
-        display: flex;
-        grid-template-columns: none;
-        gap: 12px;
-        max-width: none;
-        overflow-x: auto;
-        overflow-y: hidden;
-        scroll-snap-type: x mandatory;
-        scroll-padding: 20px;
-        -webkit-overflow-scrolling: touch;
-        padding: 4px 20px 20px;
-        margin: 0 -20px;
-        scrollbar-width: none;
-      }
-      .gallery-grid::-webkit-scrollbar { display: none; }
-      .gallery-grid .gallery-item {
-        flex: 0 0 78%;
-        max-width: 300px;
-        aspect-ratio: 1;
-        scroll-snap-align: start;
-      }
-      .gallery-grid .gallery-item.wide,
-      .gallery-grid .gallery-item.tall {
-        grid-column: auto;
-        grid-row: auto;
-        aspect-ratio: 1;
-      }
-      .gallery-caption { opacity: 1; font-size: 12px; bottom: 10px; left: 12px; }
-      .gallery-swipe-hint { display: block; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .gallery-grid .gallery-item.wide { grid-column: span 2; }
+      .gallery-grid .gallery-item.tall { grid-row: span 1; aspect-ratio: 1; }
     }
-    .gallery-swipe-hint {
-      display: none;
-      text-align: center;
-      font-size: 12px;
-      color: rgba(0,0,0,.55);
-      font-weight: 600;
-      margin-top: 14px;
-      letter-spacing: .4px;
-    }
-    .gallery-swipe-hint i { color: var(--yellow-dark); margin: 0 6px; }
 
     /* ── SPECS ─────────────────────────────────── */
     .specs-section { background: var(--cream); }
@@ -1406,41 +1123,18 @@
       .specs-grid .spec-card:nth-child(-n+5),
       .specs-grid .spec-card:nth-child(n+6) { grid-column: auto; }
     }
+    @media (max-width: 560px) {
+      .specs-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    }
     .spec-icon { font-size: 28px; margin-bottom: 10px; display: block; color: var(--yellow-dark); }
     .spec-value { font-size: 20px; font-weight: 800; color: var(--navy); line-height: 1.2; margin-bottom: 4px; }
     .spec-label { font-size: 11px; color: var(--gray-6); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
     .spec-note { font-size: 12px; color: var(--gray-4); margin-top: 4px; }
-    @media (max-width: 560px) {
-      /* V2: specs compactos en mobile — manteniendo el estilo de tarjeta */
-      .specs-section { padding: 32px 20px 28px; }
-      .specs-section .section-header { margin-bottom: 14px; }
-      .specs-section .section-title { font-size: 22px; margin-bottom: 4px; }
-      .specs-section .section-sub { font-size: 12px; }
-      .specs-section .section-label { margin-bottom: 8px; padding: 3px 11px; font-size: 10px; }
-      .specs-grid { grid-template-columns: repeat(2, 1fr); gap: 5px; }
-      .spec-card { padding: 9px 7px; border-radius: 10px; border-bottom-width: 2px; }
-      .spec-icon { font-size: 15px; margin-bottom: 2px; }
-      .spec-value { font-size: 13px; margin-bottom: 1px; line-height: 1.1; }
-      .spec-label { font-size: 8px; letter-spacing: .3px; }
-      .spec-note { font-size: 9.5px; margin-top: 1px; line-height: 1.25; }
-    }
 
     /* ── MID CTA ───────────────────────────────── */
 
     /* ── FAQ ───────────────────────────────────── */
     .faq-section { background: #fff; }
-    /* V2: FAQ compacto en mobile */
-    @media (max-width: 640px) {
-      .faq-section { padding: 32px 20px 28px; }
-      .faq-section .section-header { margin-bottom: 14px; }
-      .faq-section .section-title { font-size: 24px; margin-bottom: 4px; }
-      .faq-section .section-sub { font-size: 13px; }
-      .faq-section .section-label { margin-bottom: 10px; padding: 4px 12px; font-size: 11px; }
-      .faq-question { padding: 14px 0; font-size: 14px; gap: 12px; }
-      .faq-chevron { width: 28px; height: 28px; font-size: 11px; flex-shrink: 0; }
-      .faq-answer { font-size: 13px; line-height: 1.6; }
-      .faq-answer.open { padding-bottom: 14px; }
-    }
     .faq-list { max-width: 740px; margin: 0 auto; }
     .faq-item { border-bottom: 1px solid #f0f0f0; }
     .faq-item:first-child { border-top: 1px solid #f0f0f0; }
@@ -1519,25 +1213,8 @@
       .btn-dark::before { animation: none; display: none; }
     }
     @media (max-width: 640px) {
-      .btn-dark { padding: 16px 36px; font-size: 16px; gap: 10px; }
-      .btn-dark i { font-size: 14px; }
-      /* V2: final-cta compacto — que entre en una pantalla de celu */
-      .final-cta { padding: 28px 20px 32px; }
-      .final-cta .timer-section { padding: 0 0 12px; }
-      .final-cta .timer-title { font-size: 13px; margin-bottom: 8px; }
-      .final-cta .time-box { padding: 8px 10px; min-width: 54px; border-radius: 10px; }
-      .final-cta .time-number { font-size: 22px; }
-      .final-cta .time-label { font-size: 8.5px; margin-top: 2px; }
-      .final-cta .section-title { font-size: 18px; margin-bottom: 10px; }
-      .stock-badge { padding: 6px 16px; font-size: 12px; margin-bottom: 12px; }
-      .price-box { margin: 8px 0 12px; }
-      .price-old { font-size: 13px; margin-bottom: 2px; }
-      .price-current { font-size: 56px; letter-spacing: -2px; margin-bottom: 8px; }
-      .savings-tag { padding: 5px 14px; font-size: 12px; }
-      .trust-row { gap: 14px; font-size: 12px; margin: 10px 0 10px; }
-      .trust-row i { margin-right: 5px; }
-      .final-cta-social { gap: 10px; font-size: 12px; margin: 6px 0 12px; }
-      .final-cta-social .fcs-stars { font-size: 13px; }
+      .btn-dark { padding: 20px 48px; font-size: 18px; }
+      .btn-dark i { font-size: 16px; }
     }
 
     /* Volume */
@@ -1547,24 +1224,6 @@
     .final-cta-social .fcs-stars { color: #f59e0b; font-size: 16px; letter-spacing: 1px; }
     .final-cta-social strong { font-weight: 800; }
     .final-cta-social .fcs-divider { width: 1px; height: 18px; background: rgba(33,36,39,.2); }
-    .final-cta-wa-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 14px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #128C7E;
-      text-decoration: none;
-      transition: color .2s, transform .2s;
-    }
-    .final-cta-wa-link:hover { color: #075E54; transform: translateX(2px); }
-    .final-cta-wa-link i.fa-whatsapp { color: #25D366; font-size: 16px; }
-    .final-cta-foot { margin-top: 14px; font-size: 13px; opacity: .65; color: var(--navy); }
-    @media (max-width: 640px) {
-      .final-cta-wa-link { margin-top: 10px; font-size: 12px; }
-      .final-cta-foot { margin-top: 10px; font-size: 11.5px; }
-    }
     @media (max-width: 520px) {
       .final-cta-social { gap: 10px; font-size: 13px; }
       .final-cta-social .fcs-divider { display: none; }
@@ -1823,34 +1482,6 @@
     .checkout-error-msg { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 12px 16px; border-radius: 10px; font-size: 14px; margin-bottom: 16px; display: none; }
     .checkout-error-msg.visible { display: block; }
 
-    /* ── FORM SECTIONS (psychology UX) ──────────── */
-    .form-section { margin-bottom: 22px; }
-    .form-section:last-of-type { margin-bottom: 14px; }
-    .form-section-title { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; }
-    .form-section-num { width: 26px; height: 26px; background: var(--navy); color: var(--yellow); border-radius: 50%; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: 'DM Sans', sans-serif; }
-    .form-section-title h4 { margin: 0 0 2px; font-size: 15px; font-weight: 800; color: var(--navy); line-height: 1.2; }
-    .form-section-title p { margin: 0; font-size: 12px; color: var(--gray-6); line-height: 1.35; }
-    .field-help { display: block; font-size: 11.5px; color: var(--gray-6); margin-top: 5px; line-height: 1.4; }
-    .field-help i { color: var(--yellow-dark); margin-right: 4px; }
-    .field-help strong { color: var(--navy); font-weight: 700; }
-    .label-optional { font-size: 11px; font-weight: 500; color: #94a3b8; text-transform: none; letter-spacing: 0; margin-left: 4px; }
-    .field-alt-toggle {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: none; border: none; padding: 6px 0 0; margin: 0;
-      color: #2563eb; font-size: 12.5px; font-weight: 600; font-family: 'DM Sans', sans-serif;
-      cursor: pointer; text-decoration: none;
-    }
-    .field-alt-toggle:hover { text-decoration: underline; }
-    .field-alt-toggle i { font-size: 13px; }
-    .field-alt-toggle.hidden { display: none; }
-    .checkout-field.hidden { display: none; }
-    .checkout-submit.pulse-cta { box-shadow: 0 0 0 0 rgba(234,179,8,.55); animation: cko-cta-pulse 2s ease-out infinite; }
-    @keyframes cko-cta-pulse {
-      0%   { box-shadow: 0 0 0 0 rgba(234,179,8,.45); }
-      70%  { box-shadow: 0 0 0 14px rgba(234,179,8,0); }
-      100% { box-shadow: 0 0 0 0 rgba(234,179,8,0); }
-    }
-
     /* ── PAYMENT METHOD STEP ──────────────────── */
     .checkout-step { display: none; }
     .checkout-step.active { display: block; }
@@ -1925,13 +1556,12 @@
     .checkout-divider { height: 1px; background: #e5e7eb; margin: 16px 0; }
 
     @media (max-width: 520px) {
-      /* Full-screen modal on mobile — modal crece con contenido,
-         fondo blanco del modal cubre siempre (sin bleeding del overlay). */
+      /* Full-screen modal on mobile — no overlay bleeding through */
       .checkout-overlay {
         padding: 0;
-        align-items: flex-start;
+        align-items: stretch;
         backdrop-filter: none;
-        background: #fff;  /* mismo color del modal → sin banda oscura si sobra */
+        background: rgba(0,0,0,.85);
       }
       .checkout-modal {
         border-radius: 0;
@@ -1940,7 +1570,6 @@
         min-height: 100vh;
         margin: 0;
         box-shadow: none;
-        background: #fff;
       }
       .checkout-header { padding: 18px 18px 14px; border-radius: 0; }
       .checkout-header h2 { font-size: 19px; }
@@ -1953,16 +1582,9 @@
       .checkout-qty-section { padding: 14px 18px 16px; }
       .checkout-body { padding: 18px 18px 28px; }
       .checkout-row { grid-template-columns: 1fr; gap: 0; }
-      .checkout-row.name-row { grid-template-columns: 1fr 1fr; gap: 10px; }
       .checkout-field { margin-bottom: 12px; }
       .checkout-field label { font-size: 12px; margin-bottom: 4px; }
       .checkout-field input, .checkout-field select { padding: 11px 14px; font-size: 15px; border-radius: 9px; }
-      .form-section { margin-bottom: 18px; }
-      .form-section-title { margin-bottom: 10px; padding-bottom: 9px; gap: 9px; }
-      .form-section-num { width: 22px; height: 22px; font-size: 12px; }
-      .form-section-title h4 { font-size: 14px; }
-      .form-section-title p { font-size: 11px; }
-      .field-help { font-size: 11px; margin-top: 4px; }
       .qty-hint { padding: 10px 12px; font-size: 12px; }
       .qty-row { gap: 12px; }
       .qty-btn { width: 36px; height: 40px; font-size: 18px; }
@@ -2085,7 +1707,7 @@
     @media (max-width: 920px) {
       .hero-inner { grid-template-columns: 1fr; gap: 40px; text-align: center; }
       .video-col { order: -1; max-width: 560px; margin: 0 auto; width: 100%; }
-      .hero-pills { justify-content: flex-start; }
+      .hero-pills { justify-content: center; }
       .hero-ctas { justify-content: center; }
       .hero-sub { margin: 0 auto 30px; }
     }
@@ -2093,44 +1715,10 @@
       .section { padding: 56px 20px; }
       .hero { padding: 56px 20px 48px; }
       .price-current { font-size: 64px; letter-spacing: -2px; }
+      .proof-divider { display: none; }
       .proof-inner { gap: 16px; }
       .trust-row { gap: 18px; font-size: 15px; }
-      .calculator-box { padding: 20px 16px; }
-      /* V2: calculadora compacta en mobile — todo el valor en una sola vista */
-      .roi-section { padding: 36px 20px 32px; }
-      .roi-section .section-header { margin-bottom: 20px; }
-      .roi-section .section-title { font-size: 26px; margin-bottom: 6px; }
-      .roi-section .section-sub { font-size: 14px; }
-      .roi-section .section-label { margin-bottom: 10px; padding: 4px 12px; font-size: 11px; }
-      .roi-section .calculator-box > p:first-child { display: none; } /* "Q = Quetzal" oculto en mobile */
-      .roi-section .input-label { font-size: 12px; margin-bottom: 6px; }
-      .roi-section .input-row { margin-bottom: 16px; gap: 12px; }
-      .roi-section .results-grid { margin-top: 18px; gap: 8px; grid-template-columns: repeat(2, 1fr); }
-      .roi-section .result-card { padding: 14px 10px; }
-      .roi-section .result-label { font-size: 10px; margin-bottom: 4px; }
-      .roi-section .result-value { font-size: 22px; }
-      .roi-section .result-card.highlight .result-value .unit { font-size: .5em; }
-      .roi-section .calc-disclaimer { font-size: 11px; margin-top: 14px; line-height: 1.4; }
-
-      /* V2 (mobile-final) — overrides consolidados: ganan el cascade sobre .section */
-      /* Testimonials / Reseñas */
-      .testimonials-section { padding: 32px 20px 18px; }
-      .reviews-swipe-hint { margin-top: 10px; font-size: 11px; }
-      .reviews-disclaimer { margin-top: 8px; font-size: 10px; padding: 0 12px; line-height: 1.4; }
-      /* Specs — un poco más grandes que antes, manteniendo estética */
-      .specs-section { padding: 36px 20px 32px; }
-      .specs-section .section-header { margin-bottom: 16px; }
-      .specs-section .section-title { font-size: 24px; margin-bottom: 4px; }
-      .specs-section .section-sub { font-size: 13px; }
-      .specs-section .section-label { margin-bottom: 10px; padding: 4px 12px; font-size: 11px; }
-      .specs-grid { grid-template-columns: repeat(2, 1fr); gap: 7px; }
-      .spec-card { padding: 12px 10px; border-radius: 12px; border-bottom-width: 2px; }
-      .spec-icon { font-size: 18px; margin-bottom: 3px; }
-      .spec-value { font-size: 15px; margin-bottom: 2px; line-height: 1.15; }
-      .spec-label { font-size: 9px; letter-spacing: .4px; }
-      .spec-note { font-size: 11px; margin-top: 2px; line-height: 1.3; }
-      /* FAQ */
-      .faq-section { padding: 32px 20px 28px; }
+      .calculator-box { padding: 24px 18px; }
     }
   </style>
 </head>
@@ -2191,35 +1779,54 @@
       </button>
     </div>
     <nav class="mobile-menu" id="mobileMenu">
-      <a href="#calculadora" class="nav-link">Calculadora de ganancia</a>
+      <a href="#negocios" class="nav-link">Negocios</a>
+      <a href="#calculadora" class="nav-link">Calculadora</a>
       <a href="#galeria" class="nav-link">Galería</a>
-      <a href="#resenas" class="nav-link">Reseñas</a>
-      <a href="#specs" class="nav-link">Especificaciones</a>
-      <a href="#faq" class="nav-link">Garantía & FAQ</a>
-      <a href="https://minimakersgt.com/products/industriales" target="_blank" rel="noopener" class="nav-link" style="border-top:1px solid rgba(255,255,255,.1); margin-top:8px; padding-top:14px;">
-        <i class="fas fa-store" style="margin-right:6px;color:var(--yellow);"></i>Ver más productos en la tienda oficial
-      </a>
-      <a href="https://wa.me/50231695584?text=Hola,%20quiero%20info%20sobre%20la%20m%C3%A1quina%2025%20mini%20panqueques" target="_blank" rel="noopener" class="cta-whatsapp-menu">
-        <span class="cta-wa-inner"><i class="fab fa-whatsapp"></i>Preguntar por WhatsApp</span>
+      <a href="#specs" class="nav-link">Specs</a>
+      <a href="#faq" class="nav-link">FAQ</a>
+      <a href="https://wa.me/50231695584?text=Hola,%20quiero%20info%20sobre%20la%20m%C3%A1quina%2025%20mini%20panqueques" target="_blank" rel="noopener" class="cta-header" style="text-align:center; margin-top:4px;">
+        <i class="fab fa-whatsapp" style="margin-right:6px;"></i>Contactar
       </a>
     </nav>
   </header>
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-inner hero-v2">
+    <div class="hero-inner">
       <div class="hero-content">
-        <h1>Empezá tu propio<br><span>negocio de mini panqueques</span></h1>
-        <p class="hero-sub">La inversión que se paga sola. Máquina de 25 panqueques por tanda, con envío gratis.</p>
+        <div class="hero-label"><i class="fas fa-industry"></i> Máquina Industrial</div>
+        <h1>25 Mini<br><span>Panqueques</span></h1>
+        <p class="hero-sub">La inversión que se paga sola. Empieza tu negocio de snacks rentable en Guatemala.</p>
         <div class="hero-pills">
           <span class="pill"><i class="fas fa-bolt"></i>Listo en 3 min</span>
+          <span class="pill"><i class="fas fa-chart-line"></i>ROI en 1–2 semanas</span>
           <span class="pill"><i class="fas fa-shield-alt"></i>Garantía 1 año</span>
+          <span class="pill"><i class="fas fa-broom"></i>Fácil de limpiar</span>
           <span class="pill highlight"><i class="fas fa-credit-card"></i>Pago en cuotas</span>
           <span class="pill highlight"><i class="fas fa-hand-holding-usd"></i>Pago contra entrega</span>
         </div>
         <div class="hero-ctas">
-          <button type="button" class="btn-primary btn-primary-attention open-checkout" style="border:none;">Comprar Ahora — Q1,075</button>
-          <a href="#calculadora" class="btn-ghost">Calcular ganancia ↓</a>
+          <button type="button" class="btn-primary open-checkout" style="border:none;">Comprar Ahora — Q1,200</button>
+          <a href="#galeria" class="btn-ghost">Ver galería ↓</a>
+        </div>
+      </div>
+      <div class="video-col">
+        <div class="video-wrapper" id="videoWrapper">
+          <video
+            autoplay muted loop playsinline
+            poster="https://d2j6dbq0eux0bg.cloudfront.net/images/42285054/4591850846.jpg"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;"
+            id="heroVideo"
+          >
+            <source src="img/hero-video.mp4" type="video/mp4">
+          </video>
+          <div class="video-hook-caption" id="videoHookCaption">
+            <span><i class="fas fa-fire"></i>Mirá cómo produce 25 panqueques en 3 minutos</span>
+          </div>
+          <button type="button" class="video-sound-btn" id="videoSoundBtn" aria-label="Activar sonido">
+            <i class="fas fa-volume-mute"></i>
+            <span>Activar sonido</span>
+          </button>
         </div>
       </div>
     </div>
@@ -2229,30 +1836,57 @@
     </audio>
   </section>
 
-  <!-- HERO VIDEO — ancho completo, debajo del hero (V2) -->
-  <section class="hero-video-section">
-    <div class="hero-video-inner">
-      <div class="video-wrapper" id="videoWrapper">
-        <video
-          autoplay muted loop playsinline
-          poster="https://d2j6dbq0eux0bg.cloudfront.net/images/42285054/4591850846.jpg"
-          style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;cursor:pointer;"
-          id="heroVideo"
-        >
-          <source src="img/hero-video.mp4" type="video/mp4">
-        </video>
-        <div class="video-pause-overlay" id="videoPauseOverlay" aria-hidden="true">
-          <i class="fas fa-play"></i>
+  <!-- SOCIAL PROOF BAR -->
+  <div class="proof-bar">
+    <div class="proof-inner">
+      <div class="proof-item"><i class="fas fa-users"></i> <strong>500+</strong>&nbsp;emprendedores en Guatemala</div>
+      <div class="proof-divider"></div>
+      <div class="proof-item"><i class="fas fa-star"></i> <strong>4.9/5</strong>&nbsp;calificación promedio</div>
+      <div class="proof-divider"></div>
+      <div class="proof-item"><i class="fas fa-shipping-fast"></i> Envío gratis a toda Guatemala</div>
+      <div class="proof-divider"></div>
+      <div class="proof-item"><i class="fas fa-hand-holding-usd"></i> Pago contra entrega</div>
+    </div>
+  </div>
+
+  <!-- BRIDGE: identification copy — comes FIRST to create emotional hook -->
+  <section class="bridge-section">
+    <div class="bridge-grid">
+      <div class="bridge-visual">
+        <div class="bridge-badge-top"><i class="fas fa-fire"></i> Best seller</div>
+        <div class="bridge-visual-frame">
+          <img src="img/bandeja-deluxe.jpg" alt="Bandeja de mini panqueques con chocolate, fresa y banano — producto final que venden nuestros clientes" loading="lazy">
         </div>
-        <button type="button" class="video-sound-btn" id="videoSoundBtn" aria-label="Activar sonido">
-          <i class="fas fa-volume-mute"></i>
-          <span>Activar sonido</span>
-        </button>
+        <div class="bridge-stat-card">
+          <div class="bridge-stat-icon"><i class="fas fa-users"></i></div>
+          <div class="bridge-stat-text">
+            <div class="bridge-stat-value">500+</div>
+            <div class="bridge-stat-label">Emprendedores<br>en Guatemala</div>
+          </div>
+        </div>
+      </div>
+      <div class="bridge-content">
+        <div class="bridge-label"><i class="fas fa-fire"></i> El snack del momento</div>
+        <h2 class="bridge-headline">¿Estás buscando una nueva forma de generar <span class="headline-highlight">ingresos</span>?</h2>
+        <p class="bridge-tagline">Llegaste al lugar correcto.</p>
+        <div class="bridge-body">
+          <p>Los mini panqueques son <strong>el negocio del momento en Guatemala</strong>. Un producto simple, rentable y que se vende solo. Ideal para ferias, cafeterías, food trucks y hasta desde casa.</p>
+          <p>La mayoría de nuestros clientes <strong>recupera la inversión en menos de 3 semanas</strong>. Muchos regresan por una segunda máquina porque ya estaban vendiendo demasiado.</p>
+          <p>Si venís pensando en abrir un nuevo negocio o <strong>ampliar la oferta culinaria del que ya tenés</strong>, dejá de buscar. Llegaste al producto correcto.</p>
+        </div>
+        <div class="bridge-cta-row">
+          <a href="#calculadora" class="bridge-cta">
+            <span>Descubrí cuánto podés ganar</span>
+            <i class="fas fa-arrow-down"></i>
+          </a>
+          <div class="stock-live on-light alert hidden-empty" data-stock-live style="display:none;">
+            <i class="fas fa-box"></i>
+            <span class="stock-live-text">Cargando stock…</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
-
-  <!-- V2: Bridge section eliminada por bajo engagement (GA4 solo 22.6% la veía) -->
 
   <!-- CALCULATOR — with proper labels for a11y -->
   <section class="section roi-section" id="calculadora">
@@ -2303,43 +1937,10 @@
             <div class="result-value" aria-live="polite"><span id="daysBreakeven">20</span><span class="unit">días</span></div>
           </div>
         </div>
-        <p class="calc-disclaimer"><i class="fas fa-info-circle"></i>Estimación con <strong>60%</strong> de utilidad (ingredientes, empaque y energía incluidos). Resultados reales varían según toppings y mercado.</p>
+        <p class="calc-disclaimer"><i class="fas fa-info-circle"></i>Estimación basada en una utilidad aproximada del <strong>60%</strong> sobre el precio de venta, considerando ingredientes, jarabe, empaque y energía por bandeja personal de 10 mini panqueques. Los resultados reales dependen de tus toppings y del mercado donde vendas.</p>
       </div>
     </div>
   </section>
-
-  <!-- V2: PUENTE POST-CALCULADORA — stats compactos + CTA para capitalizar momentum -->
-  <div class="proof-bar">
-    <div class="proof-inner">
-      <h3 class="proof-headline">Sumate a <strong>+500 emprendedores</strong> en Guatemala</h3>
-      <p class="proof-subhead">Ellos ya están facturando con su máquina. Vos podés empezar hoy.</p>
-      <div class="proof-stats">
-        <div class="proof-item">
-          <i class="fas fa-users"></i>
-          <span class="proof-num">500+</span>
-          <span class="proof-label">Clientes</span>
-        </div>
-        <div class="proof-divider"></div>
-        <div class="proof-item">
-          <i class="fas fa-star"></i>
-          <span class="proof-num">4.9/5</span>
-          <span class="proof-label">Calificación</span>
-        </div>
-        <div class="proof-divider"></div>
-        <div class="proof-item">
-          <i class="fas fa-shield-alt"></i>
-          <span class="proof-num">1 año</span>
-          <span class="proof-label">Garantía</span>
-        </div>
-      </div>
-      <button type="button" class="btn-primary btn-primary-attention open-checkout proof-cta" style="border:none;">
-        <i class="fas fa-bolt"></i> Comprar Ahora — Q1,075
-      </button>
-      <a href="https://wa.me/50231695584?text=Hola,%20tengo%20dudas%20sobre%20la%20m%C3%A1quina%2025%20mini%20panqueques" target="_blank" rel="noopener" class="proof-wa-link">
-        <i class="fab fa-whatsapp"></i> ¿Tenés dudas? Preguntá por WhatsApp <i class="fas fa-arrow-right" style="font-size:10px;"></i>
-      </a>
-    </div>
-  </div>
 
   <!-- GALLERY (moved here — users want visual proof immediately after seeing the numbers) -->
   <section class="section gallery-section" id="galeria">
@@ -2383,6 +1984,10 @@
           <span class="gallery-caption">Cliente real en Guatemala</span>
         </div>
         <div class="gallery-item" data-lightbox>
+          <img src="img/versatil.jpg" alt="Diferentes estilos de presentación de mini panqueques con toppings variados" loading="lazy">
+          <span class="gallery-caption">Versátil y delicioso</span>
+        </div>
+        <div class="gallery-item" data-lightbox>
           <img src="img/bandejas-variadas.jpg" alt="Bandejas de mini panqueques con chocolate, fresa y crema listas para servir" loading="lazy">
           <span class="gallery-caption">Listo para vender</span>
         </div>
@@ -2391,7 +1996,6 @@
           <span class="gallery-caption">Bandeja especial</span>
         </div>
       </div>
-      <p class="gallery-swipe-hint"><i class="fas fa-hand-point-left"></i>Deslizá para ver más<i class="fas fa-hand-point-right"></i></p>
     </div>
     <!-- Lightbox -->
     <div class="lightbox" id="lightbox">
@@ -2403,13 +2007,105 @@
     </div>
   </section>
 
+  <!-- TIMER MID — urgency section right after the gallery -->
+  <div class="timer-mid">
+    <div class="timer-mid-inner">
+      <div class="timer-mid-eyebrow"><i class="fas fa-bolt"></i> Estos números son reales</div>
+      <h2 class="timer-mid-headline">Empezá hoy — el precio termina en:</h2>
+      <p class="timer-mid-sub">Después de esta oferta el precio vuelve a Q1,575</p>
+      <div class="countdown">
+        <div class="time-box"><span class="time-number t-days">00</span><div class="time-label">DÍAS</div></div>
+        <div class="time-box"><span class="time-number t-hours">00</span><div class="time-label">HORAS</div></div>
+        <div class="time-box"><span class="time-number t-minutes">00</span><div class="time-label">MIN</div></div>
+        <div class="time-box"><span class="time-number t-seconds">00</span><div class="time-label">SEG</div></div>
+      </div>
+      <div class="stock-live on-light alert hidden-empty" data-stock-live style="display:none; margin-bottom: 18px;">
+        <i class="fas fa-box"></i>
+        <span class="stock-live-text">Cargando stock…</span>
+      </div>
+      <button type="button" class="timer-mid-cta open-checkout"><i class="fas fa-shopping-cart"></i> Comprar Ahora — Q1,200</button>
+    </div>
+  </div>
+
+  <!-- PERFECTOS PARA — emojis replaced with FA icons -->
+  <section class="section business-section" id="negocios">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Casos de uso</div>
+        <h2 class="section-title">Perfecto para estos negocios</h2>
+        <p class="section-sub">Desde emprendedores en casa hasta negocios establecidos</p>
+      </div>
+      <div class="business-grid">
+        <div class="business-card gsap-card">
+          <div class="business-number">1</div>
+          <div class="business-info">
+            <h3><i class="fas fa-mug-hot business-icon"></i> Cafeterías y Coffee Shops</h3>
+            <p>Complementa tu menú con mini postres que se venden solos. Inversión baja, margen alto.</p>
+          </div>
+        </div>
+        <div class="business-card gsap-card">
+          <div class="business-number">2</div>
+          <div class="business-info">
+            <h3><i class="fas fa-calendar-day business-icon"></i> Eventos y Ferias</h3>
+            <p>Portátil, rápido y visualmente atractivo. Perfecto para eventos familiares y corporativos.</p>
+          </div>
+        </div>
+        <div class="business-card gsap-card">
+          <div class="business-number">3</div>
+          <div class="business-info">
+            <h3><i class="fas fa-truck business-icon"></i> Food Trucks</h3>
+            <p>110V estándar, compacto, alta rotación. Ideal para negocios móviles en Guatemala.</p>
+          </div>
+        </div>
+        <div class="business-card gsap-card">
+          <div class="business-number">4</div>
+          <div class="business-info">
+            <h3><i class="fas fa-house-user business-icon"></i> Emprendedores desde casa</h3>
+            <p>Baja inversión inicial, fácil de operar, mercado probado en todo el país.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- REAL REVIEWS — screenshots of WhatsApp & Messenger conversations -->
   <section class="section testimonials-section" id="resenas">
     <div class="container">
       <div class="section-header">
         <div class="section-label">Reseñas reales</div>
-        <h2 class="section-title">Conversaciones con clientes</h2>
-        <p class="section-sub" style="color:rgba(255,255,255,.55); margin:0 auto;">Sin filtros, sin inventos.</p>
+        <h2 class="section-title">Conversaciones reales con clientes</h2>
+        <p class="section-sub" style="color:rgba(255,255,255,.55); margin:0 auto;">Sin filtros, sin testimonios inventados. Así es comprarnos.</p>
+      </div>
+
+      <div class="reviews-stats">
+        <div class="reviews-stat">
+          <div>
+            <div class="stat-num">4.9<span style="font-size:16px;color:rgba(255,255,255,.5);">/5</span></div>
+            <div class="stat-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          </div>
+          <div class="stat-label">Calificación<br>promedio</div>
+        </div>
+        <div class="reviews-stat-divider"></div>
+        <div class="reviews-stat">
+          <div>
+            <div class="stat-num">500+</div>
+            <div class="stat-label">Emprendedores<br>en Guatemala</div>
+          </div>
+        </div>
+        <div class="reviews-stat-divider"></div>
+        <div class="reviews-stat">
+          <div>
+            <div class="stat-num">24–48h</div>
+            <div class="stat-label">Entrega<br>a todo GT</div>
+          </div>
+        </div>
+        <div class="reviews-stat-divider"></div>
+        <div class="reviews-stat">
+          <div>
+            <div class="stat-num"><i class="fas fa-redo-alt" style="font-size:20px;"></i></div>
+            <div class="stat-label">Clientes<br>recurrentes</div>
+          </div>
+        </div>
       </div>
 
       <div class="reviews-grid">
@@ -2531,32 +2227,10 @@
         </div>
       </div>
 
-      <p class="reviews-swipe-hint"><i class="fas fa-hand-point-left"></i>Deslizá para ver más<i class="fas fa-hand-point-right"></i></p>
-      <p class="reviews-disclaimer"><i class="fas fa-shield-alt"></i>Conversaciones reales · datos personales ocultos por privacidad</p>
+      <p class="reviews-swipe-hint"><i class="fas fa-hand-point-left"></i>Deslizá para ver más reseñas<i class="fas fa-hand-point-right"></i></p>
+      <p class="reviews-disclaimer"><i class="fas fa-shield-alt"></i>Todas las conversaciones son reales. Datos personales parcialmente ocultados por respeto a la privacidad de nuestros clientes.</p>
     </div>
   </section>
-
-  <!-- TIMER MID — urgency section right after the gallery -->
-  <div class="timer-mid">
-    <div class="timer-mid-inner">
-      <div class="timer-mid-eyebrow"><i class="fas fa-bolt"></i> Estos números son reales</div>
-      <h2 class="timer-mid-headline">Empezá hoy — el precio termina en:</h2>
-      <p class="timer-mid-sub">Después de esta oferta el precio vuelve a Q1,300</p>
-      <div class="countdown">
-        <div class="time-box"><span class="time-number t-days">00</span><div class="time-label">DÍAS</div></div>
-        <div class="time-box"><span class="time-number t-hours">00</span><div class="time-label">HORAS</div></div>
-        <div class="time-box"><span class="time-number t-minutes">00</span><div class="time-label">MIN</div></div>
-        <div class="time-box"><span class="time-number t-seconds">00</span><div class="time-label">SEG</div></div>
-      </div>
-      <div class="stock-live on-light alert hidden-empty" data-stock-live style="display:none; margin-bottom: 18px;">
-        <i class="fas fa-box"></i>
-        <span class="stock-live-text">Cargando stock…</span>
-      </div>
-      <button type="button" class="timer-mid-cta open-checkout"><i class="fas fa-shopping-cart"></i> Comprar Ahora — Q1,075</button>
-    </div>
-  </div>
-
-  <!-- V2: sección "Perfecto para estos negocios" eliminada — genérica, 0% engagement. Volver cuando haya historias reales de clientes. -->
 
   <!-- SPECS — emojis replaced with FA icons -->
   <section class="section specs-section" id="specs">
@@ -2576,7 +2250,6 @@
         <div class="spec-card gsap-spec"><span class="spec-icon"><i class="fas fa-layer-group"></i></span><div class="spec-value">Teflón</div><div class="spec-label">Placas</div><div class="spec-note">Antiadherente comercial</div></div>
         <div class="spec-card gsap-spec"><span class="spec-icon"><i class="fas fa-industry"></i></span><div class="spec-value">Acero inox.</div><div class="spec-label">Construcción</div><div class="spec-note">Grado comercial</div></div>
         <div class="spec-card gsap-spec"><span class="spec-icon"><i class="fas fa-stopwatch"></i></span><div class="spec-value">Timer</div><div class="spec-label">Control de cocción</div><div class="spec-note">Temporizador incorporado</div></div>
-        <div class="spec-card gsap-spec"><span class="spec-icon"><i class="fas fa-cookie-bite"></i></span><div class="spec-value">25 por tanda</div><div class="spec-label">Capacidad</div><div class="spec-note">Lote de 3 min continuo</div></div>
       </div>
     </div>
   </section>
@@ -2641,8 +2314,8 @@
       <h2 class="section-title"><i class="fas fa-gift"></i> Oferta por tiempo limitado</h2>
       <div class="stock-badge">Quedan solo <strong>4 unidades</strong> en stock</div>
       <div class="price-box">
-        <div class="price-old">Precio regular: Q1,300</div>
-        <div class="price-current">Q1,075</div>
+        <div class="price-old">Precio regular: Q1,575</div>
+        <div class="price-current">Q1,200</div>
         <div class="savings-tag">Ahorras Q375 — 24% de descuento</div>
       </div>
       <div class="trust-row">
@@ -2658,15 +2331,66 @@
         <div class="fcs-divider"></div>
         <div class="fcs-item"><i class="fas fa-users"></i> <span><strong>500+</strong> emprendedores en Guatemala</span></div>
       </div>
-      <button type="button" class="btn-dark open-checkout"><i class="fas fa-shopping-cart"></i><span>Comprar Ahora — Q1,075</span><i class="fas fa-arrow-right" style="font-size:14px;"></i></button>
-      <a href="https://wa.me/50231695584?text=Hola,%20tengo%20dudas%20sobre%20la%20m%C3%A1quina%2025%20mini%20panqueques" target="_blank" rel="noopener" class="final-cta-wa-link">
-        <i class="fab fa-whatsapp"></i> ¿Tenés dudas? Preguntá por WhatsApp <i class="fas fa-arrow-right" style="font-size:10px;"></i>
-      </a>
-      <p class="final-cta-foot"><i class="fas fa-bolt"></i> Entrega en <strong>24–48h</strong> a toda Guatemala</p>
+      <button type="button" class="btn-dark open-checkout"><i class="fas fa-shopping-cart"></i><span>Comprar Ahora — Q1,200</span><i class="fas fa-arrow-right" style="font-size:14px;"></i></button>
+      <p style="margin-top:16px; font-size:13px; opacity:.65; color:var(--navy);"><i class="fas fa-bolt"></i> Entrega en <strong>24–48 horas</strong> a toda Guatemala &nbsp;·&nbsp; <i class="fab fa-whatsapp"></i> Atención personalizada por WhatsApp</p>
     </div>
   </section>
 
-  <!-- V2: sección "Comprando por volumen" eliminada — descuentos visibles en checkout -->
+  <!-- VOLUME PRICING — separate navy section to differentiate from main CTA -->
+  <section class="volume-cta-section">
+    <div class="container" style="max-width:900px;">
+      <div class="volume-header">
+        <div class="volume-eyebrow"><i class="fas fa-building"></i> Para tu negocio</div>
+        <h3 class="volume-heading">Comprando por volumen</h3>
+        <p class="volume-tagline">Mientras más unidades, mayor descuento por máquina.</p>
+      </div>
+      <div class="volume-grid-v2">
+        <div class="volume-row">
+          <div class="volume-qty-new">1 unidad</div>
+          <div class="volume-bar-wrap"><div class="volume-bar" style="width:0%"></div></div>
+          <div class="volume-unit-price">Q1,200</div>
+          <div class="volume-disc-pct">0%</div>
+        </div>
+        <div class="volume-row">
+          <div class="volume-qty-new">2 unidades</div>
+          <div class="volume-bar-wrap"><div class="volume-bar" style="width:16%"></div></div>
+          <div class="volume-unit-price">Q1,150</div>
+          <div class="volume-disc-pct">−4%</div>
+        </div>
+        <div class="volume-row">
+          <div class="volume-qty-new">3 unidades</div>
+          <div class="volume-bar-wrap"><div class="volume-bar" style="width:32%"></div></div>
+          <div class="volume-unit-price">Q1,100</div>
+          <div class="volume-disc-pct">−8%</div>
+        </div>
+        <div class="volume-row">
+          <div class="volume-qty-new">4 unidades</div>
+          <div class="volume-bar-wrap"><div class="volume-bar" style="width:52%"></div></div>
+          <div class="volume-unit-price">Q1,050</div>
+          <div class="volume-disc-pct">−13%</div>
+        </div>
+        <div class="volume-row">
+          <div class="volume-qty-new">5 unidades</div>
+          <div class="volume-bar-wrap"><div class="volume-bar" style="width:68%"></div></div>
+          <div class="volume-unit-price">Q1,000</div>
+          <div class="volume-disc-pct">−17%</div>
+        </div>
+        <div class="volume-row featured">
+          <div class="volume-qty-new">6+ unidades</div>
+          <div class="volume-bar-wrap"><div class="volume-bar" style="width:100%"></div></div>
+          <div class="volume-unit-price">Q900</div>
+          <div class="volume-disc-pct">−25%</div>
+        </div>
+      </div>
+      <div class="wholesale-cta">
+        <a href="https://wa.me/50231695584?text=Hola,%20me%20interesa%20un%20pedido%20mayorista%20de%20la%20m%C3%A1quina%2025%20mini%20panqueques.%20%C2%BFMe%20podr%C3%ADan%20cotizar%3F" target="_blank" rel="noopener" class="wholesale-btn-v2">
+          <i class="fab fa-whatsapp"></i>
+          Cotizar pedido mayorista
+          <i class="fas fa-arrow-right" style="font-size:12px;"></i>
+        </a>
+      </div>
+    </div>
+  </section>
 
   <!-- Catalog exit link + mini footer — safety net for non-converters -->
   <div style="text-align:center; padding: 40px 24px 120px; background: #111315; border-top: 1px solid rgba(255,255,255,.06);">
@@ -2693,7 +2417,7 @@
   <!-- Sticky Mobile CTA -->
   <div class="sticky-mobile-cta" id="stickyCta">
     <div class="sticky-mobile-cta-inner">
-      <div class="sticky-price">Máquina 25 Mini Panqueques<strong>Q1,075</strong></div>
+      <div class="sticky-price">Máquina 25 Mini Panqueques<strong>Q1,200</strong></div>
       <button type="button" class="sticky-btn open-checkout">Comprar Ahora</button>
     </div>
   </div>
@@ -2710,7 +2434,7 @@
         <img src="https://d2j6dbq0eux0bg.cloudfront.net/images/42285054/4591850846.jpg" alt="Máquina 25 Mini Panqueques" class="checkout-thumb">
         <div>
           <div class="checkout-product-name">Máquina Industrial 25 Mini Panqueques</div>
-          <div class="checkout-product-price"><span id="ckoUnitPrice">Q1,075</span> <small id="ckoUnitLabel">c/u</small></div>
+          <div class="checkout-product-price"><span id="ckoUnitPrice">Q1,200</span> <small id="ckoUnitLabel">c/u</small></div>
         </div>
       </div>
       <div class="checkout-qty-section">
@@ -2726,8 +2450,8 @@
           </div>
           <div class="qty-total-box">
             <div class="qty-total-label">Total</div>
-            <div class="qty-total-value" id="qtyTotal">Q1,075</div>
-            <div class="qty-total-unit" id="qtyTotalUnit"><strong>Q1,075</strong> × 1 máquina</div>
+            <div class="qty-total-value" id="qtyTotal">Q1,200</div>
+            <div class="qty-total-unit" id="qtyTotalUnit"><strong>Q1,200</strong> × 1 máquina</div>
           </div>
         </div>
         <div class="qty-hint"><i class="fas fa-bolt"></i><strong>Mientras más compres, más ahorras.</strong> Agregá unidades para ver descuentos instantáneos.</div>
@@ -2736,53 +2460,40 @@
         <div class="checkout-error-msg" id="checkoutError"></div>
         <form id="checkoutForm" novalidate>
          <div class="checkout-step active" id="stepForm">
-          <div class="form-section">
-            <div class="form-section-title">
-              <span class="form-section-num">1</span>
-              <div>
-                <h4>Tus datos</h4>
-                <p>¿A nombre de quién va el pedido?</p>
-              </div>
-            </div>
-            <div class="checkout-row name-row">
-              <div class="checkout-field">
-                <label for="cko_fname">Nombre *</label>
-                <input type="text" id="cko_fname" name="first_name" required autocomplete="given-name" placeholder="Juan">
-                <div class="field-error">Campo requerido</div>
-              </div>
-              <div class="checkout-field">
-                <label for="cko_lname">Apellido *</label>
-                <input type="text" id="cko_lname" name="last_name" required autocomplete="family-name" placeholder="Pérez">
-                <div class="field-error">Campo requerido</div>
-              </div>
-            </div>
-            <div class="checkout-field" id="cko_email_wrap">
-              <label for="cko_email">Email *</label>
-              <input type="email" id="cko_email" name="email" required autocomplete="email" placeholder="tu@email.com">
-              <small class="field-help"><i class="fas fa-envelope"></i> Te enviamos el comprobante y tracking acá</small>
-              <button type="button" class="field-alt-toggle" id="toggleToPhoneOnly">
-                <i class="fab fa-whatsapp"></i> ¿Sin correo? Continuar solo con teléfono
-              </button>
-              <div class="field-error">Email inválido</div>
+          <div class="checkout-row">
+            <div class="checkout-field">
+              <label for="cko_fname">Nombre *</label>
+              <input type="text" id="cko_fname" name="first_name" required autocomplete="given-name" placeholder="Juan">
+              <div class="field-error">Campo requerido</div>
             </div>
             <div class="checkout-field">
-              <label for="cko_phone">Teléfono / WhatsApp *</label>
-              <input type="tel" id="cko_phone" name="phone" required autocomplete="tel" inputmode="tel" placeholder="5555 1234">
-              <small class="field-help"><i class="fab fa-whatsapp"></i> Te escribimos antes de entregar para coordinar</small>
-              <button type="button" class="field-alt-toggle hidden" id="toggleToEmailMode">
-                <i class="fas fa-envelope"></i> Usar email en su lugar
-              </button>
+              <label for="cko_lname">Apellido *</label>
+              <input type="text" id="cko_lname" name="last_name" required autocomplete="family-name" placeholder="Pérez">
               <div class="field-error">Campo requerido</div>
             </div>
           </div>
-
-          <div class="form-section">
-            <div class="form-section-title">
-              <span class="form-section-num">2</span>
-              <div>
-                <h4>¿A dónde te enviamos?</h4>
-                <p>Envío gratis a todo Guatemala · 2–3 días</p>
-              </div>
+          <div class="checkout-row">
+            <div class="checkout-field">
+              <label for="cko_email">Email *</label>
+              <input type="email" id="cko_email" name="email" required autocomplete="email" placeholder="tu@email.com">
+              <div class="field-error">Email inválido</div>
+            </div>
+            <div class="checkout-field">
+              <label for="cko_phone">Teléfono *</label>
+              <input type="tel" id="cko_phone" name="phone" required autocomplete="tel" placeholder="5555 1234">
+              <div class="field-error">Campo requerido</div>
+            </div>
+          </div>
+          <div class="checkout-field">
+            <label for="cko_address">Dirección de envío *</label>
+            <input type="text" id="cko_address" name="address" required autocomplete="street-address" placeholder="Zona 10, Ciudad de Guatemala">
+            <div class="field-error">Campo requerido</div>
+          </div>
+          <div class="checkout-row">
+            <div class="checkout-field">
+              <label for="cko_city">Ciudad *</label>
+              <input type="text" id="cko_city" name="city" required autocomplete="address-level2" placeholder="Guatemala" value="Guatemala">
+              <div class="field-error">Campo requerido</div>
             </div>
             <div class="checkout-field">
               <label for="cko_state">Departamento *</label>
@@ -2812,26 +2523,19 @@
               </select>
               <div class="field-error">Campo requerido</div>
             </div>
+          </div>
+          <div class="checkout-row">
             <div class="checkout-field">
-              <label for="cko_city">Municipio *</label>
-              <input type="text" id="cko_city" name="city" required autocomplete="address-level2" placeholder="Ej. Mixco, Villa Nueva, Antigua…">
-              <div class="field-error">Campo requerido</div>
+              <label for="cko_zip">Código postal</label>
+              <input type="text" id="cko_zip" name="zip" autocomplete="postal-code" placeholder="01010" value="01010">
             </div>
             <div class="checkout-field">
-              <label for="cko_address">Dirección exacta *</label>
-              <input type="text" id="cko_address" name="address" required autocomplete="street-address" placeholder="Calle, # de casa, zona, colonia">
-              <small class="field-help"><i class="fas fa-map-marker-alt"></i> Incluí puntos de referencia para el repartidor</small>
-              <div class="field-error">Campo requerido</div>
-            </div>
-            <div class="checkout-field">
-              <label for="cko_nit">NIT <span class="label-optional">(opcional)</span></label>
+              <label for="cko_nit">NIT (facturación)</label>
               <input type="text" id="cko_nit" name="nit" placeholder="C/F" value="C/F">
-              <small class="field-help">Dejalo en <strong>C/F</strong> si no necesitás factura con NIT</small>
             </div>
           </div>
-
-          <button type="button" class="checkout-submit pulse-cta" id="goToPaymentStep">
-            <span class="btn-text">Continuar a método de pago <i class="fas fa-arrow-right"></i></span>
+          <button type="button" class="checkout-submit" id="goToPaymentStep">
+            <span class="btn-text">Continuar con método de pago <i class="fas fa-arrow-right"></i></span>
           </button>
           <div class="checkout-trust">
             <span><i class="fas fa-shield-alt"></i> Pago seguro</span>
@@ -2867,7 +2571,7 @@
                 <div class="pm-cash-perks">
                   <div class="pm-perk"><i class="fas fa-truck"></i> <span>Entrega en <strong>24–48 horas</strong> a toda Guatemala</span></div>
                   <div class="pm-perk"><i class="fas fa-money-bill-wave"></i> <span>Pagas en <strong>efectivo</strong> al recibir en tu puerta</span></div>
-                  <div class="pm-perk"><i class="fas fa-shield-alt"></i> <span>Sin cargos adicionales — el precio final es <strong>Q1,075</strong></span></div>
+                  <div class="pm-perk"><i class="fas fa-shield-alt"></i> <span>Sin cargos adicionales — el precio final es <strong>Q1,200</strong></span></div>
                 </div>
               </div>
             </div>
@@ -2887,7 +2591,7 @@
                 <div class="cuotas-grid">
                   <div class="cuota-option" data-cuota="1">
                     <div class="cuota-label">Contado</div>
-                    <div class="cuota-value">Q1,075</div>
+                    <div class="cuota-value">Q1,200</div>
                     <div class="cuota-sub">pago único</div>
                   </div>
                   <div class="cuota-option" data-cuota="3">
@@ -2961,23 +2665,16 @@
       }
     })();
 
-    // ── Force scroll to top on refresh (ignore any hash) ──
-    // Landing debe arrancar siempre desde el hero. Si el usuario clickeó
-    // un anchor antes y refresca, el hash quedaba y tiraba a #calculadora.
+    // ── Force scroll to top on page load (unless anchor hash is present) ──
+    // Fixes issue where mobile browsers restore previous scroll position
+    // and land the user deep into the page after a refresh.
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
     }
-    (function() {
-      var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
-      var isFreshLoad = nav.type !== 'back_forward'; // reload o nueva navegación
-      if (isFreshLoad && window.location.hash) {
-        // Limpia el hash sin recargar ni agregar al historial
-        history.replaceState(null, '', window.location.pathname + window.location.search);
+    window.addEventListener('pageshow', function() {
+      if (!window.location.hash) {
+        window.scrollTo(0, 0);
       }
-    })();
-    window.addEventListener('pageshow', function(e) {
-      if (e.persisted) return; // bfcache → respetar posición
-      window.scrollTo(0, 0);
     });
 
     // ── Respect reduced motion ─────────────────
@@ -3041,9 +2738,9 @@
       if (!music || !btn) return;
 
       const TARGET_VOLUME = 0.45;
-      const FADE_START_PCT = 0.04;  // empieza a bajar desde el 4% de scroll
-      const FADE_END_PCT   = 0.40;  // silencio total al 40% de scroll (fade largo = pro)
-      const FADE_IN_DURATION = 500;
+      const FADE_OUT_THRESHOLD = 0.16; // fade when user scrolled 16% of page
+      const FADE_OUT_DURATION  = 2000; // 2 seconds
+      const FADE_IN_DURATION   = 500;
 
       let isPlaying = false;
       let hasAutoFaded = false;
@@ -3075,7 +2772,7 @@
       function activate() {
         if (isPlaying) return;
         // Don't auto-start if user is already past the fade threshold
-        if (getScrollPct() >= FADE_END_PCT) return;
+        if (getScrollPct() >= FADE_OUT_THRESHOLD) return;
         music.volume = 0;
         const p = music.play();
         const onStart = function() {
@@ -3128,47 +2825,37 @@
         }
       });
 
-      // V2 — Auto-activación del sonido DESACTIVADA.
-      // La música ahora SOLO se activa cuando el usuario hace clic explícito en el botón "Activar sonido".
-      // (bloque de firstInteraction removido)
-
-      // Scroll-linked volume — fade continuo y suave mientras el usuario scrollea.
-      // Curva coseno (S-curve, equal-power) — arranca lento, acelera al medio, se apaga
-      // gradualmente. Se siente como fade de DJ profesional.
-      let scrollCheckPending = false;
-      function updateScrollVolume() {
-        if (hasAutoFaded || !isPlaying) return;
-        const pct = getScrollPct();
-        if (pct <= FADE_START_PCT) {
-          // Cancela cualquier fadeTo en curso (evita saltos al llegar al tope)
-          if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
-          music.volume = TARGET_VOLUME;
-          return;
-        }
-        if (pct >= FADE_END_PCT) {
-          music.volume = 0;
-          hasAutoFaded = true;
-          music.pause();
-          isPlaying = false;
-          btn.classList.remove('active');
-          btn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Activar sonido</span>';
-          btn.setAttribute('aria-label', 'Activar sonido');
-          if (caption) caption.classList.remove('hidden');
-          return;
-        }
-        // El scroll ya tomó el control: cancela fadeTo inicial si sigue corriendo
-        if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
-        // Curva coseno: 0.5 * (1 + cos(π·t)) — S-curve suave 1→0
-        const t = (pct - FADE_START_PCT) / (FADE_END_PCT - FADE_START_PCT);
-        const eased = 0.5 * (1 + Math.cos(Math.PI * t));
-        music.volume = TARGET_VOLUME * eased;
+      // Auto-activate on first user interaction (browsers block audio autoplay)
+      function firstInteraction() {
+        activate();
+        window.removeEventListener('scroll', firstInteraction);
+        window.removeEventListener('click', firstInteraction);
+        window.removeEventListener('keydown', firstInteraction);
+        window.removeEventListener('touchstart', firstInteraction);
       }
+      window.addEventListener('scroll', firstInteraction, { passive: true, once: true });
+      window.addEventListener('click', firstInteraction, { once: true });
+      window.addEventListener('keydown', firstInteraction, { once: true });
+      window.addEventListener('touchstart', firstInteraction, { once: true, passive: true });
+
+      // Fade-out when user scrolls past threshold
+      let scrollCheckPending = false;
       window.addEventListener('scroll', function() {
-        if (scrollCheckPending) return;
+        if (hasAutoFaded || !isPlaying || scrollCheckPending) return;
         scrollCheckPending = true;
         requestAnimationFrame(function() {
           scrollCheckPending = false;
-          updateScrollVolume();
+          if (getScrollPct() >= FADE_OUT_THRESHOLD) {
+            hasAutoFaded = true;
+            fadeTo(0, FADE_OUT_DURATION, function() {
+              music.pause();
+              isPlaying = false;
+            });
+            btn.classList.remove('active');
+            btn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Activar sonido</span>';
+            btn.setAttribute('aria-label', 'Activar sonido');
+            if (caption) caption.classList.remove('hidden');
+          }
         });
       }, { passive: true });
 
@@ -3302,27 +2989,25 @@
       }, { passive: true });
     })();
 
-    // ── Countdown REAL: fecha fija de fin de promo (no resetea por usuario) ─
+    // ── Countdown (persistente con localStorage, soporta múltiples instancias via classes) ─
     (function() {
-      // Fin de promo: 2026-04-30 23:59:59 GT (-06:00). Actualizar cuando cambie la oferta.
-      const end = new Date('2026-04-30T23:59:59-06:00').getTime();
+      const TIMER_KEY = 'mm_offer_end_v1';
+      let end = parseInt(localStorage.getItem(TIMER_KEY) || '0');
+      if (!end || end < Date.now()) {
+        end = Date.now() + 3 * 24 * 60 * 60 * 1000;
+        localStorage.setItem(TIMER_KEY, end);
+      }
       function setAll(cls, value) {
         document.querySelectorAll('.' + cls).forEach(function(el) { el.textContent = value; });
       }
-      function tick() {
+      setInterval(function() {
         const d = end - Date.now();
-        if (d < 0) {
-          setAll('t-days', '00'); setAll('t-hours', '00');
-          setAll('t-minutes', '00'); setAll('t-seconds', '00');
-          return;
-        }
+        if (d < 0) return;
         setAll('t-days',    String(Math.floor(d / 86400000)).padStart(2, '0'));
         setAll('t-hours',   String(Math.floor((d % 86400000) / 3600000)).padStart(2, '0'));
         setAll('t-minutes', String(Math.floor((d % 3600000) / 60000)).padStart(2, '0'));
         setAll('t-seconds', String(Math.floor((d % 60000) / 1000)).padStart(2, '0'));
-      }
-      tick();
-      setInterval(tick, 1000);
+      }, 1000);
     })();
 
     // ── Calculator ──────────────────────────────
@@ -3350,7 +3035,7 @@
       // (masa + jarabe + empaque + energía). Da ~60% utilidad a Q10/bandeja
       // basado en precios reales del mercado guatemalteco.
       const COST_PER_PORTION = 4.00;
-      const INVESTMENT = 1075;
+      const INVESTMENT = 1200;
 
       function calc() {
         const price = parseFloat(sp.value) || 0;
@@ -3537,15 +3222,15 @@
       var WHATSAPP_NUM = '50231695584';
 
       // Volume pricing — per-unit schedule, MUST match worker.js logic
-      // 1=1075, 2=1025, 3=975, 4=925, 5=875, 6+=800 (escalones de Q50, 6+ salto a Q800)
+      // 1=1200, 2=1150, 3=1100, 4=1050, 5=1000, 6+=900
       function pricing(qty) {
         var unit, discountPct;
-        if (qty >= 6)      { unit = 800;  discountPct = 26; }
-        else if (qty === 5){ unit = 875;  discountPct = 19; }
-        else if (qty === 4){ unit = 925;  discountPct = 14; }
-        else if (qty === 3){ unit = 975;  discountPct = 9;  }
-        else if (qty === 2){ unit = 1025; discountPct = 5;  }
-        else               { unit = 1075; discountPct = 0;  }
+        if (qty >= 6)      { unit = 900;  discountPct = 25; }
+        else if (qty === 5){ unit = 1000; discountPct = 17; }
+        else if (qty === 4){ unit = 1050; discountPct = 13; }
+        else if (qty === 3){ unit = 1100; discountPct = 8;  }
+        else if (qty === 2){ unit = 1150; discountPct = 4;  }
+        else               { unit = 1200; discountPct = 0;  }
         return { unit: unit, total: unit * qty, discountPct: discountPct };
       }
 
@@ -3635,53 +3320,10 @@
       }
 
       qtyMinus.addEventListener('click', function() {
-        if (currentQty > 1) {
-          currentQty--;
-          updateQtyUI(true);
-          if (window.gtag) gtag('event', 'checkout_qty_change', { event_category: 'checkout', event_label: 'decrease', value: currentQty });
-        }
+        if (currentQty > 1) { currentQty--; updateQtyUI(true); }
       });
       qtyPlus.addEventListener('click', function() {
-        if (currentQty < 20) {
-          currentQty++;
-          updateQtyUI(true);
-          if (window.gtag) gtag('event', 'checkout_qty_change', { event_category: 'checkout', event_label: 'increase', value: currentQty });
-        }
-      });
-
-      // Phone-only mode (para gente sin correo)
-      var phoneOnlyMode = false;
-      var emailWrap = document.getElementById('cko_email_wrap');
-      var emailInput = document.getElementById('cko_email');
-      var toggleToPhone = document.getElementById('toggleToPhoneOnly');
-      var toggleToEmail = document.getElementById('toggleToEmailMode');
-      toggleToPhone.addEventListener('click', function() {
-        phoneOnlyMode = true;
-        emailWrap.classList.add('hidden');
-        emailInput.required = false;
-        emailInput.classList.remove('error');
-        toggleToEmail.classList.remove('hidden');
-        if (window.gtag) gtag('event', 'checkout_phone_only_mode', { event_category: 'checkout', event_label: 'enabled' });
-      });
-      toggleToEmail.addEventListener('click', function() {
-        phoneOnlyMode = false;
-        emailWrap.classList.remove('hidden');
-        emailInput.required = true;
-        toggleToEmail.classList.add('hidden');
-        if (window.gtag) gtag('event', 'checkout_phone_only_mode', { event_category: 'checkout', event_label: 'disabled' });
-      });
-
-      // Field-fill tracking (una vez por campo)
-      var fieldsFired = {};
-      var trackableFields = ['cko_fname', 'cko_lname', 'cko_email', 'cko_phone', 'cko_state', 'cko_city', 'cko_address'];
-      trackableFields.forEach(function(id) {
-        var f = document.getElementById(id);
-        if (!f) return;
-        f.addEventListener('blur', function() {
-          if (fieldsFired[id] || !f.value.trim()) return;
-          fieldsFired[id] = true;
-          if (window.gtag) gtag('event', 'checkout_field_filled', { event_category: 'checkout', event_label: id.replace('cko_','') });
-        });
+        if (currentQty < 20) { currentQty++; updateQtyUI(true); }
       });
 
       function openCheckout() {
@@ -3706,13 +3348,11 @@
             num_items: currentQty
           });
         }
-        if (window.gtag) gtag('event', 'checkout_open', { event_category: 'checkout', event_label: 'modal_open', value: p.total });
       }
 
       function closeCheckout() {
         overlay.classList.remove('open');
         document.body.style.overflow = '';
-        if (window.gtag) gtag('event', 'checkout_close', { event_category: 'checkout', event_label: 'modal_close' });
       }
 
       function updateSubmitBtn() {
@@ -3745,21 +3385,15 @@
       goToPaymentBtn.addEventListener('click', function() {
         var fields = form.querySelectorAll('#stepForm [required]');
         var valid = true;
-        var invalidFields = [];
         fields.forEach(function(f) {
           f.classList.remove('error');
-          if (!f.value.trim()) { f.classList.add('error'); valid = false; invalidFields.push(f.id); }
+          if (!f.value.trim()) { f.classList.add('error'); valid = false; }
         });
-        if (!phoneOnlyMode) {
-          var emailField = document.getElementById('cko_email');
-          if (emailField.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
-            emailField.classList.add('error'); valid = false; invalidFields.push('cko_email');
-          }
+        var emailField = document.getElementById('cko_email');
+        if (emailField.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
+          emailField.classList.add('error'); valid = false;
         }
-        if (!valid) {
-          if (window.gtag) gtag('event', 'checkout_validation_error', { event_category: 'checkout', event_label: invalidFields.join(',') });
-          return;
-        }
+        if (!valid) return;
 
         stepForm.classList.remove('active');
         stepPayment.classList.add('active');
@@ -3779,7 +3413,6 @@
           card.classList.add('selected');
           selectedMethod = card.getAttribute('data-method');
           updateSubmitBtn();
-          if (window.gtag) gtag('event', 'checkout_payment_method_select', { event_category: 'checkout', event_label: selectedMethod });
           // Meta Pixel: AddPaymentInfo (skip en test mode)
           var p = pricing(currentQty);
           if (typeof fbq === 'function' && !isTestMode()) {
@@ -3819,30 +3452,17 @@
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         if (!selectedMethod) return;
-        if (window.gtag) gtag('event', 'checkout_submit', {
-          event_category: 'checkout',
-          event_label: selectedMethod,
-          value: pricing(currentQty).total,
-          phone_only: phoneOnlyMode ? 'yes' : 'no'
-        });
 
         var p = pricing(currentQty);
-        var phoneRaw = document.getElementById('cko_phone').value.trim();
-        var emailRaw = document.getElementById('cko_email').value.trim();
-        // Si el usuario eligió "continuar solo con teléfono", generamos un email
-        // derivado del número para que el backend/Recurrente no rompa.
-        var finalEmail = (phoneOnlyMode || !emailRaw)
-          ? phoneRaw.replace(/\D/g, '') + '@sincorreo.minimakersgt.com'
-          : emailRaw;
         var payload = {
           first_name: document.getElementById('cko_fname').value.trim(),
           last_name: document.getElementById('cko_lname').value.trim(),
-          email: finalEmail,
-          phone: phoneRaw,
+          email: document.getElementById('cko_email').value.trim(),
+          phone: document.getElementById('cko_phone').value.trim(),
           address: document.getElementById('cko_address').value.trim(),
           city: document.getElementById('cko_city').value.trim(),
           state: document.getElementById('cko_state').value,
-          zip: '01010',
+          zip: document.getElementById('cko_zip').value.trim() || '01010',
           nit: document.getElementById('cko_nit').value.trim() || 'C/F',
           quantity: currentQty,
           unit_price: p.unit,
@@ -4118,98 +3738,6 @@
         });
       });
 
-    })();
-  </script>
-
-  <!-- V2 — Mini-calculadora del hero -->
-  <script>
-    (function() {
-      var priceIn = document.getElementById('miniPrice');
-      var portsIn = document.getElementById('miniPortions');
-      var priceOut = document.getElementById('miniPriceOut');
-      var portsOut = document.getElementById('miniPortionsOut');
-      var beOut = document.getElementById('miniBreakeven');
-      if (!priceIn || !portsIn || !beOut) return;
-
-      var COST_PER_PORTION = 4.00;
-      var INVESTMENT = 1075;
-      var interacted = false;
-
-      function calc() {
-        var price = parseFloat(priceIn.value);
-        var parts = parseInt(portsIn.value, 10);
-        priceOut.textContent = price;
-        portsOut.textContent = parts;
-        var profit = (price - COST_PER_PORTION) * parts;
-        if (profit <= 0) { beOut.textContent = '—'; return; }
-        beOut.textContent = Math.ceil(INVESTMENT / profit);
-      }
-
-      function trackFirstInteraction() {
-        if (interacted) return;
-        interacted = true;
-        if (window.gtag) {
-          gtag('event', 'hero_mini_calc_use', {
-            event_category: 'engagement',
-            event_label: 'first_interaction'
-          });
-        }
-      }
-
-      priceIn.addEventListener('input', function() { calc(); trackFirstInteraction(); });
-      portsIn.addEventListener('input', function() { calc(); trackFirstInteraction(); });
-      calc();
-    })();
-  </script>
-
-  <!-- V2 — Click-to-toggle play/pause en hero video (autoplay sigue activo) -->
-  <script>
-    (function() {
-      var video = document.getElementById('heroVideo');
-      var overlay = document.getElementById('videoPauseOverlay');
-      if (!video || !overlay) return;
-
-      // Forzar autoplay al cargar (algunos navegadores — iOS, in-app — no lo disparan solos
-      // aunque el tag tenga `autoplay muted`). Si falla, mostramos overlay para click.
-      var userPaused = false;
-      function tryAutoplay() {
-        var p = video.play();
-        if (p && typeof p.then === 'function') {
-          p.catch(function() {
-            // Autoplay bloqueado: mostramos el overlay para que el usuario le dé clic
-            overlay.classList.add('visible');
-          });
-        }
-      }
-      if (video.readyState >= 2) tryAutoplay();
-      else video.addEventListener('loadeddata', tryAutoplay, { once: true });
-
-      video.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (video.paused) {
-          userPaused = false;
-          var p = video.play();
-          var onStart = function() {
-            overlay.classList.remove('visible');
-            if (window.gtag) gtag('event', 'hero_video_resume', { event_category: 'engagement' });
-          };
-          if (p && typeof p.then === 'function') p.then(onStart).catch(function() {});
-          else onStart();
-        } else {
-          userPaused = true;
-          video.pause();
-          overlay.classList.add('visible');
-          if (window.gtag) gtag('event', 'hero_video_pause', { event_category: 'engagement' });
-        }
-      });
-
-      // Overlay solo cuando el usuario pausó (no en pausas espúreas del browser)
-      video.addEventListener('pause', function() {
-        if (userPaused && !video.ended) overlay.classList.add('visible');
-      });
-      video.addEventListener('play', function() {
-        overlay.classList.remove('visible');
-      });
     })();
   </script>
 

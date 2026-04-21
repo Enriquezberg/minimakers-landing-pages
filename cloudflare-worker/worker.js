@@ -27,30 +27,30 @@ const WHATSAPP_NUM = '50231695584';
 const PRODUCT = {
   name: 'Maquina Industrial 25 Mini Panqueques',
   sku: 'MI25MP',
-  price_cents: 120000,
-  price_display: 'Q1,200',
+  price_cents: 107500,
+  price_display: 'Q1,075',
   currency: 'GTQ'
 };
 
 // Volume pricing — per-unit schedule, MUST match index.html pricing() logic
-// 1=Q1200, 2=Q1150, 3=Q1100, 4=Q1050, 5=Q1000, 6+=Q900
+// 1=Q1075, 2=Q1025, 3=Q975, 4=Q925, 5=Q875, 6+=Q800 (escalones de Q50, 6+ salto a Q800)
 function unitPriceCents(qty) {
   qty = parseInt(qty, 10) || 1;
-  if (qty >= 6)  return 90000;   // Q900
-  if (qty === 5) return 100000;  // Q1,000
-  if (qty === 4) return 105000;  // Q1,050
-  if (qty === 3) return 110000;  // Q1,100
-  if (qty === 2) return 115000;  // Q1,150
-  return 120000;                 // Q1,200
+  if (qty >= 6)  return 80000;   // Q800
+  if (qty === 5) return 87500;   // Q875
+  if (qty === 4) return 92500;   // Q925
+  if (qty === 3) return 97500;   // Q975
+  if (qty === 2) return 102500;  // Q1,025
+  return 107500;                 // Q1,075
 }
 
 function discountPct(qty) {
   qty = parseInt(qty, 10) || 1;
-  if (qty >= 6)  return 25;
-  if (qty === 5) return 17;
-  if (qty === 4) return 13;
-  if (qty === 3) return 8;
-  if (qty === 2) return 4;
+  if (qty >= 6)  return 26;
+  if (qty === 5) return 19;
+  if (qty === 4) return 14;
+  if (qty === 3) return 9;
+  if (qty === 2) return 5;
   return 0;
 }
 
