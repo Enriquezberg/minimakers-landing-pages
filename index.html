@@ -3495,39 +3495,17 @@
           }
         });
 
-        // If mode is cash_only → hide the card payment method in checkout modal
+        // Card payment method is always visible — re-enable if it was hidden
         var cardCard = document.querySelector('.payment-method-card[data-method="card"]');
-        if (cardCard) {
-          if (!cfg.card_enabled) {
-            cardCard.style.display = 'none';
-          } else {
-            cardCard.style.display = '';
-          }
-        }
+        if (cardCard) cardCard.style.display = '';
 
         // Clean up any legacy notice if it exists in the DOM
         var legacyNotice = document.getElementById('checkoutModeNotice');
         if (legacyNotice) legacyNotice.remove();
 
-        // If mode is disabled (stock=0) → swap all "open-checkout" buttons with WhatsApp preorder links
-        if (cfg.mode === 'disabled') {
-          var preorderMsg = encodeURIComponent('¡Hola! Quiero reservar una Máquina Industrial 25 Mini Panqueques en el próximo lote. ¿Cuándo llegan nuevas unidades?');
-          var preorderUrl = 'https://wa.me/50231695584?text=' + preorderMsg;
-          document.querySelectorAll('.open-checkout').forEach(function(btn) {
-            // Convert button → anchor in-place
-            var a = document.createElement('a');
-            a.href = preorderUrl;
-            a.target = '_blank';
-            a.rel = 'noopener';
-            a.className = btn.className;
-            a.innerHTML = '<i class="fab fa-whatsapp" style="margin-right:8px;"></i> Pre-ordenar por WhatsApp';
-            // Remove any click handlers attached to the original button
-            btn.replaceWith(a);
-          });
-          // Also disable quantity selector
-          var qtySection = document.querySelector('.checkout-qty-section');
-          if (qtySection) qtySection.style.opacity = '0.4';
-        }
+        // Ensure quantity selector and open-checkout buttons are never auto-modified
+        var qtySection = document.querySelector('.checkout-qty-section');
+        if (qtySection) qtySection.style.opacity = '';
       }
 
       function fetchConfig() {
