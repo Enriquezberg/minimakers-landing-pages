@@ -61,8 +61,41 @@
   }
   </script>
 
+  <!-- Global error logger — surfaces real stack traces instead of "script error." -->
+  <script>
+    (function() {
+      window.__jsErrors = [];
+      window.addEventListener('error', function(e) {
+        var info = {
+          msg: e.message || 'unknown',
+          src: e.filename || '(no src)',
+          line: e.lineno || 0,
+          col: e.colno || 0,
+          stack: (e.error && e.error.stack) ? String(e.error.stack).slice(0, 500) : '',
+          ua: navigator.userAgent.slice(0, 120)
+        };
+        window.__jsErrors.push(info);
+        try {
+          if (window.clarity) window.clarity('set', 'js_error', info.msg + ' @ ' + info.src + ':' + info.line);
+          if (window.gtag) window.gtag('event', 'js_error', {
+            error_msg: info.msg.slice(0, 100),
+            error_src: info.src.slice(0, 100),
+            error_line: info.line
+          });
+        } catch (_) { /* swallow logger failure */ }
+      }, true);
+      window.addEventListener('unhandledrejection', function(e) {
+        var reason = e && e.reason ? String(e.reason).slice(0, 200) : 'unknown';
+        try {
+          if (window.clarity) window.clarity('set', 'js_rejection', reason);
+          if (window.gtag) window.gtag('event', 'js_rejection', { reason: reason.slice(0, 100) });
+        } catch (_) {}
+      });
+    })();
+  </script>
+
   <!-- Google Analytics 4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JT5JL3LG6V"></script>
+  <script async crossorigin="anonymous" src="https://www.googletagmanager.com/gtag/js?id=G-JT5JL3LG6V"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -74,7 +107,7 @@
   <script type="text/javascript">
   (function(c,l,a,r,i,t,y){
     c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    t=l.createElement(r);t.async=1;t.crossOrigin="anonymous";t.src="https://www.clarity.ms/tag/"+i;
     y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
   })(window,document,"clarity","script","waiwj7t2oe");
   </script>
@@ -85,7 +118,7 @@
   {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
   n.callMethod.apply(n,arguments):n.queue.push(arguments)};
   if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
+  n.queue=[];t=b.createElement(e);t.async=!0;t.crossOrigin="anonymous";
   t.src=v;s=b.getElementsByTagName(e)[0];
   s.parentNode.insertBefore(t,s)}(window, document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
@@ -106,8 +139,10 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -2263,7 +2298,7 @@
       </div>
     </div>
     <!-- Background music — independent of video loop, fades out at 10% scroll -->
-    <audio id="heroMusic" preload="auto">
+    <audio id="heroMusic" preload="none">
       <source src="img/hero-music.mp3" type="audio/mpeg">
     </audio>
   </section>
@@ -2390,43 +2425,67 @@
       </div>
       <div class="gallery-grid">
         <div class="gallery-item wide" data-lightbox>
-          <img src="img/promo-desayuno.jpg" alt="Máquina 25 mini panqueques con plato de resultado final" loading="lazy">
+          <picture>
+            <source srcset="img/promo-desayuno.webp" type="image/webp">
+            <img src="img/promo-desayuno.jpg" alt="Máquina 25 mini panqueques con plato de resultado final" loading="lazy" decoding="async">
+          </picture>
           <span class="gallery-caption">Tu desayuno nunca será el mismo</span>
         </div>
         <div class="gallery-item" data-lightbox>
-          <img src="img/maquina-frontal.jpg" alt="Máquina mini panqueques vista frontal con controles de temperatura y timer" loading="lazy">
+          <picture>
+            <source srcset="img/maquina-frontal.webp" type="image/webp">
+            <img src="img/maquina-frontal.jpg" alt="Máquina mini panqueques vista frontal con controles de temperatura y timer" loading="lazy" decoding="async">
+          </picture>
           <span class="gallery-caption">Vista frontal</span>
         </div>
         <div class="gallery-item" data-lightbox>
-          <img src="img/cocinando-grill.jpg" alt="Mano cocinando mini panqueques dorados en la plancha, con fresas y banano de fondo" loading="lazy">
+          <picture>
+            <source srcset="img/cocinando-grill.webp" type="image/webp">
+            <img src="img/cocinando-grill.jpg" alt="Mano cocinando mini panqueques dorados en la plancha, con fresas y banano de fondo" loading="lazy" decoding="async">
+          </picture>
           <span class="gallery-caption">Cocinando en vivo</span>
         </div>
         <div class="gallery-item" data-lightbox>
-          <img src="img/resultado-final.jpg" alt="Mini panqueques terminados con chocolate, frutas y sprinkles servidos en caja" loading="lazy">
+          <picture>
+            <source srcset="img/resultado-final.webp" type="image/webp">
+            <img src="img/resultado-final.jpg" alt="Mini panqueques terminados con chocolate, frutas y sprinkles servidos en caja" loading="lazy" decoding="async">
+          </picture>
           <span class="gallery-caption">Resultado final</span>
         </div>
         <div class="gallery-item" data-lightbox>
-          <img src="img/detalle-placa.jpg" alt="Detalle de las 25 cavidades de la placa antiadherente de teflón" loading="lazy">
+          <img src="img/detalle-placa.jpg" alt="Detalle de las 25 cavidades de la placa antiadherente de teflón" loading="lazy" decoding="async">
           <span class="gallery-caption">Placa antiadherente</span>
         </div>
         <div class="gallery-item" data-lightbox>
-          <img src="img/lifestyle-perfectos.jpg" alt="Mini panqueques servidos de diferentes formas: con frutas, miel, crema" loading="lazy">
+          <picture>
+            <source srcset="img/lifestyle-perfectos.webp" type="image/webp">
+            <img src="img/lifestyle-perfectos.jpg" alt="Mini panqueques servidos de diferentes formas: con frutas, miel, crema" loading="lazy" decoding="async">
+          </picture>
           <span class="gallery-caption">Infinitas combinaciones</span>
         </div>
         <div class="gallery-item" data-lightbox>
-          <img src="img/detalle-controles.jpg" alt="Detalle de controles: switch de encendido, termómetro y timer" loading="lazy">
+          <picture>
+            <source srcset="img/detalle-controles.webp" type="image/webp">
+            <img src="img/detalle-controles.jpg" alt="Detalle de controles: switch de encendido, termómetro y timer" loading="lazy" decoding="async">
+          </picture>
           <span class="gallery-caption">Controles profesionales</span>
         </div>
         <div class="gallery-item" data-lightbox>
-          <img src="img/cliente-real.jpg" alt="Cliente real usando la máquina en su cocina con panqueques dorados" loading="lazy">
+          <img src="img/cliente-real.jpg" alt="Cliente real usando la máquina en su cocina con panqueques dorados" loading="lazy" decoding="async">
           <span class="gallery-caption">Cliente real en Guatemala</span>
         </div>
         <div class="gallery-item" data-lightbox>
-          <img src="img/bandejas-variadas.jpg" alt="Bandejas de mini panqueques con chocolate, fresa y crema listas para servir" loading="lazy">
+          <picture>
+            <source srcset="img/bandejas-variadas.webp" type="image/webp">
+            <img src="img/bandejas-variadas.jpg" alt="Bandejas de mini panqueques con chocolate, fresa y crema listas para servir" loading="lazy" decoding="async">
+          </picture>
           <span class="gallery-caption">Listo para vender</span>
         </div>
         <div class="gallery-item" data-lightbox>
-          <img src="img/bandeja-deluxe.jpg" alt="Bandeja especial de mini panqueques con chocolate, fresa y banano" loading="lazy">
+          <picture>
+            <source srcset="img/bandeja-deluxe.webp" type="image/webp">
+            <img src="img/bandeja-deluxe.jpg" alt="Bandeja especial de mini panqueques con chocolate, fresa y banano" loading="lazy" decoding="async">
+          </picture>
           <span class="gallery-caption">Bandeja especial</span>
         </div>
       </div>
@@ -2438,7 +2497,7 @@
       <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar imagen"><i class="fas fa-times"></i></button>
       <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Imagen anterior"><i class="fas fa-chevron-left"></i></button>
       <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Imagen siguiente"><i class="fas fa-chevron-right"></i></button>
-      <img src="" alt="" id="lightboxImg">
+      <img alt="" id="lightboxImg" decoding="async">
     </div>
   </section>
 
@@ -2965,8 +3024,8 @@
   </div>
 
   <!-- SCRIPTS -->
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script defer crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script defer crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 
   <script>
     // ── Preview mode flag (?preview=1) ──
@@ -3026,7 +3085,9 @@
     // ── Respect reduced motion ─────────────────
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (!prefersReducedMotion) {
+    // GSAP scripts are deferred now, so wait for DOMContentLoaded (defers run before DCL).
+    function initGsapAnimations() {
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
       gsap.registerPlugin(ScrollTrigger);
 
       // Hero — on load
@@ -3074,6 +3135,14 @@
         scrollTrigger: { trigger: '.final-cta', start: 'top 80%' },
         scale: 0.82, opacity: 0, duration: 0.65, ease: 'back.out(1.6)', immediateRender: false
       });
+    }
+
+    if (!prefersReducedMotion) {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initGsapAnimations);
+      } else {
+        initGsapAnimations();
+      }
     }
 
     // ── Hero background music (separate from video, fades out on scroll) ──
@@ -3282,11 +3351,11 @@
         lightboxImg.classList.add('loading');
         const tmp = new Image();
         tmp.onload = function() {
-          lightboxImg.src = img.src;
+          lightboxImg.src = img.currentSrc || img.src;
           lightboxImg.alt = img.alt;
           lightboxImg.classList.remove('loading');
         };
-        tmp.src = img.src;
+        tmp.src = img.currentSrc || img.src;
         counter.textContent = (currentIdx + 1) + ' / ' + activeSet.length;
       }
 
@@ -3294,7 +3363,7 @@
         activeSet = set;
         currentIdx = idx;
         const img = set[idx].querySelector('img');
-        lightboxImg.src = img.src;
+        lightboxImg.src = img.currentSrc || img.src;
         lightboxImg.alt = img.alt;
         lightboxImg.classList.remove('loading');
         counter.textContent = (currentIdx + 1) + ' / ' + activeSet.length;
