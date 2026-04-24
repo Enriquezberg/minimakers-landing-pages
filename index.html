@@ -3505,23 +3505,9 @@
           }
         }
 
-        // Show a notice inside the checkout modal when card is disabled
-        var checkoutHeader = document.querySelector('.checkout-header p');
-        if (checkoutHeader) {
-          var noticeId = 'checkoutModeNotice';
-          var existing = document.getElementById(noticeId);
-          if (cfg.mode === 'cash_only') {
-            if (!existing) {
-              var notice = document.createElement('div');
-              notice.id = noticeId;
-              notice.style.cssText = 'background:rgba(255,195,75,.18);color:#fff;padding:10px 14px;margin-top:8px;border-radius:8px;font-size:12px;font-weight:600;display:inline-block;';
-              notice.innerHTML = '<i class="fas fa-info-circle" style="color:#ffc34b;margin-right:6px;"></i> Solo aceptamos pago contra entrega mientras reponemos stock';
-              checkoutHeader.parentNode.appendChild(notice);
-            }
-          } else if (existing) {
-            existing.remove();
-          }
-        }
+        // Clean up any legacy notice if it exists in the DOM
+        var legacyNotice = document.getElementById('checkoutModeNotice');
+        if (legacyNotice) legacyNotice.remove();
 
         // If mode is disabled (stock=0) → swap all "open-checkout" buttons with WhatsApp preorder links
         if (cfg.mode === 'disabled') {
