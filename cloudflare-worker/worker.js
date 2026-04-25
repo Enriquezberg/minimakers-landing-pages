@@ -191,6 +191,14 @@ async function handleCheckout(request, env, ctx) {
     const totalCents = unitCents * qty;
     const dcPct = discountPct(qty);
 
+    // Build fbc/fbp BEFORE the metadata payload — these must reach Recurrente so
+    // the webhook-triggered Purchase CAPI event can be attributed to the ad click.
+    let cardFbc = (data.fbc || '').trim() || null;
+    if (!cardFbc && data.fbclid) {
+      cardFbc = 'fb.1.' + Date.now() + '.' + data.fbclid;
+    }
+    const cardFbp = (data.fbp || '').trim() || null;
+
     const checkoutPayload = {
       items: [{
         name: PRODUCT.name + (qty > 1 ? ' (' + qty + ' unidades — −' + dcPct + '%)' : ''),
@@ -215,7 +223,7 @@ async function handleCheckout(request, env, ctx) {
         source: 'landing-page',
         test_event_code: testEventCode || '',
         fbc: cardFbc || '',
-        fbp: (data.fbp || '').trim() || '',
+        fbp: cardFbp || '',
         client_ip: request.headers.get('cf-connecting-ip') || '',
         client_ua: request.headers.get('user-agent') || ''
       }
@@ -256,13 +264,8 @@ async function handleCheckout(request, env, ctx) {
         }).catch(function() {}));
       }
 
-      // Build fbc from fbclid if _fbc cookie wasn't available
-      var cardFbc = (data.fbc || '').trim() || null;
-      if (!cardFbc && data.fbclid) {
-        cardFbc = 'fb.1.' + Date.now() + '.' + data.fbclid;
-      }
-
       // Meta Conversions API: InitiateCheckout (card)
+      // (cardFbc / cardFbp built above, before the Recurrente call)
       var checkoutReqCtx = getRequestContext(request);
       ctx.waitUntil(sendMetaEvent(env, 'InitiateCheckout', {
         email: data.email.trim(),
@@ -273,7 +276,7 @@ async function handleCheckout(request, env, ctx) {
         state: data.state,
         zip: data.zip || '01010',
         fbc: cardFbc,
-        fbp: (data.fbp || '').trim() || null
+        fbp: cardFbp
       }, {
         content_name: PRODUCT.name,
         content_ids: [PRODUCT.sku],
