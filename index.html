@@ -3650,10 +3650,27 @@
         var m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
         return m ? decodeURIComponent(m[1]) : null;
       }
+      // Generate fbp client-side if Meta Pixel didn't set one (ad blockers, strict
+      // privacy mode, first-party cookie restrictions). Replicates Meta's official
+      // Parameter Builder Library behavior — improves CAPI fbp coverage toward 100%.
+      // Format: fb.<subdomain_index>.<creation_time_ms>.<random_number>
+      function getOrCreateFbp() {
+        var fbp = getCookie('_fbp');
+        if (fbp) return fbp;
+        var newFbp = 'fb.1.' + Date.now() + '.' + Math.floor(Math.random() * 1e10);
+        var maxAge = 90 * 24 * 60 * 60; // 90 days
+        document.cookie = '_fbp=' + newFbp +
+          '; max-age=' + maxAge +
+          '; path=/' +
+          '; domain=.minimakersgt.com' +
+          '; SameSite=Lax' +
+          '; Secure';
+        return newFbp;
+      }
       function getMetaMatchingParams() {
         return {
           fbc: getCookie('_fbc') || null,
-          fbp: getCookie('_fbp') || null,
+          fbp: getOrCreateFbp(),
           fbclid: new URLSearchParams(window.location.search).get('fbclid') || null
         };
       }
