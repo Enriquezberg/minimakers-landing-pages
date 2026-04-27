@@ -197,7 +197,10 @@ async function handleCheckout(request, env, ctx) {
     if (!cardFbc && data.fbclid) {
       cardFbc = 'fb.1.' + Date.now() + '.' + data.fbclid;
     }
-    const cardFbp = (data.fbp || '').trim() || null;
+    let cardFbp = (data.fbp || '').trim() || null;
+    if (!cardFbp) {
+      cardFbp = 'fb.1.' + Date.now() + '.' + Math.floor(Math.random() * 1e10);
+    }
 
     const checkoutPayload = {
       items: [{
@@ -276,7 +279,8 @@ async function handleCheckout(request, env, ctx) {
         state: data.state,
         zip: data.zip || '01010',
         fbc: cardFbc,
-        fbp: cardFbp
+        fbp: cardFbp,
+        external_id: data.email.trim()
       }, {
         content_name: PRODUCT.name,
         content_ids: [PRODUCT.sku],
@@ -345,6 +349,11 @@ async function handleCashOrder(request, env, ctx) {
     if (!fbc && data.fbclid) {
       fbc = 'fb.1.' + Date.now() + '.' + data.fbclid;
     }
+    // Synthesize fbp if browser cookie was missing — improves CAPI coverage
+    var fbp = (data.fbp || '').trim() || null;
+    if (!fbp) {
+      fbp = 'fb.1.' + Date.now() + '.' + Math.floor(Math.random() * 1e10);
+    }
 
     // Meta Conversions API: Purchase (cash) — waitUntil keeps Worker alive for CAPI
     var reqCtx = getRequestContext(request);
@@ -357,7 +366,8 @@ async function handleCashOrder(request, env, ctx) {
       state: data.state || '',
       zip: data.zip || '01010',
       fbc: fbc,
-      fbp: (data.fbp || '').trim() || null
+      fbp: fbp,
+      external_id: (data.email || '').trim() || null
     }, {
       content_name: PRODUCT.name,
       content_ids: [PRODUCT.sku],
@@ -405,13 +415,18 @@ async function handleWebhook(request, env, ctx) {
         ip: (metadata.client_ip || '').trim() || null,
         ua: (metadata.client_ua || '').trim() || null
       };
+      var webhookFbp = (metadata.fbp || '').trim() || null;
+      if (!webhookFbp) {
+        webhookFbp = 'fb.1.' + Date.now() + '.' + Math.floor(Math.random() * 1e10);
+      }
       ctx.waitUntil(sendMetaEvent(env, 'Purchase', {
         email: metadata.email || customer.email || '',
         phone: metadata.phone || '',
         firstName: (metadata.customer_name || '').split(' ')[0] || '',
         lastName: (metadata.customer_name || '').split(' ').slice(1).join(' ') || '',
         fbc: (metadata.fbc || '').trim() || null,
-        fbp: (metadata.fbp || '').trim() || null
+        fbp: webhookFbp,
+        external_id: (metadata.email || customer.email || '').trim() || null
       }, {
         content_name: PRODUCT.name,
         content_ids: [PRODUCT.sku],
@@ -480,6 +495,9 @@ async function sendMetaEvent(env, eventName, userData, customData, eventSourceUr
   // fbp = Facebook Browser ID (identifies the user across sessions)
   if (userData.fbc) hashedUserData.fbc = userData.fbc;       // NOT hashed
   if (userData.fbp) hashedUserData.fbp = userData.fbp;       // NOT hashed
+  // external_id — stable customer identifier hashed for privacy
+  // Helps Meta link events from the same user across sessions/devices
+  if (userData.external_id) hashedUserData.external_id = [await sha256(userData.external_id)];
   // client IP + user agent — fallback matching when fbc/fbp unavailable
   if (requestContext) {
     if (requestContext.ip) hashedUserData.client_ip_address = requestContext.ip;
