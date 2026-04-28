@@ -36,17 +36,63 @@
   s.parentNode.insertBefore(t,s)}(window, document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
   fbq('init', '424336247007631');
-  fbq('track', 'PageView');
 
-  // Purchase event — solo se dispara si llegamos con una orden real (cash o card)
-  // El order_id viene del Worker (cash) o del success_url de Recurrente (card)
-  // eventID = order_id para deduplicar con el evento server-side (CAPI) del Worker
-  // Si hay ?test_event_code= → saltamos el browser Pixel (CAPI lo maneja con test flag)
+  // PageView con eventID + CAPI mirror (dedup → cobertura ~100%)
+  // Purchase event — solo si llegamos con una orden real (cash o card)
   (function() {
+    function getCookie(name) {
+      var m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+      return m ? decodeURIComponent(m[1]) : null;
+    }
+    function getOrCreateFbp() {
+      var fbp = getCookie('_fbp');
+      if (fbp) return fbp;
+      var newFbp = 'fb.1.' + Date.now() + '.' + Math.floor(Math.random() * 1e10);
+      document.cookie = '_fbp=' + newFbp +
+        '; max-age=' + (90*24*60*60) + '; path=/; domain=.minimakersgt.com; SameSite=Lax; Secure';
+      return newFbp;
+    }
+    function uuid() {
+      if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+      return 'eid-' + Date.now() + '-' + Math.random().toString(36).slice(2, 12);
+    }
+
     var params = new URLSearchParams(window.location.search);
     var orderId = params.get('order');
-    if (!orderId) return;  // carga directa / preview → no disparar nada
-    if (params.get('test_event_code')) return;  // test mode → solo CAPI server-side
+    var testEventCode = params.get('test_event_code');
+    var fbp = getOrCreateFbp();
+    var fbc = getCookie('_fbc');
+    var fbclid = params.get('fbclid');
+    var WORKER_URL = 'https://qpaypro-checkout.luisenriquez0714.workers.dev';
+
+    function capiMirror(eventName, eventId, customData) {
+      try {
+        fetch(WORKER_URL + '/capi/track', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          keepalive: true,
+          body: JSON.stringify({
+            event_name: eventName,
+            event_id: eventId,
+            fbp: fbp,
+            fbc: fbc,
+            fbclid: fbclid,
+            event_source_url: location.href,
+            test_event_code: testEventCode || null,
+            custom_data: customData || {}
+          })
+        }).catch(function() {});
+      } catch (_) {}
+    }
+
+    // PageView (siempre, con dedup)
+    var pvId = uuid();
+    if (!testEventCode) fbq('track', 'PageView', {}, { eventID: pvId });
+    capiMirror('PageView', pvId, {});
+
+    // Purchase: solo si hay order_id real
+    if (!orderId) return;
+    if (testEventCode) return;  // test mode → CAPI lo maneja server-side con test flag
 
     var qty = parseInt(params.get('qty'), 10) || 1;
     var total = parseFloat(params.get('total'));

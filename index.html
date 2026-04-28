@@ -125,6 +125,7 @@
   fbq('init', '424336247007631');
 
   // Browser + CAPI dedup: mismo event_id en ambos lados → Meta deduplica → cobertura ~100%
+  // window.miniCAPI expuesto para que checkout (InitiateCheckout, AddPaymentInfo) lo reuse.
   (function() {
     function getCookie(name) {
       var m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
@@ -143,24 +144,13 @@
       return 'eid-' + Date.now() + '-' + Math.random().toString(36).slice(2, 12);
     }
 
-    var pvId = uuid();
-    var vcId = uuid();
     var fbp = getOrCreateFbp();
     var fbc = getCookie('_fbc');
-    var fbclid = new URLSearchParams(window.location.search).get('fbclid');
-    var testEventCode = new URLSearchParams(window.location.search).get('test_event_code');
-
-    fbq('track', 'PageView', {}, { eventID: pvId });
-    fbq('track', 'ViewContent', {
-      content_name: 'Maquina Industrial 25 Mini Panqueques',
-      content_ids: ['MI25MP'],
-      content_type: 'product',
-      value: 1075,
-      currency: 'GTQ'
-    }, { eventID: vcId });
-
-    // Mirror server-side via worker — keepalive permite enviar incluso si el user navega
+    var params = new URLSearchParams(window.location.search);
+    var fbclid = params.get('fbclid');
+    var testEventCode = params.get('test_event_code');
     var WORKER_URL = 'https://qpaypro-checkout.luisenriquez0714.workers.dev';
+
     function capiMirror(eventName, eventId, customData) {
       try {
         fetch(WORKER_URL + '/capi/track', {
@@ -180,8 +170,26 @@
         }).catch(function() {});
       } catch (_) {}
     }
-    capiMirror('PageView', pvId, {});
-    capiMirror('ViewContent', vcId, {
+
+    // Helper: dispara fbq+CAPI con el mismo eventID. Browser-side se omite si test mode
+    // (CAPI lo cubre con test_event_code → no contamina métricas reales).
+    function track(eventName, customData) {
+      var eid = uuid();
+      try {
+        if (typeof fbq === 'function' && !testEventCode) {
+          fbq('track', eventName, customData || {}, { eventID: eid });
+        }
+      } catch (_) {}
+      capiMirror(eventName, eid, customData || {});
+      return eid;
+    }
+
+    // Expongo para checkout
+    window.miniCAPI = { track: track, mirror: capiMirror, uuid: uuid, isTest: !!testEventCode };
+
+    // PageView + ViewContent al cargar
+    track('PageView', {});
+    track('ViewContent', {
       content_name: 'Maquina Industrial 25 Mini Panqueques',
       content_ids: ['MI25MP'],
       content_type: 'product',
@@ -3877,10 +3885,10 @@
         updateQtyUI(false);
         resetSubmitBtn();
         restoreCheckoutData();
-        // Meta Pixel: InitiateCheckout (skip en test mode — CAPI lo maneja con test_event_code)
+        // InitiateCheckout — browser + CAPI mirror con eventID compartido (dedup)
         var p = pricing(currentQty);
-        if (typeof fbq === 'function' && !isTestMode()) {
-          fbq('track', 'InitiateCheckout', {
+        if (window.miniCAPI) {
+          window.miniCAPI.track('InitiateCheckout', {
             content_name: 'Maquina Industrial 25 Mini Panqueques',
             content_ids: ['MI25MP'],
             content_type: 'product',
@@ -3971,10 +3979,10 @@
           resetSubmitBtn();
           updateSubmitBtn();
           if (window.gtag) gtag('event', 'checkout_payment_method_select', { event_category: 'checkout', event_label: selectedMethod });
-          // Meta Pixel: AddPaymentInfo (skip en test mode)
+          // AddPaymentInfo — browser + CAPI mirror con eventID compartido (dedup)
           var p = pricing(currentQty);
-          if (typeof fbq === 'function' && !isTestMode()) {
-            fbq('track', 'AddPaymentInfo', {
+          if (window.miniCAPI) {
+            window.miniCAPI.track('AddPaymentInfo', {
               content_name: 'Maquina Industrial 25 Mini Panqueques',
               content_ids: ['MI25MP'],
               content_type: 'product',

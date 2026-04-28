@@ -273,29 +273,10 @@ async function handleCheckout(request, env, ctx) {
         }).catch(function() {}));
       }
 
-      // Meta Conversions API: InitiateCheckout (card)
-      // (cardFbc / cardFbp built above, before the Recurrente call)
-      var checkoutReqCtx = getRequestContext(request);
-      ctx.waitUntil(sendMetaEvent(env, 'InitiateCheckout', {
-        email: data.email.trim(),
-        phone: data.phone.trim(),
-        firstName: data.first_name.trim(),
-        lastName: data.last_name.trim(),
-        city: data.city.trim(),
-        state: data.state,
-        zip: data.zip || '01010',
-        fbc: cardFbc,
-        fbp: cardFbp,
-        external_id: data.email.trim()
-      }, {
-        content_name: PRODUCT.name,
-        content_ids: [PRODUCT.sku],
-        content_type: 'product',
-        value: totalCents / 100,
-        currency: PRODUCT.currency,
-        num_items: qty,
-        order_id: orderNum
-      }, null, testEventCode, checkoutReqCtx).catch(function() {}));
+      // Nota: el InitiateCheckout server-side se eliminó de aquí.
+      // Browser dispara InitiateCheckout al ABRIR el modal (semántica oficial Meta)
+      // con eventID + mirror al worker /capi/track. Disparar otro aquí (en el
+      // POST card) duplicaba el conteo y rompía dedup.
 
       return jsonResponse({ redirect_url: recData.checkout_url, order_id: orderNum }, 200, request);
     } else {
@@ -492,7 +473,7 @@ async function handleCapiTrack(request, env, ctx) {
     const data = await request.json();
     const eventName = String(data.event_name || '').trim();
     const eventId = String(data.event_id || '').trim();
-    const allowed = ['PageView', 'ViewContent'];
+    const allowed = ['PageView', 'ViewContent', 'InitiateCheckout', 'AddPaymentInfo'];
     if (!eventName || !allowed.includes(eventName) || !eventId) {
       return jsonResponse({ error: 'invalid event' }, 400, request);
     }
