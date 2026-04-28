@@ -85,6 +85,11 @@ export default {
       return handleConfig(request, env, ctx);
     }
 
+    // Route: Generic CAPI passthrough for browser-side events (PageView, ViewContent)
+    if (url.pathname === '/capi/track' && request.method === 'POST') {
+      return handleCapiTrack(request, env, ctx);
+    }
+
     // Route: Create checkout from landing page
     if (request.method === 'POST') {
       return handleCheckout(request, env, ctx);
@@ -479,6 +484,45 @@ async function sha256(str) {
   }).join('');
 }
 
+// ── Generic CAPI passthrough ──────────────────────
+// Browser dispara fbq('track','PageView',{},{eventID:eid}) y al mismo tiempo POST aquí
+// con el mismo event_id → Meta deduplica y la cobertura CAPI sube a ~100%.
+async function handleCapiTrack(request, env, ctx) {
+  try {
+    const data = await request.json();
+    const eventName = String(data.event_name || '').trim();
+    const eventId = String(data.event_id || '').trim();
+    const allowed = ['PageView', 'ViewContent'];
+    if (!eventName || !allowed.includes(eventName) || !eventId) {
+      return jsonResponse({ error: 'invalid event' }, 400, request);
+    }
+
+    var fbc = (data.fbc || '').trim() || null;
+    if (!fbc && data.fbclid) {
+      fbc = 'fb.1.' + Date.now() + '.' + data.fbclid;
+    }
+    var fbp = (data.fbp || '').trim() || null;
+    if (!fbp) {
+      fbp = 'fb.1.' + Date.now() + '.' + Math.floor(Math.random() * 1e10);
+    }
+
+    const testEventCode = (data.test_event_code || '').trim() || null;
+    const reqCtx = getRequestContext(request);
+    const customData = Object.assign({}, data.custom_data || {}, { event_id: eventId });
+
+    ctx.waitUntil(sendMetaEvent(env, eventName, {
+      fbc: fbc,
+      fbp: fbp,
+      external_id: fbp
+    }, customData, data.event_source_url || LANDING_URL, testEventCode, reqCtx).catch(function() {}));
+
+    return jsonResponse({ ok: true }, 200, request);
+  } catch (err) {
+    console.error('capi/track error:', err.message);
+    return jsonResponse({ error: 'internal' }, 500, request);
+  }
+}
+
 async function sendMetaEvent(env, eventName, userData, customData, eventSourceUrl, testEventCode, requestContext) {
   if (!env.META_ACCESS_TOKEN) return;
 
@@ -507,8 +551,16 @@ async function sendMetaEvent(env, eventName, userData, customData, eventSourceUr
   }
 
   // event_id top-level → Meta deduplica con el Pixel browser-side cuando ambos mandan el mismo ID
-  // Usamos order_id como event_id para que sea estable entre cliente y servidor
-  var eventId = customData && customData.order_id ? String(customData.order_id) : null;
+  // Prioridad: event_id explícito (PageView/ViewContent) > order_id (Purchase/InitiateCheckout)
+  var eventId = null;
+  if (customData) {
+    if (customData.event_id) {
+      eventId = String(customData.event_id);
+      delete customData.event_id;
+    } else if (customData.order_id) {
+      eventId = String(customData.order_id);
+    }
+  }
 
   var payload = {
     data: [{

@@ -123,14 +123,72 @@
   s.parentNode.insertBefore(t,s)}(window, document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
   fbq('init', '424336247007631');
-  fbq('track', 'PageView');
-  fbq('track', 'ViewContent', {
-    content_name: 'Maquina Industrial 25 Mini Panqueques',
-    content_ids: ['MI25MP'],
-    content_type: 'product',
-    value: 1075,
-    currency: 'GTQ'
-  });
+
+  // Browser + CAPI dedup: mismo event_id en ambos lados → Meta deduplica → cobertura ~100%
+  (function() {
+    function getCookie(name) {
+      var m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+      return m ? decodeURIComponent(m[1]) : null;
+    }
+    function getOrCreateFbp() {
+      var fbp = getCookie('_fbp');
+      if (fbp) return fbp;
+      var newFbp = 'fb.1.' + Date.now() + '.' + Math.floor(Math.random() * 1e10);
+      document.cookie = '_fbp=' + newFbp +
+        '; max-age=' + (90*24*60*60) + '; path=/; domain=.minimakersgt.com; SameSite=Lax; Secure';
+      return newFbp;
+    }
+    function uuid() {
+      if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+      return 'eid-' + Date.now() + '-' + Math.random().toString(36).slice(2, 12);
+    }
+
+    var pvId = uuid();
+    var vcId = uuid();
+    var fbp = getOrCreateFbp();
+    var fbc = getCookie('_fbc');
+    var fbclid = new URLSearchParams(window.location.search).get('fbclid');
+    var testEventCode = new URLSearchParams(window.location.search).get('test_event_code');
+
+    fbq('track', 'PageView', {}, { eventID: pvId });
+    fbq('track', 'ViewContent', {
+      content_name: 'Maquina Industrial 25 Mini Panqueques',
+      content_ids: ['MI25MP'],
+      content_type: 'product',
+      value: 1075,
+      currency: 'GTQ'
+    }, { eventID: vcId });
+
+    // Mirror server-side via worker — keepalive permite enviar incluso si el user navega
+    var WORKER_URL = 'https://qpaypro-checkout.luisenriquez0714.workers.dev';
+    function capiMirror(eventName, eventId, customData) {
+      try {
+        fetch(WORKER_URL + '/capi/track', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          keepalive: true,
+          body: JSON.stringify({
+            event_name: eventName,
+            event_id: eventId,
+            fbp: fbp,
+            fbc: fbc,
+            fbclid: fbclid,
+            event_source_url: location.href,
+            test_event_code: testEventCode || null,
+            custom_data: customData || {}
+          })
+        }).catch(function() {});
+      } catch (_) {}
+    }
+    capiMirror('PageView', pvId, {});
+    capiMirror('ViewContent', vcId, {
+      content_name: 'Maquina Industrial 25 Mini Panqueques',
+      content_ids: ['MI25MP'],
+      content_type: 'product',
+      value: 1075,
+      currency: 'GTQ'
+    });
+  })();
   </script>
   <noscript><img height="1" width="1" style="display:none"
   src="https://www.facebook.com/tr?id=424336247007631&ev=PageView&noscript=1"
