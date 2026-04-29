@@ -491,10 +491,23 @@ async function handleCapiTrack(request, env, ctx) {
     const reqCtx = getRequestContext(request);
     const customData = Object.assign({}, data.custom_data || {}, { event_id: eventId });
 
+    // User data desde localStorage del browser (visitor recurrente que ya llenó form):
+    // raw aquí, sendMetaEvent los hashea SHA-256 antes de mandar a Meta.
+    // external_id: email > fbp (email es más estable cross-device).
+    const email = (data.email || '').trim() || null;
+    const phone = (data.phone || '').trim() || null;
+
     ctx.waitUntil(sendMetaEvent(env, eventName, {
       fbc: fbc,
       fbp: fbp,
-      external_id: fbp
+      email: email,
+      phone: phone,
+      firstName: (data.first_name || '').trim() || null,
+      lastName: (data.last_name || '').trim() || null,
+      city: (data.city || '').trim() || null,
+      state: (data.state || '').trim() || null,
+      zip: (data.zip || '').trim() || null,
+      external_id: email || fbp
     }, customData, data.event_source_url || LANDING_URL, testEventCode, reqCtx).catch(function() {}));
 
     return jsonResponse({ ok: true }, 200, request);

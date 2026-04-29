@@ -35,7 +35,6 @@
   t.src=v;s=b.getElementsByTagName(e)[0];
   s.parentNode.insertBefore(t,s)}(window, document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '424336247007631');
 
   // PageView con eventID + CAPI mirror (dedup → cobertura ~100%)
   // Purchase event — solo si llegamos con una orden real (cash o card)
@@ -65,6 +64,22 @@
       if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
       return 'eid-' + Date.now() + '-' + Math.random().toString(36).slice(2, 12);
     }
+    function getStoredUserData() {
+      try {
+        var raw = localStorage.getItem('mm_checkout_data');
+        if (!raw) return {};
+        var d = JSON.parse(raw);
+        return {
+          email: (d.cko_email || '').trim() || null,
+          phone: (d.cko_phone || '').trim() || null,
+          first_name: (d.cko_fname || '').trim() || null,
+          last_name: (d.cko_lname || '').trim() || null,
+          city: (d.cko_city || '').trim() || null,
+          state: (d.cko_state || '').trim() || null,
+          zip: (d.cko_zip || '').trim() || null
+        };
+      } catch (_) { return {}; }
+    }
 
     var params = new URLSearchParams(window.location.search);
     var orderId = params.get('order');
@@ -72,7 +87,20 @@
     var fbp = getOrCreateFbp();
     var fbclid = params.get('fbclid');
     var fbc = getOrCreateFbc(fbclid);
+    var stored = getStoredUserData();
     var WORKER_URL = 'https://qpaypro-checkout.luisenriquez0714.workers.dev';
+
+    // Advanced Matching del Pixel — Meta hashea SHA-256 client-side
+    var advancedMatching = {};
+    if (stored.email) advancedMatching.em = stored.email;
+    if (stored.phone) advancedMatching.ph = stored.phone;
+    if (stored.first_name) advancedMatching.fn = stored.first_name;
+    if (stored.last_name) advancedMatching.ln = stored.last_name;
+    if (stored.city) advancedMatching.ct = stored.city;
+    if (stored.state) advancedMatching.st = stored.state;
+    if (stored.zip) advancedMatching.zp = stored.zip;
+    advancedMatching.country = 'gt';
+    fbq('init', '424336247007631', advancedMatching);
 
     function capiMirror(eventName, eventId, customData) {
       try {
@@ -86,6 +114,13 @@
             fbp: fbp,
             fbc: fbc,
             fbclid: fbclid,
+            email: stored.email,
+            phone: stored.phone,
+            first_name: stored.first_name,
+            last_name: stored.last_name,
+            city: stored.city,
+            state: stored.state,
+            zip: stored.zip,
             event_source_url: location.href,
             test_event_code: testEventCode || null,
             custom_data: customData || {}
