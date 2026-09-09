@@ -176,6 +176,34 @@ async function handleConfig(request, env, ctx) {
 }
 
 // ── Create Recurrente Checkout ──────────────────
+// ── La evidencia del clic, tal como llegó ────────────────────────────────
+// El navegador ya nos manda fbc, fbp, fbclid y los UTM. Hasta el 09/09 nada de
+// eso viajaba al CRM: `saveToCRM` mandaba solo los datos de entrega, así que las
+// órdenes de la landing quedaban SIN saber de qué anuncio vinieron (0 de 285
+// órdenes tenían fbclid). El CRM ya sabía recibir estos campos — solo faltaba
+// mandárselos.
+//
+// Se manda lo que EXISTE. Nada se inventa: un identificador fabricado no casa
+// con nadie en Meta y solo ensucia el dato.
+function evidenciaDelClic(data, request) {
+  const ev = {};
+  const copiar = {
+    fbclid: 'fbclid', fbc: 'fbc', fbp: 'fbp',
+    utm_source: 'utm_source', utm_medium: 'utm_medium', utm_campaign: 'utm_campaign',
+    utm_content: 'utm_content', utm_term: 'utm_term',
+    landing_url: 'landing_url', referrer: 'referrer', touch_id: 'touch_id'
+  };
+  for (const k in copiar) {
+    const v = (data[k] || '').toString().trim();
+    if (v) ev[copiar[k]] = v;
+  }
+  const ip = request.headers.get('cf-connecting-ip');
+  const ua = request.headers.get('user-agent');
+  if (ip) ev.client_ip_address = ip;
+  if (ua) ev.client_user_agent = ua;
+  return ev;
+}
+
 async function handleCheckout(request, env, ctx) {
   try {
     const data = await request.json();
@@ -198,10 +226,11 @@ async function handleCheckout(request, env, ctx) {
 
     // Build fbc/fbp BEFORE the metadata payload — these must reach Recurrente so
     // the webhook-triggered Purchase CAPI event can be attributed to the ad click.
+    // El fbc lo arma el NAVEGADOR cuando el cliente cae en la página —esa es la
+    // hora real del clic— y lo guarda 90 días en la cookie _fbc. Aquí antes se
+    // volvía a armar con Date.now(), o sea con la hora de la COMPRA: un clic con
+    // fecha equivocada. Si el navegador no lo mandó, se va sin fbc y ya.
     let cardFbc = (data.fbc || '').trim() || null;
-    if (!cardFbc && data.fbclid) {
-      cardFbc = 'fb.1.' + Date.now() + '.' + data.fbclid;
-    }
     let cardFbp = (data.fbp || '').trim() || null;
     if (!cardFbp) {
       cardFbp = 'fb.1.' + Date.now() + '.' + Math.floor(Math.random() * 1e10);
@@ -252,7 +281,7 @@ async function handleCheckout(request, env, ctx) {
     if (recData.checkout_url) {
       // Save order to MiniMakers CRM
       if (env.CRM_URL && env.CRM_SECRET) {
-        ctx.waitUntil(saveToCRM(env.CRM_URL, env.CRM_SECRET, {
+        ctx.waitUntil(saveToCRM(env.CRM_URL, env.CRM_SECRET, Object.assign({
           order_id: orderNum,
           action: 'create',
           date: new Date().toISOString(),
@@ -270,7 +299,7 @@ async function handleCheckout(request, env, ctx) {
           unit_price: unitCents / 100,
           total_amount: totalCents / 100,
           discount_pct: dcPct
-        }).catch(function() {}));
+        }, evidenciaDelClic(data, request))).catch(function() {}));
       }
 
       // Nota: el InitiateCheckout server-side se eliminó de aquí.
@@ -308,7 +337,7 @@ async function handleCashOrder(request, env, ctx) {
 
     if (env.CRM_URL && env.CRM_SECRET) {
       try {
-        var crmResp = await saveToCRM(env.CRM_URL, env.CRM_SECRET, {
+        var crmResp = await saveToCRM(env.CRM_URL, env.CRM_SECRET, Object.assign({
           order_id: refNum,
           action: 'create',
           date: new Date().toISOString(),
@@ -326,17 +355,16 @@ async function handleCashOrder(request, env, ctx) {
           unit_price: unitCents / 100,
           total_amount: totalCents / 100,
           discount_pct: dcPct
-        });
+        }, evidenciaDelClic(data, request)));
         var crmData = await crmResp.json();
         if (crmData.order_id) displayOrder = crmData.order_id;
       } catch(e) { console.error('CRM save error:', e.message); }
     }
 
-    // Build fbc from fbclid if _fbc cookie wasn't available
+    // El fbc viene del navegador con la hora REAL del clic (cookie _fbc, 90 días).
+    // Antes se re-armaba aquí con Date.now() —la hora de la compra— y eso le
+    // ponía al clic una fecha que no era. Si no vino, se manda sin fbc.
     var fbc = (data.fbc || '').trim() || null;
-    if (!fbc && data.fbclid) {
-      fbc = 'fb.1.' + Date.now() + '.' + data.fbclid;
-    }
     // Synthesize fbp if browser cookie was missing — improves CAPI coverage
     var fbp = (data.fbp || '').trim() || null;
     if (!fbp) {

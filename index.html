@@ -3784,13 +3784,50 @@
           '; Secure';
         return newFbp;
       }
+      // Todo lo que sabemos del origen de esta visita, para que viaje junto: al
+      // CAPI del Worker y —desde el 09/09— también al CRM. Antes solo iban los
+      // identificadores de Meta y los UTM se quedaban en la página, así que
+      // ninguna orden de la landing sabía de qué campaña vino.
+      // Los UTM se guardan al CAER en la página (no al comprar): si el cliente
+      // navega y pierde los parámetros de la URL, el origen no se pierde con ellos.
       function getMetaMatchingParams() {
-        return {
+        var p = new URLSearchParams(window.location.search);
+        var out = {
           fbc: getCookie('_fbc') || null,
           fbp: getOrCreateFbp(),
-          fbclid: new URLSearchParams(window.location.search).get('fbclid') || null
+          fbclid: p.get('fbclid') || null,
+          landing_url: window.location.href,
+          referrer: document.referrer || null
         };
+        var guardados = {};
+        try { guardados = JSON.parse(localStorage.getItem('mm_utms') || '{}'); } catch (e) {}
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function(k) {
+          var v = p.get(k) || guardados[k] || null;
+          if (v) out[k] = v;
+        });
+        return out;
       }
+
+      // Sella el origen en cuanto la persona llega, y lo conserva 30 días — la
+      // misma ventana que usa la tienda. Si no trae UTM, no se pisa lo que ya
+      // había: una visita directa no borra de dónde vino la primera vez.
+      (function guardarOrigen() {
+        try {
+          var p = new URLSearchParams(window.location.search);
+          var nuevos = {};
+          ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function(k) {
+            var v = p.get(k);
+            if (v) nuevos[k] = v;
+          });
+          if (Object.keys(nuevos).length) {
+            nuevos._t = Date.now();
+            localStorage.setItem('mm_utms', JSON.stringify(nuevos));
+            return;
+          }
+          var viejo = JSON.parse(localStorage.getItem('mm_utms') || '{}');
+          if (viejo._t && (Date.now() - viejo._t) / 86400000 > 30) localStorage.removeItem('mm_utms');
+        } catch (e) { /* localStorage bloqueado: se sigue sin origen guardado */ }
+      })();
 
       var overlay = document.getElementById('checkoutOverlay');
       var closeBtn = document.getElementById('checkoutClose');
